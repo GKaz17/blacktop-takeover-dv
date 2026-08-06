@@ -1,67 +1,16 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Aug 06, 2026 at 11:01 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+CREATE DATABASE IF NOT EXISTS blacktop_takeover_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE blacktop_takeover_db;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+CREATE TABLE users (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, first_name VARCHAR(80) NOT NULL, last_name VARCHAR(80) NOT NULL, email VARCHAR(190) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL, role ENUM('player','captain','organiser','admin') NOT NULL DEFAULT 'player', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;
+CREATE TABLE teams (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100) NOT NULL UNIQUE, slug VARCHAR(120) NOT NULL UNIQUE, city VARCHAR(80) NOT NULL, captain_id INT UNSIGNED NOT NULL, logo_path VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, CONSTRAINT fk_team_captain FOREIGN KEY (captain_id) REFERENCES users(id)) ENGINE=InnoDB;
+CREATE TABLE team_members (team_id INT UNSIGNED NOT NULL, user_id INT UNSIGNED NOT NULL, jersey_number TINYINT UNSIGNED, position VARCHAR(40), status ENUM('invited','active','inactive') DEFAULT 'invited', joined_at TIMESTAMP NULL, PRIMARY KEY (team_id,user_id), FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE, FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE) ENGINE=InnoDB;
+CREATE TABLE tournaments (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, name VARCHAR(140) NOT NULL, slug VARCHAR(160) NOT NULL UNIQUE, city VARCHAR(80) NOT NULL, venue VARCHAR(140) NOT NULL, starts_at DATETIME NOT NULL, registration_deadline DATETIME NOT NULL, format ENUM('3v3','5v5') NOT NULL, capacity SMALLINT UNSIGNED NOT NULL, prize_cents INT UNSIGNED DEFAULT 0, status ENUM('draft','open','full','in_progress','completed','cancelled') DEFAULT 'draft', description TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB;
+CREATE TABLE tournament_entries (tournament_id INT UNSIGNED NOT NULL, team_id INT UNSIGNED NOT NULL, seed SMALLINT UNSIGNED, status ENUM('pending','confirmed','withdrawn') DEFAULT 'pending', registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (tournament_id,team_id), FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE CASCADE, FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE CASCADE) ENGINE=InnoDB;
+CREATE TABLE matches (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, tournament_id INT UNSIGNED NOT NULL, home_team_id INT UNSIGNED NOT NULL, away_team_id INT UNSIGNED NOT NULL, round_name VARCHAR(60) NOT NULL, court VARCHAR(40), scheduled_at DATETIME NOT NULL, home_score SMALLINT UNSIGNED, away_score SMALLINT UNSIGNED, status ENUM('scheduled','live','final','postponed') DEFAULT 'scheduled', FOREIGN KEY (tournament_id) REFERENCES tournaments(id) ON DELETE CASCADE, FOREIGN KEY (home_team_id) REFERENCES teams(id), FOREIGN KEY (away_team_id) REFERENCES teams(id), INDEX idx_match_schedule (scheduled_at,status)) ENGINE=InnoDB;
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `blacktop_takeover_db`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `teams`
---
-
-CREATE TABLE `teams` (
-  `team_id` int(10) UNSIGNED NOT NULL,
-  `team_name` varchar(100) NOT NULL,
-  `region` varchar(50) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `teams`
---
-
-INSERT INTO `teams` (`team_id`, `team_name`, `region`, `created_at`) VALUES
-(1, 'Test Team', 'Johannesburg', '2026-08-06 08:58:37');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `teams`
---
-ALTER TABLE `teams`
-  ADD PRIMARY KEY (`team_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `teams`
---
-ALTER TABLE `teams`
-  MODIFY `team_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+INSERT INTO users (first_name,last_name,email,password_hash,role) VALUES ('Thabo','Mokoena','captain@example.com','$2y$10$replace.with.a.real.password_hash','captain');
+INSERT INTO teams (name,slug,city,captain_id) VALUES ('Soweto Kings','soweto-kings','Johannesburg',1);
+INSERT INTO tournaments (name,slug,city,venue,starts_at,registration_deadline,format,capacity,prize_cents,status,description) VALUES
+('Jozi Winter Classic','jozi-winter-classic','Johannesburg','Zoo Lake Courts','2026-08-16 10:00:00','2026-08-13 23:59:59','3v3',16,2500000,'open','Fast-paced streetball in the heart of Jozi.'),
+('Cape Coast Clash','cape-coast-clash','Cape Town','Battery Park','2026-08-29 10:00:00','2026-08-26 23:59:59','5v5',16,4000000,'open','The coast’s biggest five-on-five showdown.'),
+('Durban After Dark','durban-after-dark','Durban','North Beach Courts','2026-09-12 16:00:00','2026-09-09 23:59:59','3v3',12,2000000,'draft','Streetball under the North Beach lights.');

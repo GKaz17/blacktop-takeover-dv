@@ -1,0 +1,19 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="680" height="900" viewBox="0 0 680 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="STREET PASS V2 / PTA Night Wash" clip-path="url(#clip0_0_33)">
+<path id="Vector" opacity="0.1" d="M0 120L680 315" stroke="#7B2CBF" stroke-width="34"/>
+<path id="Vector_2" opacity="0.1" d="M0 760L680 570" stroke="#00C2FF" stroke-width="28"/>
+<path id="Vector_3" opacity="0.07" d="M455 -80L740 110L610 280L335 85L455 -80Z" fill="#FF2E88"/>
+<path id="Vector_4" opacity="0.08" d="M-80 590L120 450L255 615L55 770L-80 590Z" fill="#F5C400"/>
+<path id="Vector_5" opacity="0.18" d="M20 45L660 820M-80 140L560 900" stroke="#FF6B1A" stroke-width="2"/>
+<g id="Group" opacity="0.42">
+<path id="Vector_6" d="M620 120C622.761 120 625 117.761 625 115C625 112.239 622.761 110 620 110C617.239 110 615 112.239 615 115C615 117.761 617.239 120 620 120Z" fill="#00C2FF"/>
+<path id="Vector_7" d="M594 146C595.657 146 597 144.657 597 143C597 141.343 595.657 140 594 140C592.343 140 591 141.343 591 143C591 144.657 592.343 146 594 146Z" fill="#00C2FF"/>
+<path id="Vector_8" d="M640 165C643.866 165 647 161.866 647 158C647 154.134 643.866 151 640 151C636.134 151 633 154.134 633 158C633 161.866 636.134 165 640 165Z" fill="#00C2FF"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_33">
+<rect width="680" height="900" fill="white"/>
+</clipPath>
+</defs>
+</svg>

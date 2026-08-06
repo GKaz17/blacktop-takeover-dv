@@ -1,0 +1,25 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="560" height="330" viewBox="0 0 560 330" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="City Landmarks / Jozi Signal Towers" opacity="0.78">
+<path id="Vector" d="M0 300H560" stroke="#F5C400" stroke-opacity="0.28" stroke-width="3"/>
+<g id="Vector_2">
+<path d="M18 300V246H72V300M84 300V218H132V300M150 300V194H198V300M414 300V232H456V300M468 300V205H530V300" fill="#0B0B0C" fill-opacity="0.88"/>
+<path d="M18 300V246H72V300M84 300V218H132V300M150 300V194H198V300M414 300V232H456V300M468 300V205H530V300" stroke="#00C2FF" stroke-opacity="0.2" stroke-width="2"/>
+</g>
+<g id="telkom">
+<path id="Vector_3" d="M238 300L249 127H271L282 300H238Z" fill="#0B0B0C" stroke="#F5C400" stroke-opacity="0.62" stroke-width="3"/>
+<path id="Vector_4" d="M260 145C283.196 145 302 136.493 302 126C302 115.507 283.196 107 260 107C236.804 107 218 115.507 218 126C218 136.493 236.804 145 260 145Z" fill="#0B0B0C" stroke="#F5C400" stroke-width="4"/>
+<path id="Vector_5" d="M260 136C276.569 136 290 131.523 290 126C290 120.477 276.569 116 260 116C243.431 116 230 120.477 230 126C230 131.523 243.431 136 260 136Z" stroke="#FF6B1A" stroke-width="3"/>
+<path id="Vector_6" d="M260 107V18M250 77H270M255 50H265" stroke="#F5C400" stroke-width="4" stroke-linecap="round"/>
+</g>
+<g id="vodacom">
+<path id="Vector_7" d="M336 300L344 146H362L370 300H336Z" fill="#0B0B0C" stroke="#FF6B1A" stroke-opacity="0.7" stroke-width="3"/>
+<path id="Vector_8" d="M353 162C371.778 162 387 154.389 387 145C387 135.611 371.778 128 353 128C334.222 128 319 135.611 319 145C319 154.389 334.222 162 353 162Z" fill="#0B0B0C" stroke="#FF6B1A" stroke-width="4"/>
+<path id="Vector_9" d="M353 128V56M342 87L353 72L364 87" stroke="#FF6B1A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<g id="ponte">
+<path id="Vector_10" d="M104 300V130C104 111 120 96 140 96C160 96 176 111 176 130V300H104Z" fill="#0B0B0C" stroke="#00C2FF" stroke-opacity="0.42" stroke-width="3"/>
+<path id="Vector_11" d="M140 143C151.046 143 160 136.284 160 128C160 119.716 151.046 113 140 113C128.954 113 120 119.716 120 128C120 136.284 128.954 143 140 143Z" fill="#1A1A1D" stroke="#00C2FF" stroke-opacity="0.45" stroke-width="2"/>
+<path id="Vector_12" d="M116 170H164M116 205H164M116 240H164" stroke="#F2EFE9" stroke-opacity="0.18" stroke-width="3"/>
+</g>
+</g>
+</svg>

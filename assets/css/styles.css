@@ -1,0 +1,317 @@
+:root {
+    --asphalt: #0b0b0a;
+    --deep: #1a1a18;
+    --orange: #f05a1a;
+    --chalk: #f6f2e8;
+    --concrete: #b7b4ac;
+    --blue: #2d6b9f;
+    --gold: #d4a827;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+}
+
+body {
+    overflow-x: hidden;
+    background: var(--asphalt);
+    color: var(--chalk);
+    font-family: Inter, sans-serif;
+}
+
+body::before {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(circle at 18% 22%, rgb(255 255 255 / 4%), transparent 25%),
+        repeating-linear-gradient(117deg, transparent 0 17px, rgb(255 255 255 / 1.5%) 18px 19px),
+        var(--asphalt);
+    content: "";
+}
+
+main {
+    min-height: 100vh;
+}
+
+.skip-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 20;
+    padding: .65rem 1rem;
+    transform: translateY(-200%);
+    background: var(--chalk);
+    color: var(--asphalt);
+}
+
+.skip-link:focus {
+    transform: none;
+}
+
+.landing-shell {
+    display: grid;
+    min-height: 100vh;
+    grid-template-columns: minmax(0, 1.07fr) minmax(420px, .93fr);
+    background: var(--asphalt);
+}
+
+.culture-panel,
+.landing-entry {
+    position: relative;
+    isolation: isolate;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.culture-panel {
+    border-right: 8px solid var(--orange);
+    background: var(--deep);
+}
+
+.culture-fill {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.culture-panel::after,
+.landing-entry::after {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    content: "";
+}
+
+.culture-panel::after {
+    background: linear-gradient(180deg, transparent 25%, rgb(11 11 10 / 26%) 62%, rgb(11 11 10 / 82%));
+}
+
+.landing-entry {
+    display: grid;
+    place-items: center;
+    padding: clamp(2rem, 6vw, 7rem);
+}
+
+.landing-entry::after {
+    background: linear-gradient(135deg, rgb(11 11 10 / 62%), rgb(11 11 10 / 92%));
+}
+
+.skyline {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 92%;
+    opacity: .88;
+}
+
+.brand-lockup {
+    position: absolute;
+    top: clamp(2rem, 7vh, 5.5rem);
+    left: clamp(1.5rem, 5vw, 5rem);
+    display: flex;
+    transform: rotate(-2deg);
+    flex-direction: column;
+    filter: drop-shadow(7px 8px 0 rgb(0 0 0 / 65%));
+}
+
+.brand-lockup strong,
+.brand-lockup span {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(5.4rem, 11vw, 10.5rem);
+    line-height: .72;
+    letter-spacing: .015em;
+}
+
+.brand-lockup strong {
+    color: var(--chalk);
+}
+
+.brand-lockup span {
+    color: var(--orange);
+}
+
+.brand-lockup small {
+    margin-top: 1.8rem;
+    color: var(--concrete);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: clamp(.8rem, 1.4vw, 1.2rem);
+    font-weight: 700;
+    letter-spacing: .2em;
+}
+
+.paint-mark {
+    position: absolute;
+    margin: 0;
+    font-family: "Rubik Spray Paint", sans-serif;
+}
+
+.paint-mark--011 {
+    right: 7%;
+    top: 11%;
+    color: var(--gold);
+    font-size: clamp(2rem, 5vw, 5rem);
+    transform: rotate(9deg);
+}
+
+.paint-mark--pitori {
+    left: 7%;
+    bottom: 12%;
+    color: var(--blue);
+    font-size: clamp(2rem, 4vw, 4.5rem);
+    transform: rotate(-7deg);
+}
+
+.paint-mark--streets {
+    right: 7%;
+    bottom: 5%;
+    color: var(--chalk);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: clamp(.8rem, 1.2vw, 1rem);
+    font-weight: 700;
+    letter-spacing: .16em;
+}
+
+.landing-cta,
+.auth-panel {
+    width: min(100%, 31rem);
+}
+
+.landing-cta > p {
+    margin: 0 0 1rem;
+    color: var(--orange);
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    letter-spacing: .22em;
+}
+
+.landing-cta h1,
+.auth-panel h1 {
+    margin: 0 0 2.25rem;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(4.4rem, 8vw, 8rem);
+    font-weight: 400;
+    line-height: .82;
+}
+
+.takeover-button {
+    display: inline-flex;
+    min-height: 3.6rem;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    padding: .8rem 2rem;
+    background: var(--orange);
+    box-shadow: 7px 7px 0 var(--gold);
+    color: var(--asphalt);
+    cursor: pointer;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.takeover-button:hover,
+.takeover-button:focus-visible {
+    transform: translate(-2px, -2px);
+    box-shadow: 9px 9px 0 var(--gold);
+}
+
+.auth-panel h1 {
+    font-size: clamp(3.7rem, 6vw, 6.3rem);
+}
+
+.auth-panel form {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.auth-panel label {
+    display: grid;
+    gap: .45rem;
+    color: var(--concrete);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: .9rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.auth-panel input {
+    width: 100%;
+    border: 1px solid rgb(246 242 232 / 35%);
+    border-radius: 0;
+    padding: .9rem 1rem;
+    outline: 0;
+    background: rgb(11 11 10 / 78%);
+    color: var(--chalk);
+    font: inherit;
+}
+
+.auth-panel input:focus {
+    border-color: var(--orange);
+}
+
+.auth-panel .takeover-button {
+    margin-top: .5rem;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 2rem;
+    color: var(--concrete);
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.blank-page main {
+    background: var(--asphalt);
+}
+
+@media (max-width: 820px) {
+    .landing-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .culture-panel,
+    .landing-entry {
+        min-height: 50vh;
+    }
+
+    .culture-panel {
+        border-right: 0;
+        border-bottom: 6px solid var(--orange);
+    }
+
+    .brand-lockup strong,
+    .brand-lockup span {
+        font-size: clamp(4.6rem, 21vw, 8.5rem);
+    }
+
+    .landing-entry {
+        padding: 4rem 1.5rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}

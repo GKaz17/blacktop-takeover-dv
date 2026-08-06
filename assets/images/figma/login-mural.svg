@@ -1,0 +1,45 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="760" height="900" viewBox="0 0 760 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="STREET PASS V2 / Jozi&#226;&#128;&#147;PTA Mural" filter="url(#filter0_n_0_12)">
+<g clip-path="url(#clip0_0_12)">
+<path id="Vector" opacity="0.17" d="M-80 130L420 -40L540 95L40 270L-80 130Z" fill="#F5C400"/>
+<path id="Vector_2" opacity="0.13" d="M360 -40L790 70L690 310L260 160L360 -40Z" fill="#FF2E88"/>
+<path id="Vector_3" opacity="0.22" d="M-20 510C170 410 310 590 510 460C610 395 700 420 800 360" stroke="#21C16B" stroke-width="42" stroke-linecap="round"/>
+<path id="Vector_4" opacity="0.18" d="M-80 805L360 475L460 600L20 930L-80 805Z" fill="#FF3D2E"/>
+<path id="Vector_5" opacity="0.16" d="M255 0L65 900M390 0L200 900M525 0L335 900M660 0L470 900" stroke="#00C2FF" stroke-width="3"/>
+<path id="Vector_6" opacity="0.35" d="M60 120C170 30 285 44 354 108C407 157 390 225 322 257C250 292 162 270 120 219" stroke="#F5C400" stroke-width="13" stroke-linecap="round"/>
+<path id="Vector_7" opacity="0.42" d="M450 690C515 620 632 623 705 690" stroke="#7B2CBF" stroke-width="18" stroke-linecap="round"/>
+<g id="Group" opacity="0.58">
+<path id="Vector_8" d="M520 227C523.866 227 527 223.866 527 220C527 216.134 523.866 213 520 213C516.134 213 513 216.134 513 220C513 223.866 516.134 227 520 227Z" fill="#FF2E88"/>
+<path id="Vector_9" d="M548 249C550.209 249 552 247.209 552 245C552 242.791 550.209 241 548 241C545.791 241 544 242.791 544 245C544 247.209 545.791 249 548 249Z" fill="#FF2E88"/>
+<path id="Vector_10" d="M566 204C567.657 204 569 202.657 569 201C569 199.343 567.657 198 566 198C564.343 198 563 199.343 563 201C563 202.657 564.343 204 566 204Z" fill="#FF2E88"/>
+<path id="Vector_11" d="M603 236C606.314 236 609 233.314 609 230C609 226.686 606.314 224 603 224C599.686 224 597 226.686 597 230C597 233.314 599.686 236 603 236Z" fill="#FF2E88"/>
+</g>
+<g id="Group_2" opacity="0.7">
+<path id="Vector_12" d="M92 435C94.7614 435 97 432.761 97 430C97 427.239 94.7614 425 92 425C89.2386 425 87 427.239 87 430C87 432.761 89.2386 435 92 435Z" fill="#F5C400"/>
+<path id="Vector_13" d="M116 454C117.657 454 119 452.657 119 451C119 449.343 117.657 448 116 448C114.343 448 113 449.343 113 451C113 452.657 114.343 454 116 454Z" fill="#F5C400"/>
+<path id="Vector_14" d="M141 424C144.866 424 148 420.866 148 417C148 413.134 144.866 410 141 410C137.134 410 134 413.134 134 417C134 420.866 137.134 424 141 424Z" fill="#F5C400"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_n_0_12" x="0" y="0" width="760" height="900" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="1.8181817531585693 1.8181817531585693" stitchTiles="stitch" numOctaves="3" result="noise" seed="0" />
+<feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
+<feComponentTransfer in="alphaNoise" result="coloredNoise1">
+<feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feFlood flood-color="rgba(255, 255, 255, 0.09)" result="color1Flood" />
+<feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
+<feMerge result="effect1_noise_0_12">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+</filter>
+<clipPath id="clip0_0_12">
+<rect width="760" height="900" fill="white"/>
+</clipPath>
+</defs>
+</svg>
