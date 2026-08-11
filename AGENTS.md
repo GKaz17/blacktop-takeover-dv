@@ -15,3 +15,8 @@ Examples:
 - `cleaned up the empty routes and kept the php structure`
 - `finally figured out the login spacing before the demo`
 - `please work this fixes the landing page cache issue`
+
+## Progress-check UI
+
+- Never expose internal completion percentages, build meters, "now building" labels, drawing-board placeholders, or similar development-status gimmicks in the public interface.
+- Track unfinished sections with clear code comments or project notes instead. The rendered site should look like a normal partial implementation during lecturer progress checks.
