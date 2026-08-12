@@ -1,0 +1,25 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="STREET PASS V2 / Jozi Squad Wall" clip-path="url(#clip0_0_9)">
+<path id="Vector" opacity="0.09" d="M235 -60L870 60L820 300L220 195L235 -60Z" fill="#F5C400"/>
+<path id="Vector_2" opacity="0.1" d="M205 220C420 115 610 185 790 320C900 405 1045 390 1190 285" stroke="#21C16B" stroke-width="45" stroke-linecap="round"/>
+<path id="Vector_3" opacity="0.1" d="M220 880L720 535L835 680L330 1010L220 880Z" fill="#FF3D2E"/>
+<path id="Vector_4" opacity="0.08" d="M1040 40L1510 155L1410 540L970 450L1040 40Z" fill="#FF2E88"/>
+<path id="Vector_5" opacity="0.12" d="M890 765C1035 590 1210 590 1485 690" stroke="#00C2FF" stroke-width="28" stroke-linecap="round"/>
+<path id="Vector_6" opacity="0.17" d="M270 350L920 175M245 405L955 205" stroke="#FF6B1A" stroke-width="12"/>
+<g id="Group" opacity="0.6">
+<path id="Vector_7" d="M420 123C422.761 123 425 120.761 425 118C425 115.239 422.761 113 420 113C417.239 113 415 115.239 415 118C415 120.761 417.239 123 420 123Z" fill="#F5C400"/>
+<path id="Vector_8" d="M455 150C459.418 150 463 146.418 463 142C463 137.582 459.418 134 455 134C450.582 134 447 137.582 447 142C447 146.418 450.582 150 455 150Z" fill="#F5C400"/>
+<path id="Vector_9" d="M490 113C491.657 113 493 111.657 493 110C493 108.343 491.657 107 490 107C488.343 107 487 108.343 487 110C487 111.657 488.343 113 490 113Z" fill="#F5C400"/>
+</g>
+<g id="Group_2" opacity="0.55">
+<path id="Vector_10" d="M1220 622C1223.87 622 1227 618.866 1227 615C1227 611.134 1223.87 608 1220 608C1216.13 608 1213 611.134 1213 615C1213 618.866 1216.13 622 1220 622Z" fill="#FF2E88"/>
+<path id="Vector_11" d="M1260 654C1262.21 654 1264 652.209 1264 650C1264 647.791 1262.21 646 1260 646C1257.79 646 1256 647.791 1256 650C1256 652.209 1257.79 654 1260 654Z" fill="#FF2E88"/>
+<path id="Vector_12" d="M1300 626C1303.31 626 1306 623.314 1306 620C1306 616.686 1303.31 614 1300 614C1296.69 614 1294 616.686 1294 620C1294 623.314 1296.69 626 1300 626Z" fill="#FF2E88"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_9">
+<rect width="1440" height="900" fill="white"/>
+</clipPath>
+</defs>
+</svg>

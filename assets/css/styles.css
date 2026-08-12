@@ -1320,3 +1320,912 @@ body.has-open-court-menu {
         transition-duration: .01ms !important;
     }
 }
+
+/* FINAL D03 — Tournament details
+   Current pass establishes the event view and captain application path.
+   Database-backed team discovery and organiser decisions remain for the next pass. */
+.tournament-detail-page main,
+.team-roster-page main {
+    background: #0b0b0c;
+}
+
+.event-detail {
+    position: relative;
+    isolation: isolate;
+    min-height: 900px;
+    overflow: hidden;
+    background: #0b0b0c;
+}
+
+.event-detail::after,
+.squad-screen::after {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        repeating-radial-gradient(circle at 25% 30%, rgb(246 242 232 / 2.5%) 0 1px, transparent 1px 5px),
+        linear-gradient(112deg, transparent 15%, rgb(0 0 0 / 14%) 52%, transparent 78%);
+    content: "";
+    pointer-events: none;
+}
+
+.event-detail__mural,
+.squad-screen__mural {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.screen-header {
+    position: relative;
+    z-index: 3;
+    height: 82px;
+    background: #0b0b0a;
+}
+
+.screen-wordmark {
+    position: absolute;
+    top: 23px;
+    left: clamp(30px, 3.75vw, 54px);
+    color: #f6f2e8;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.screen-wordmark:focus-visible,
+.event-application button:focus-visible,
+.event-application select:focus-visible,
+.squad-edit-button:focus-visible,
+.entry-ready-card a:focus-visible,
+.team-dialog button:focus-visible,
+.team-dialog input:focus-visible {
+    outline: 3px solid #f5c400;
+    outline-offset: 4px;
+}
+
+.event-hero {
+    position: relative;
+    display: grid;
+    min-height: 290px;
+    border-left: 18px solid #f05a1a;
+    padding: 30px clamp(36px, 3.05vw, 44px) 24px;
+    align-items: center;
+    background: linear-gradient(90deg, #1a1a1c, #381105 50%, #062617);
+    grid-template-columns: minmax(0, 1fr) 390px;
+    gap: 40px;
+}
+
+.event-hero__copy {
+    max-width: 780px;
+}
+
+.event-eyebrow,
+.event-meta,
+.event-summary,
+.event-hero__road span,
+.event-hero__road small {
+    margin: 0;
+}
+
+.event-eyebrow {
+    color: #f05a1a;
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.event-hero h1 {
+    margin: 11px 0 3px;
+    color: #f6f2e8;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(54px, 4.72vw, 68px);
+    font-weight: 400;
+    letter-spacing: .4px;
+    line-height: .98;
+    text-transform: uppercase;
+}
+
+.event-meta {
+    color: #b7b4ac;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.event-meta span {
+    padding: 0 7px;
+    color: #6f6c66;
+}
+
+.event-summary {
+    max-width: 700px;
+    margin-top: 14px;
+    color: #f6f2e8;
+    font-size: 17px;
+    line-height: 1.35;
+}
+
+.event-hero__road {
+    display: flex;
+    min-height: 230px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+}
+
+.event-hero__road img {
+    width: 150px;
+    height: 118px;
+    object-fit: contain;
+}
+
+.event-hero__road strong {
+    margin-top: -2px;
+    color: #d4a827;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 25px;
+    text-transform: uppercase;
+}
+
+.event-hero__road span {
+    margin-top: 7px;
+    color: #d4a827;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+}
+
+.event-hero__road small {
+    margin-top: 5px;
+    color: rgb(246 242 232 / 64%);
+    font-size: 9px;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.event-detail__body {
+    display: grid;
+    padding: 38px clamp(28px, 3.75vw, 54px) 80px;
+    grid-template-columns: minmax(0, 904px) minmax(340px, 450px);
+    gap: clamp(24px, 3.2vw, 46px);
+}
+
+.event-facts {
+    display: grid;
+    max-width: 904px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.event-facts div {
+    position: relative;
+    display: flex;
+    min-height: 94px;
+    overflow: hidden;
+    border-radius: 6px;
+    padding: 14px 18px 10px;
+    flex-direction: column;
+    background: #292103;
+}
+
+.event-facts div::after,
+.event-application::after,
+.roster-table tbody tr::after {
+    position: absolute;
+    inset: 0;
+    opacity: .2;
+    background: repeating-radial-gradient(circle at 40% 30%, #fff 0 1px, transparent 1px 6px);
+    content: "";
+    pointer-events: none;
+}
+
+.event-facts div:nth-child(2) { background: #300a08; }
+.event-facts div:nth-child(3) { background: #08291a; }
+.event-facts div:nth-child(4) { background: #210a33; }
+
+.event-facts strong {
+    position: relative;
+    z-index: 1;
+    color: #f05a1a;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 36px;
+    line-height: 1;
+}
+
+.event-facts span {
+    position: relative;
+    z-index: 1;
+    margin-top: 8px;
+    color: #b7b4ac;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.event-information {
+    max-width: 760px;
+    margin-top: 34px;
+}
+
+.event-information h2,
+.event-application h2,
+.roster-panel h2,
+.fixture-card h2,
+.entry-ready-card h2,
+.team-dialog h2 {
+    margin: 0;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.event-information h2 {
+    font-size: 28px;
+}
+
+.event-information dl {
+    margin: 14px 0 0;
+}
+
+.event-information dl div {
+    display: grid;
+    min-height: 55px;
+    border-bottom: 1px solid #232327;
+    padding: 14px 0 10px;
+    align-items: start;
+    grid-template-columns: 120px 1fr;
+}
+
+.event-information dt {
+    color: #f05a1a;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.event-information dd {
+    margin: 0;
+    color: #f2efe9;
+    font-size: 15px;
+    line-height: 1.35;
+}
+
+.event-application {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    padding: 28px 34px 24px;
+    align-self: start;
+    background: #000;
+    box-shadow: 0 18px 60px rgb(0 0 0 / 28%);
+}
+
+.event-application > * {
+    position: relative;
+    z-index: 1;
+}
+
+.event-application h2 {
+    color: #f6f2e8;
+    font-size: 30px;
+}
+
+.event-application > p {
+    margin: 7px 0 20px;
+    color: #b7b4ac;
+    font-size: 14px;
+    line-height: 1.35;
+}
+
+.event-application form {
+    display: grid;
+}
+
+.event-application label,
+.application-label {
+    margin-bottom: 8px;
+    color: #f05a1a;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.event-application select {
+    width: 100%;
+    height: 52px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 0 16px;
+    background: #1a1a1d;
+    color: #f2efe9;
+    font: 15px Inter, sans-serif;
+}
+
+.application-label {
+    margin-top: 24px;
+}
+
+.event-application progress {
+    width: 100%;
+    height: 12px;
+    border: 0;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #1a1a1d;
+}
+
+.event-application progress::-webkit-progress-bar { background: #1a1a1d; }
+.event-application progress::-webkit-progress-value { background: #f05a1a; }
+.event-application progress::-moz-progress-bar { background: #f05a1a; }
+
+.application-roster {
+    margin-top: 10px;
+    color: #f6f2e8;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.event-application button,
+.team-dialog__save {
+    min-height: 52px;
+    margin-top: 25px;
+    border: 0;
+    border-radius: 4px;
+    background: #f05a1a;
+    color: #f6f2e8;
+    cursor: pointer;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.event-application button:hover { background: #ff6b1a; }
+.event-application button:disabled { cursor: default; opacity: .62; }
+
+.application-confirmation {
+    display: flex;
+    margin-bottom: 18px;
+    border-left: 4px solid #21c16b;
+    padding: 10px 12px;
+    flex-direction: column;
+    background: #08291a;
+}
+
+.application-confirmation strong {
+    color: #f6f2e8;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.application-confirmation span {
+    margin-top: 2px;
+    color: #b7b4ac;
+    font-size: 12px;
+}
+
+/* FINAL D04 — Team and roster
+   Current pass covers captain identity, roster visibility and event readiness.
+   Persistent team edits and player invitations are intentionally deferred. */
+.squad-screen {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    min-height: 900px;
+    overflow: hidden;
+    background: #0b0b0c;
+    grid-template-columns: 260px minmax(0, 1fr);
+}
+
+.squad-rail {
+    position: relative;
+    z-index: 2;
+    min-height: 900px;
+    overflow: hidden;
+    background: #0b0b0a;
+}
+
+.squad-rail > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.squad-rail__brand,
+.squad-rail__tag,
+.squad-rail__captain,
+.squad-rail__account {
+    position: absolute;
+    z-index: 1;
+}
+
+.squad-rail__brand {
+    top: 30px;
+    left: 34px;
+    color: #f6f2e8;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 31px;
+    font-weight: 700;
+    line-height: .95;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.squad-rail__tag,
+.squad-rail__captain {
+    font-family: "Rubik Spray Paint", sans-serif;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.squad-rail__tag {
+    top: 250px;
+    left: 17px;
+    transform: rotate(8deg);
+    color: rgb(245 196 0 / 52%);
+    font-size: 88px;
+}
+
+.squad-rail__captain {
+    top: 458px;
+    left: 20px;
+    transform: rotate(4deg);
+    color: rgb(255 46 135 / 66%);
+    font-size: 40px;
+}
+
+.squad-rail__account {
+    right: 26px;
+    bottom: 34px;
+    left: 34px;
+    display: flex;
+    flex-direction: column;
+}
+
+.squad-rail__account strong {
+    color: #f05a1a;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.squad-rail__account span {
+    margin-top: 8px;
+    color: #f6f2e8;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.squad-content {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    padding: 35px clamp(30px, 3.9vw, 56px) 60px 50px;
+}
+
+.squad-heading {
+    position: relative;
+    display: flex;
+    min-height: 78px;
+    padding-right: 94px;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.squad-heading h1 {
+    margin: 0;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 56px;
+    font-weight: 400;
+    line-height: .95;
+    text-transform: uppercase;
+}
+
+.squad-heading p {
+    margin: 5px 0 0 4px;
+    color: #f2efe9;
+    font-size: 15px;
+}
+
+.squad-edit-button {
+    width: 210px;
+    min-height: 48px;
+    border: 0;
+    border-radius: 4px;
+    background: #f05a1a;
+    color: #f6f2e8;
+    cursor: pointer;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.squad-edit-button:hover { background: #ff6b1a; }
+
+.squad-heading .court-menu-trigger {
+    top: -8px;
+    right: 0;
+}
+
+.team-update-notice {
+    margin: 4px 0 10px;
+    border-left: 4px solid #21c16b;
+    padding: 8px 12px;
+    background: rgb(8 41 26 / 88%);
+    color: #f6f2e8;
+    font-size: 13px;
+}
+
+.team-banner {
+    position: relative;
+    display: grid;
+    min-height: 138px;
+    overflow: hidden;
+    border-left: 14px solid #f05a1a;
+    border-radius: 8px;
+    padding: 24px 30px 22px 26px;
+    align-items: center;
+    background: linear-gradient(90deg, #332603, #400e05 48%, #08291a);
+    grid-template-columns: minmax(0, 1fr) 160px 100px;
+    gap: 14px;
+}
+
+.team-banner::after {
+    position: absolute;
+    inset: 0;
+    opacity: .12;
+    background: repeating-radial-gradient(circle, #fff 0 1px, transparent 1px 5px);
+    content: "";
+    pointer-events: none;
+}
+
+.team-banner > * {
+    position: relative;
+    z-index: 1;
+}
+
+.team-banner h2 {
+    margin: 0;
+    color: #f6f2e8;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 42px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.team-banner p {
+    margin: 9px 0 0 2px;
+    color: #b7b4ac;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.team-banner p span { padding: 0 7px; }
+
+.team-banner__status {
+    display: flex;
+    flex-direction: column;
+}
+
+.team-banner__status strong {
+    color: #f05a1a;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 42px;
+    line-height: 1;
+}
+
+.team-banner__status span {
+    margin-top: 6px;
+    color: #b7b4ac;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.team-banner__status small {
+    margin-top: 6px;
+    color: #d4a827;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+.team-banner > b {
+    align-self: start;
+    color: #d4a827;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+.squad-layout {
+    display: grid;
+    margin-top: 38px;
+    grid-template-columns: minmax(0, 1fr) 284px;
+    gap: 30px;
+}
+
+.roster-panel h2 {
+    font-size: 25px;
+}
+
+.roster-panel > p {
+    margin: 5px 0 15px 2px;
+    color: #f2efe9;
+    font-size: 12px;
+}
+
+.roster-table-wrap {
+    overflow-x: auto;
+}
+
+.roster-table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    color: #f2efe9;
+    table-layout: fixed;
+}
+
+.roster-table th,
+.roster-table td {
+    height: 46px;
+    padding: 0 16px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.roster-table th {
+    height: 44px;
+    background: #1a1a18;
+    color: #b7b4ac;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.roster-table th:first-child,
+.roster-table td:first-child { width: 58px; }
+.roster-table th:nth-child(2) { width: 39%; }
+.roster-table th:nth-child(3) { width: 29%; }
+
+.roster-table tbody tr {
+    position: relative;
+    background: rgb(11 11 12 / 96%);
+}
+
+.roster-table tbody tr:nth-child(even) { background: rgb(17 17 18 / 96%); }
+
+.roster-table td {
+    position: relative;
+    z-index: 1;
+    border-bottom: 1px solid rgb(240 90 26 / 8%);
+    font-size: 12px;
+}
+
+.roster-table td:first-child {
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.roster-status--pending { color: #f05a1a; }
+
+.squad-cards {
+    display: grid;
+    align-content: start;
+    gap: 24px;
+}
+
+.fixture-card,
+.entry-ready-card {
+    overflow: hidden;
+    border-radius: 8px;
+    padding: 22px 24px;
+}
+
+.fixture-card {
+    min-height: 270px;
+    background: linear-gradient(90deg, #0f0d29, #052130);
+}
+
+.fixture-card h2 {
+    color: #f05a1a;
+    font-size: 20px;
+}
+
+.fixture-card p {
+    margin: 17px 0 25px;
+    color: #b7b4ac;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.fixture-card strong,
+.fixture-card b,
+.fixture-card time {
+    display: block;
+}
+
+.fixture-card strong {
+    color: #f6f2e8;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 25px;
+    text-transform: uppercase;
+}
+
+.fixture-card b {
+    margin: 5px 0;
+    color: #f05a1a;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 16px;
+}
+
+.fixture-card time {
+    margin-top: 14px;
+    color: #b7b4ac;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.entry-ready-card {
+    min-height: 184px;
+    background: linear-gradient(90deg, #ff6b1a, #ff3d1f 58%, #ff2e87);
+}
+
+.entry-ready-card h2 {
+    color: #f2efe9;
+    font-size: 24px;
+}
+
+.entry-ready-card p {
+    margin: 10px 0 18px;
+    color: #f2efe9;
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.entry-ready-card a {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: #0b0b0a;
+    color: #f6f2e8;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.team-dialog {
+    width: min(480px, calc(100% - 32px));
+    border: 1px solid #3a3a3d;
+    border-radius: 8px;
+    padding: 0;
+    background: #0b0b0c;
+    color: #f6f2e8;
+    box-shadow: 0 24px 100px #000;
+}
+
+.team-dialog::backdrop { background: rgb(0 0 0 / 78%); }
+
+.team-dialog form {
+    display: grid;
+    padding: 28px;
+}
+
+.team-dialog__heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.team-dialog h2 { font-size: 28px; }
+
+.team-dialog__heading button {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    background: transparent;
+    color: #f6f2e8;
+    cursor: pointer;
+    font-size: 30px;
+}
+
+.team-dialog label {
+    margin: 13px 0 7px;
+    color: #f05a1a;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.team-dialog input {
+    height: 48px;
+    border: 1px solid #3a3a3d;
+    border-radius: 4px;
+    padding: 0 14px;
+    background: #1a1a1d;
+    color: #f6f2e8;
+    font: 15px Inter, sans-serif;
+}
+
+@media (max-width: 1120px) {
+    .event-hero { grid-template-columns: minmax(0, 1fr) 300px; }
+    .event-detail__body { grid-template-columns: minmax(0, 1fr) 350px; }
+    .event-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .squad-screen { grid-template-columns: 210px minmax(0, 1fr); }
+    .squad-content { padding-left: 32px; }
+    .team-banner { grid-template-columns: minmax(0, 1fr) 140px; }
+    .team-banner > b { display: none; }
+    .squad-layout { grid-template-columns: minmax(0, 1fr) 240px; gap: 20px; }
+}
+
+@media (max-width: 840px) {
+    .event-detail { min-height: 100svh; }
+    .screen-wordmark { top: 28px; font-size: 23px; }
+    .event-hero {
+        padding: 34px 24px 28px;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .event-hero__road { min-height: 190px; }
+    .event-hero__road img { width: 130px; height: 105px; }
+    .event-detail__body { padding: 28px 20px 56px; grid-template-columns: 1fr; }
+    .event-application { width: min(100%, 520px); }
+
+    .squad-screen { display: block; min-height: 100svh; }
+    .squad-rail { min-height: 150px; height: 150px; }
+    .squad-rail > img { object-position: top; }
+    .squad-rail__brand { top: 24px; left: 24px; font-size: 26px; }
+    .squad-rail__tag { top: 40px; left: 45%; font-size: 70px; }
+    .squad-rail__captain { display: none; }
+    .squad-rail__account { right: 88px; bottom: 25px; left: auto; }
+    .squad-content { padding: 28px 20px 60px; }
+    .squad-heading { padding-right: 70px; }
+    .squad-heading h1 { font-size: 48px; }
+    .squad-edit-button { position: absolute; top: 78px; left: 0; width: 180px; }
+    .team-banner { margin-top: 62px; grid-template-columns: 1fr 120px; }
+    .squad-layout { grid-template-columns: 1fr; }
+    .squad-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+    .event-hero { border-left-width: 10px; }
+    .event-hero h1 { font-size: 50px; }
+    .event-meta { font-size: 13px; line-height: 1.5; }
+    .event-summary { font-size: 15px; }
+    .event-facts { gap: 10px; }
+    .event-facts div { min-height: 84px; padding: 13px 14px; }
+    .event-information dl div { grid-template-columns: 92px 1fr; }
+    .event-application { padding: 24px 20px; }
+
+    .squad-rail__account { display: none; }
+    .squad-heading p { max-width: 230px; line-height: 1.4; }
+    .team-banner { min-height: 210px; padding: 24px 20px; grid-template-columns: 1fr; }
+    .team-banner__status { margin-top: 8px; }
+    .squad-cards { grid-template-columns: 1fr; }
+}

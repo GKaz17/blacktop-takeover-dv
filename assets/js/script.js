@@ -109,3 +109,18 @@ if (courtMenuTrigger && courtMenu && courtMenuClose) {
         }
     });
 }
+
+const teamDialog = document.querySelector('[data-team-dialog]');
+const teamDialogOpen = document.querySelector('[data-team-dialog-open]');
+const teamDialogClose = document.querySelector('[data-team-dialog-close]');
+
+if (teamDialog && teamDialogOpen && teamDialogClose) {
+    teamDialogOpen.addEventListener('click', () => teamDialog.showModal());
+    teamDialogClose.addEventListener('click', () => teamDialog.close());
+
+    teamDialog.addEventListener('click', (event) => {
+        if (event.target === teamDialog) {
+            teamDialog.close();
+        }
+    });
+}
