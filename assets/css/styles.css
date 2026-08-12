@@ -546,6 +546,702 @@ main {
    Future homepage modules should continue below .home-teaser. Keep build progress
    in source comments or project documentation, never in the rendered interface. */
 
+/* FINAL D02 — Tournament Discovery */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.takeover-home {
+    background: #0b0b0c;
+}
+
+.takeover-home main {
+    min-height: 100svh;
+}
+
+.discovery-page {
+    position: relative;
+    isolation: isolate;
+    min-height: max(100svh, 900px);
+    overflow: hidden;
+    padding: 0 clamp(24px, 3.34vw, 48px) 20px;
+    background: #0b0b0c;
+}
+
+.discovery-page::before {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background:
+        repeating-linear-gradient(8deg, transparent 0 96px, rgb(58 58 61 / 14%) 97px 99px),
+        #0b0b0c;
+    content: "";
+}
+
+.discovery-culture-layer {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: .98;
+    pointer-events: none;
+}
+
+.discovery-header {
+    display: flex;
+    height: 78px;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-top: 34px;
+}
+
+.discovery-wordmark {
+    color: #f2efe9;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 24px;
+    letter-spacing: 1px;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.discovery-wordmark:focus-visible,
+.court-menu-trigger:focus-visible,
+.court-menu__close:focus-visible,
+.tournament-filter:focus-visible,
+.tournament-card__link:focus-visible,
+.court-menu__links a:focus-visible {
+    outline: 3px solid #f5c400;
+    outline-offset: 5px;
+}
+
+.court-menu-trigger,
+.court-menu__close {
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+}
+
+.court-menu-trigger {
+    position: absolute;
+    z-index: 6;
+    top: 20px;
+    right: clamp(24px, 2.78vw, 40px);
+}
+
+.court-menu-trigger img,
+.court-menu__close img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.court-menu-trigger:hover img {
+    filter: drop-shadow(0 0 12px rgb(255 107 26 / 42%));
+}
+
+.court-menu-trigger.is-bouncing {
+    animation: court-ball-bounce 420ms cubic-bezier(.4, 0, .2, 1);
+}
+
+@keyframes court-ball-bounce {
+    0%, 100% { transform: translateY(0); }
+    46% { transform: translateY(24px) scaleY(.94); }
+    72% { transform: translateY(-7px); }
+}
+
+.discovery-toolbar {
+    display: grid;
+    width: calc(100% - 286px);
+    max-width: 1058px;
+    align-items: center;
+    grid-template-columns: minmax(320px, 700px) auto;
+    gap: 32px;
+    margin-top: 22px;
+}
+
+.tournament-search {
+    width: 100%;
+    height: 52px;
+    border: 1px solid #3a3a3d;
+    border-radius: 3px;
+    padding: 0 17px;
+    background: #1a1a1d;
+    color: #f2efe9;
+    font: 400 13px/1 Inter, sans-serif;
+    appearance: none;
+}
+
+.tournament-search::placeholder {
+    color: #8a857c;
+    opacity: 1;
+}
+
+.tournament-search:focus {
+    border-color: #ff6b1a;
+    outline: 2px solid rgb(255 107 26 / 34%);
+    outline-offset: 2px;
+}
+
+.tournament-filters {
+    display: flex;
+    gap: 10px;
+}
+
+.tournament-filter {
+    min-width: 64px;
+    height: 40px;
+    border: 0;
+    border-radius: 2px;
+    padding: 0 12px;
+    background: #1a1a1d;
+    color: #f2efe9;
+    cursor: pointer;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.tournament-filter--wide {
+    min-width: 104px;
+}
+
+.tournament-filter:hover {
+    background: #28282c;
+}
+
+.tournament-filter.is-active {
+    background: #ff6b1a;
+    color: #0b0b0c;
+}
+
+.discovery-title {
+    width: max-content;
+    margin: 24px 0 0;
+    transform: rotate(1.5deg);
+    transform-origin: left center;
+    color: #f2efe9;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(52px, 4.17vw, 60px);
+    font-weight: 400;
+    letter-spacing: 1px;
+    line-height: 1.18;
+    text-transform: uppercase;
+}
+
+.discovery-kicker {
+    margin: 57px 0 0;
+    color: #d4a017;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.tournament-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    max-width: 1326px;
+    margin-top: 37px;
+    grid-template-columns: repeat(3, minmax(0, 420px));
+    gap: clamp(22px, 2.08vw, 30px);
+}
+
+.tournament-card {
+    min-width: 0;
+    height: 320px;
+    border: 1px solid #3a3a3d;
+    border-radius: 4px;
+    background: #0b0b0c;
+    transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.tournament-card--tilt-left {
+    transform: rotate(2deg);
+}
+
+.tournament-card--tilt-right {
+    transform: rotate(-1deg);
+}
+
+.tournament-card[hidden] {
+    display: none;
+}
+
+.tournament-card__link {
+    display: grid;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    color: #f2efe9;
+    grid-template-rows: 200px 6px 1fr;
+    text-decoration: none;
+}
+
+.tournament-card__art {
+    display: block;
+    overflow: hidden;
+}
+
+.tournament-card__art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 180ms ease;
+}
+
+.tournament-card__art--official-basketball {
+    display: flex;
+    padding: 6px 12px;
+    background:
+        linear-gradient(90deg, rgb(212 160 23 / 10%) 0 49.7%, rgb(104 61 147 / 14%) 50.3% 100%),
+        #10110e;
+    gap: 4px;
+}
+
+.tournament-card__art--official-basketball img {
+    width: calc(50% - 2px);
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 0;
+    object-fit: contain;
+}
+
+.tournament-card__stripe {
+    display: block;
+    width: 100%;
+    height: 6px;
+    transform-origin: left center;
+    background: #ff6b1a;
+    transition: transform 180ms ease;
+}
+
+.tournament-card--blue .tournament-card__stripe {
+    background: #2b6cb0;
+}
+
+.tournament-card--gold .tournament-card__stripe {
+    background: #d4a017;
+}
+
+.tournament-card__copy {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    padding: 15px 19px 13px;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.tournament-card__copy strong {
+    max-width: 100%;
+    overflow: hidden;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: clamp(19px, 1.67vw, 24px);
+    font-weight: 600;
+    letter-spacing: .35px;
+    line-height: 1.05;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tournament-card__copy small {
+    margin-top: 7px;
+    color: #8a857c;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 13px;
+    letter-spacing: .35px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.tournament-card__action {
+    min-width: 107px;
+    margin-top: auto;
+    border-radius: 2px;
+    padding: 9px 10px 8px;
+    background: #ff6b1a;
+    color: #0b0b0c;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.tournament-card--blue .tournament-card__action {
+    background: #2b6cb0;
+}
+
+.tournament-card--gold .tournament-card__action {
+    min-width: 138px;
+    background: #d4a017;
+}
+
+.tournament-card:hover,
+.tournament-card:focus-within {
+    z-index: 3;
+    transform: rotate(.5deg) translateY(-4px);
+    border-color: rgb(242 239 233 / 56%);
+}
+
+.tournament-card:hover .tournament-card__art img,
+.tournament-card:focus-within .tournament-card__art img {
+    transform: scale(1.03);
+}
+
+.tournament-card:hover .tournament-card__stripe,
+.tournament-card:focus-within .tournament-card__stripe {
+    transform: scaleY(1.5);
+}
+
+.street-tags {
+    position: absolute;
+    right: 0;
+    bottom: 210px;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.street-tag {
+    position: absolute;
+    opacity: .23;
+    font-family: "Rubik Spray Paint", sans-serif;
+    font-size: clamp(42px, 4.3vw, 62px);
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.street-tag--jozi {
+    left: 38px;
+    transform: rotate(5deg);
+    color: #f5c400;
+}
+
+.street-tag--pitori {
+    left: 35.4%;
+    transform: rotate(-4deg);
+    color: #00c2ff;
+}
+
+.street-tag--braam {
+    right: 10.2%;
+    transform: rotate(-3deg);
+    color: #21c26b;
+}
+
+.dog-progression {
+    position: absolute;
+    right: clamp(24px, 3.4vw, 49px);
+    bottom: 20px;
+    z-index: 2;
+    display: flex;
+    width: min(541px, calc(100% - 48px));
+    min-height: 89px;
+    transform: rotate(.9deg);
+    border: 2px solid #d4a017;
+    padding: 13px 16px;
+    align-items: center;
+    justify-content: space-between;
+    background: rgb(11 11 12 / 94%);
+}
+
+.dog-progression div {
+    display: flex;
+    flex-direction: column;
+}
+
+.dog-progression strong {
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: .45px;
+    line-height: 1.1;
+}
+
+.dog-progression strong span {
+    padding: 0 7px;
+}
+
+.dog-progression small {
+    margin-top: 5px;
+    color: #d4a017;
+    font-size: 11px;
+    letter-spacing: .65px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.dog-medal {
+    position: relative;
+    display: grid;
+    width: 49px;
+    height: 49px;
+    flex: 0 0 49px;
+    place-items: center;
+}
+
+.dog-medal img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.dog-medal b {
+    position: relative;
+    color: #0b0b0c;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 16px;
+    letter-spacing: .3px;
+}
+
+.court-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    overflow: hidden;
+    padding: clamp(28px, 6vw, 84px);
+    background: #0b0b0c;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease, visibility 180ms ease;
+    visibility: hidden;
+}
+
+.court-menu.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+}
+
+.court-menu__paint {
+    position: absolute;
+    inset: -12%;
+    z-index: -1;
+    transform: rotate(-8deg);
+    background:
+        linear-gradient(90deg, transparent 0 42%, rgb(0 194 255 / 13%) 42% 55%, transparent 55%),
+        linear-gradient(165deg, transparent 0 36%, rgb(255 107 26 / 18%) 36% 55%, transparent 55%),
+        repeating-linear-gradient(8deg, transparent 0 110px, rgb(242 239 233 / 5%) 111px 113px);
+}
+
+.court-menu__close {
+    position: absolute;
+    top: 20px;
+    right: clamp(24px, 2.78vw, 40px);
+}
+
+.court-menu__links {
+    display: flex;
+    width: min(820px, 100%);
+    margin: auto 0;
+    flex-direction: column;
+}
+
+.court-menu__links a {
+    display: flex;
+    border-bottom: 1px solid rgb(242 239 233 / 14%);
+    padding: .08em 0;
+    color: #f2efe9;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(48px, 7vw, 98px);
+    line-height: .95;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 140ms ease, padding-left 140ms ease;
+}
+
+.court-menu__links a span {
+    width: 54px;
+    padding-top: .5em;
+    color: #d4a017;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.court-menu__links a:hover,
+.court-menu__links a:focus-visible,
+.court-menu__links a[aria-current="page"] {
+    padding-left: 18px;
+    color: #ff6b1a;
+}
+
+.court-menu__route {
+    position: absolute;
+    right: clamp(28px, 6vw, 84px);
+    bottom: clamp(28px, 5vw, 68px);
+    margin: 0;
+    color: #d4a017;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: clamp(14px, 1.5vw, 20px);
+    font-weight: 600;
+    letter-spacing: 1.5px;
+}
+
+body.has-open-court-menu {
+    overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+    .discovery-page {
+        min-height: 1240px;
+    }
+
+    .discovery-toolbar {
+        width: calc(100% - 90px);
+        grid-template-columns: minmax(260px, 1fr) auto;
+        gap: 18px;
+    }
+
+    .tournament-grid {
+        grid-template-columns: repeat(2, minmax(0, 420px));
+    }
+
+    .tournament-card:last-child {
+        grid-column: 1 / -1;
+        width: min(420px, 100%);
+    }
+}
+
+@media (max-width: 720px) {
+    .discovery-page {
+        min-height: 100svh;
+        padding: 0 20px 28px;
+    }
+
+    .discovery-header {
+        height: 84px;
+        padding-top: 28px;
+    }
+
+    .court-menu-trigger,
+    .court-menu__close {
+        width: 52px;
+        height: 52px;
+    }
+
+    .court-menu-trigger,
+    .court-menu__close {
+        top: 16px;
+        right: 18px;
+    }
+
+    .discovery-toolbar {
+        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 12px;
+    }
+
+    .tournament-filters {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 7px;
+    }
+
+    .tournament-filter,
+    .tournament-filter--wide {
+        min-width: 0;
+        padding: 0 8px;
+        text-align: center;
+    }
+
+    .discovery-title {
+        margin-top: 30px;
+        font-size: clamp(48px, 15vw, 64px);
+        line-height: .98;
+    }
+
+    .discovery-kicker {
+        margin-top: 34px;
+    }
+
+    .tournament-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        margin-top: 24px;
+    }
+
+    .tournament-card,
+    .tournament-card:last-child {
+        width: 100%;
+        height: 310px;
+        grid-column: auto;
+        transform: none;
+    }
+
+    .tournament-card__link {
+        grid-template-rows: 190px 6px 1fr;
+    }
+
+    .tournament-card:hover,
+    .tournament-card:focus-within {
+        transform: translateY(-3px);
+    }
+
+    .street-tags {
+        display: none;
+    }
+
+    .dog-progression {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        width: 100%;
+        margin-top: 36px;
+        transform: rotate(.5deg);
+    }
+
+    .dog-progression strong {
+        font-size: 18px;
+    }
+
+    .dog-progression strong span {
+        padding: 0 3px;
+    }
+
+    .dog-progression small {
+        max-width: 230px;
+        line-height: 1.3;
+    }
+
+    .court-menu__links a {
+        font-size: clamp(42px, 15vw, 68px);
+    }
+
+    .court-menu__route {
+        right: 24px;
+        bottom: 26px;
+        left: 24px;
+    }
+}
+
 @media (max-width: 820px) {
     .landing-shell {
         grid-template-columns: 1fr;

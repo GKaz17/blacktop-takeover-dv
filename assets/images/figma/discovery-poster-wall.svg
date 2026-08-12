@@ -1,0 +1,50 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="STREET PASS V2 / Three-City Poster Wall" filter="url(#filter0_n_0_39)">
+<g clip-path="url(#clip0_0_39)">
+<path id="Vector" opacity="0.12" d="M-80 170L610 95L670 280L-20 355L-80 170Z" fill="#FF6B1A"/>
+<path id="Vector_2" opacity="0.13" d="M-40 330C210 235 360 280 535 390C660 470 760 405 870 335" stroke="#F5C400" stroke-width="56" stroke-linecap="round"/>
+<path id="Vector_3" opacity="0.1" d="M465 235L1040 170L1120 735L545 810L465 235Z" fill="#7B2CBF"/>
+<path id="Vector_4" opacity="0.15" d="M710 305C870 180 1050 285 1095 470C1120 590 1050 720 890 790" stroke="#00C2FF" stroke-width="34" stroke-linecap="round"/>
+<path id="Vector_5" opacity="0.1" d="M990 215L1510 315L1430 805L925 700L990 215Z" fill="#FF3D2E"/>
+<path id="Vector_6" opacity="0.16" d="M1035 760C1170 600 1300 575 1495 645" stroke="#21C16B" stroke-width="48" stroke-linecap="round"/>
+<path id="Vector_7" opacity="0.17" d="M-60 840L470 635M-10 900L560 680" stroke="#FF2E88" stroke-width="14"/>
+<path id="Vector_8" opacity="0.2" d="M1070 90L1470 190M1040 130L1460 230" stroke="#F5C400" stroke-width="9"/>
+<g id="Group" opacity="0.75">
+<path id="Vector_9" d="M74 274C77.3137 274 80 271.314 80 268C80 264.686 77.3137 262 74 262C70.6863 262 68 264.686 68 268C68 271.314 70.6863 274 74 274Z" fill="#FF6B1A"/>
+<path id="Vector_10" d="M103 294C104.657 294 106 292.657 106 291C106 289.343 104.657 288 103 288C101.343 288 100 289.343 100 291C100 292.657 101.343 294 103 294Z" fill="#FF6B1A"/>
+<path id="Vector_11" d="M135 260C137.761 260 140 257.761 140 255C140 252.239 137.761 250 135 250C132.239 250 130 252.239 130 255C130 257.761 132.239 260 135 260Z" fill="#FF6B1A"/>
+</g>
+<g id="Group_2" opacity="0.65">
+<path id="Vector_12" d="M748 262C750.761 262 753 259.761 753 257C753 254.239 750.761 252 748 252C745.239 252 743 254.239 743 257C743 259.761 745.239 262 748 262Z" fill="#00C2FF"/>
+<path id="Vector_13" d="M781 285C785.418 285 789 281.418 789 277C789 272.582 785.418 269 781 269C776.582 269 773 272.582 773 277C773 281.418 776.582 285 781 285Z" fill="#00C2FF"/>
+<path id="Vector_14" d="M808 251C809.657 251 811 249.657 811 248C811 246.343 809.657 245 808 245C806.343 245 805 246.343 805 248C805 249.657 806.343 251 808 251Z" fill="#00C2FF"/>
+</g>
+<g id="Group_3" opacity="0.65">
+<path id="Vector_15" d="M1240 251C1243.31 251 1246 248.314 1246 245C1246 241.686 1243.31 239 1240 239C1236.69 239 1234 241.686 1234 245C1234 248.314 1236.69 251 1240 251Z" fill="#21C16B"/>
+<path id="Vector_16" d="M1280 282C1282.21 282 1284 280.209 1284 278C1284 275.791 1282.21 274 1280 274C1277.79 274 1276 275.791 1276 278C1276 280.209 1277.79 282 1280 282Z" fill="#21C16B"/>
+<path id="Vector_17" d="M1320 261C1323.87 261 1327 257.866 1327 254C1327 250.134 1323.87 247 1320 247C1316.13 247 1313 250.134 1313 254C1313 257.866 1316.13 261 1320 261Z" fill="#21C16B"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_n_0_39" x="0" y="0" width="1440" height="900" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feTurbulence type="fractalNoise" baseFrequency="2 2" stitchTiles="stitch" numOctaves="3" result="noise" seed="0" />
+<feColorMatrix in="noise" type="luminanceToAlpha" result="alphaNoise" />
+<feComponentTransfer in="alphaNoise" result="coloredNoise1">
+<feFuncA type="discrete" tableValues="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 "/>
+</feComponentTransfer>
+<feComposite operator="in" in2="shape" in="coloredNoise1" result="noise1Clipped" />
+<feFlood flood-color="rgba(255, 255, 255, 0.075)" result="color1Flood" />
+<feComposite operator="in" in2="noise1Clipped" in="color1Flood" result="color1" />
+<feMerge result="effect1_noise_0_39">
+<feMergeNode in="shape" />
+<feMergeNode in="color1" />
+</feMerge>
+</filter>
+<clipPath id="clip0_0_39">
+<rect width="1440" height="900" fill="white"/>
+</clipPath>
+</defs>
+</svg>
