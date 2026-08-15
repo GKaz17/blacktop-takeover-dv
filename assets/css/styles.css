@@ -2088,17 +2088,18 @@ body.has-open-court-menu {
 
 .entry-ready-card {
     min-height: 184px;
-    background: linear-gradient(90deg, #ff6b1a, #ff3d1f 58%, #ff2e87);
+    border: 1px solid rgb(245 196 0 / 34%);
+    background: linear-gradient(135deg, #d4a017, #f5c400 58%, #b98708);
 }
 
 .entry-ready-card h2 {
-    color: #f2efe9;
+    color: #0b0b0a;
     font-size: 24px;
 }
 
 .entry-ready-card p {
     margin: 10px 0 18px;
-    color: #f2efe9;
+    color: rgb(11 11 10 / 76%);
     font-size: 12px;
     line-height: 1.35;
 }
@@ -2228,4 +2229,293 @@ body.has-open-court-menu {
     .team-banner { min-height: 210px; padding: 24px 20px; grid-template-columns: 1fr; }
     .team-banner__status { margin-top: 8px; }
     .squad-cards { grid-template-columns: 1fr; }
+}
+
+/* FINAL D05 — Match Centre
+   This pass establishes the public fixture views and accessible tabs.
+   Live score entry and database-driven event operations remain for the next pass. */
+.match-centre-page main { background: #0b0b0c; }
+
+.match-centre {
+    position: relative;
+    isolation: isolate;
+    min-height: 900px;
+    overflow: hidden;
+    background: #0b0b0c;
+    color: #f2efe9;
+}
+
+.match-centre__mural {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.match-centre__content { padding: 36px clamp(28px, 3.75vw, 54px) 42px; }
+
+.match-centre__intro h1 {
+    margin: 0;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.match-centre__intro p {
+    margin: 8px 0 0 4px;
+    color: #f05a1a;
+    font-size: 17px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.match-centre__intro span { padding: 0 8px; }
+
+.match-tabs {
+    display: flex;
+    margin-top: 28px;
+    gap: 12px;
+}
+
+.match-tabs button {
+    min-width: 120px;
+    min-height: 40px;
+    border: 0;
+    border-radius: 4px;
+    padding: 0 20px;
+    background: #1a1a1d;
+    color: #f2efe9;
+    cursor: pointer;
+    font: 500 15px Inter, sans-serif;
+    text-transform: uppercase;
+}
+
+.match-tabs button[aria-selected="true"] {
+    background: #f05a1a;
+    color: #f6f2e8;
+}
+
+.match-tabs button:focus-visible {
+    outline: 3px solid #f5c400;
+    outline-offset: 3px;
+}
+
+.match-panel { margin-top: 38px; }
+.match-panel[hidden] { display: none; }
+
+.match-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 836px) minmax(360px, 460px);
+    gap: 34px;
+}
+
+.next-match,
+.match-standings,
+.match-secondary-view { border-radius: 8px; }
+
+.next-match {
+    min-height: 220px;
+    padding: 25px 28px 28px;
+    background: linear-gradient(90deg, rgb(61 14 4 / 94%), rgb(43 31 4 / 94%) 48%, rgb(5 41 26 / 94%));
+}
+
+.next-match > p {
+    margin: 0;
+    color: #f05a1a;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.next-match > p span { padding: 0 5px; }
+
+.next-match__teams {
+    display: grid;
+    margin-top: 35px;
+    align-items: center;
+    grid-template-columns: 1fr 150px 1fr;
+    gap: 18px;
+}
+
+.next-match__teams strong {
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 34px;
+    text-transform: uppercase;
+}
+
+.next-match__teams strong:last-child { text-align: right; }
+
+.next-match__teams time {
+    color: #f05a1a;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 46px;
+    text-align: center;
+}
+
+.next-match__footer {
+    display: flex;
+    margin-top: 28px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.next-match__footer span {
+    color: #b7b4ac;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.next-match__footer b {
+    display: flex;
+    width: 172px;
+    min-height: 38px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background: #f05a1a;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.match-standings {
+    min-height: 298px;
+    padding: 23px 20px 18px;
+    background: linear-gradient(90deg, rgb(28 9 43 / 96%), rgb(4 31 46 / 96%));
+}
+
+.match-standings h2,
+.match-schedule h2,
+.match-secondary-view h2 {
+    margin: 0;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.match-standings h2 { padding: 0 6px; font-size: 25px; }
+.match-standings table,
+.match-schedule table { width: 100%; border-collapse: collapse; }
+.match-standings table { margin-top: 15px; }
+
+.match-standings th,
+.match-standings td {
+    height: 38px;
+    padding: 0 10px;
+    text-align: left;
+}
+
+.match-standings th {
+    color: #b7b4ac;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.match-standings tbody tr { background: #0b0b0a; }
+.match-standings tbody tr + tr { border-top: 4px solid transparent; }
+.match-standings tbody tr.is-leading { background: #f05a1a; }
+.match-standings td { font-size: 13px; }
+.match-standings th:first-child,
+.match-standings td:first-child { width: 36px; }
+.match-standings th:nth-child(3),
+.match-standings td:nth-child(3) { width: 48px; }
+.match-standings th:last-child,
+.match-standings td:last-child { width: 54px; text-align: right; }
+.match-standings tbody tr:not(.is-leading) td:last-child { color: #f05a1a; }
+
+.match-standings > p {
+    margin: 22px 0 0;
+    color: #d4a827;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.match-schedule { margin-top: 38px; }
+.match-schedule h2 { font-size: 26px; }
+
+.match-schedule__table-wrap {
+    margin-top: 14px;
+    overflow-x: auto;
+}
+
+.match-schedule table { min-width: 840px; table-layout: fixed; }
+
+.match-schedule th,
+.match-schedule td {
+    height: 46px;
+    padding: 0 18px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.match-schedule th {
+    height: 42px;
+    background: #1a1a18;
+    color: #b7b4ac;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.match-schedule tbody tr { background: rgb(11 11 12 / 97%); }
+.match-schedule tbody tr:nth-child(even) { background: rgb(17 17 18 / 97%); }
+.match-schedule td { font-size: 13px; }
+.match-schedule th:first-child { width: 84px; }
+.match-schedule th:nth-child(2) { width: 180px; }
+.match-schedule th:nth-child(4) { width: 145px; }
+.match-schedule th:last-child { width: 148px; }
+.match-status--up-next { color: #f05a1a; }
+
+.match-secondary-view {
+    display: flex;
+    min-height: 420px;
+    padding: 58px;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    background: linear-gradient(120deg, rgb(61 14 4 / 94%), rgb(5 41 26 / 94%));
+}
+
+.match-secondary-view__eyebrow {
+    color: #f05a1a;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.match-secondary-view h2 { font-size: clamp(34px, 5vw, 68px); }
+.match-secondary-view h2 span { padding: 0 18px; color: #f05a1a; }
+.match-secondary-view > p:last-child { color: #b7b4ac; text-transform: uppercase; }
+.match-secondary-view--standings { background: linear-gradient(120deg, rgb(28 9 43 / 96%), rgb(4 31 46 / 96%)); }
+
+@media (max-width: 1000px) {
+    .match-overview { grid-template-columns: 1fr; }
+    .match-standings { width: min(100%, 620px); }
+}
+
+@media (max-width: 640px) {
+    .match-centre { min-height: 100vh; }
+    .match-centre__content { padding: 30px 20px 48px; }
+    .match-centre__intro h1 { font-size: 48px; }
+    .match-centre__intro p { font-size: 13px; line-height: 1.5; }
+    .match-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .match-tabs button { min-width: 0; padding: 0 8px; font-size: 12px; }
+    .match-panel { margin-top: 24px; }
+    .next-match { padding: 22px 20px; }
+    .next-match__teams { margin-top: 28px; grid-template-columns: 1fr 80px 1fr; gap: 8px; }
+    .next-match__teams strong { font-size: 24px; }
+    .next-match__teams time { font-size: 38px; }
+    .next-match__footer { align-items: stretch; flex-direction: column; }
+    .next-match__footer b { width: 100%; }
+    .match-standings { padding-right: 12px; padding-left: 12px; }
+    .match-secondary-view { min-height: 340px; padding: 28px; }
 }

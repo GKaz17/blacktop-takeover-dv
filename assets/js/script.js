@@ -124,3 +124,37 @@ if (teamDialog && teamDialogOpen && teamDialogClose) {
         }
     });
 }
+
+const matchTabs = [...document.querySelectorAll('[data-match-tab]')];
+const matchPanels = [...document.querySelectorAll('[data-match-panel]')];
+
+if (matchTabs.length && matchPanels.length) {
+    const selectMatchView = (selectedTab) => {
+        const selectedView = selectedTab.dataset.matchTab;
+
+        matchTabs.forEach((tab) => {
+            const isSelected = tab === selectedTab;
+            tab.setAttribute('aria-selected', String(isSelected));
+            tab.tabIndex = isSelected ? 0 : -1;
+        });
+
+        matchPanels.forEach((panel) => {
+            const isSelected = panel.dataset.matchPanel === selectedView;
+            panel.hidden = !isSelected;
+            panel.classList.toggle('is-active', isSelected);
+        });
+    };
+
+    matchTabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectMatchView(tab));
+        tab.addEventListener('keydown', (event) => {
+            if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+
+            event.preventDefault();
+            const direction = event.key === 'ArrowRight' ? 1 : -1;
+            const nextIndex = (index + direction + matchTabs.length) % matchTabs.length;
+            matchTabs[nextIndex].focus();
+            selectMatchView(matchTabs[nextIndex]);
+        });
+    });
+}
