@@ -2519,3 +2519,408 @@ body.has-open-court-menu {
     .match-standings { padding-right: 12px; padding-left: 12px; }
     .match-secondary-view { min-height: 340px; padding: 28px; }
 }
+
+/* FINAL D06 — Admin Control Deck
+   Dashboard reading and application review are established here.
+   Database metrics and approval decisions remain for the next pass. */
+.admin-control-page main { background: #0b0b0c; }
+
+.admin-deck {
+    position: relative;
+    display: grid;
+    isolation: isolate;
+    min-height: 800px;
+    overflow: hidden;
+    background: #0b0b0c;
+    color: #f2efe9;
+    grid-template-columns: 200px minmax(0, 1fr);
+}
+
+.admin-deck__mural {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.admin-rail {
+    position: relative;
+    min-height: 800px;
+    overflow: hidden;
+    border-left: 6px solid #ff6b1a;
+    background: #1a1a1d;
+}
+
+.admin-rail > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.admin-rail > a,
+.admin-rail > span,
+.admin-rail > strong,
+.admin-rail > p {
+    position: absolute;
+    z-index: 1;
+    margin: 0;
+}
+
+.admin-rail > a {
+    top: 28px;
+    left: 18px;
+    color: #f2efe9;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 24px;
+    letter-spacing: .5px;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.admin-rail > span {
+    top: 212px;
+    left: 14px;
+    transform: rotate(8deg);
+    color: rgb(242 239 233 / 18%);
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 52px;
+    white-space: nowrap;
+}
+
+.admin-rail > strong {
+    top: 420px;
+    left: 14px;
+    transform: rotate(6deg);
+    color: rgb(245 196 0 / 78%);
+    font-family: "Rubik Spray Paint", sans-serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.05;
+    text-transform: uppercase;
+}
+
+.admin-rail > p {
+    bottom: 42px;
+    left: 18px;
+    color: #ff6b1a;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+
+.admin-deck__content {
+    position: relative;
+    min-width: 0;
+    padding: 28px 32px 52px;
+    background: rgb(11 11 12 / 86%);
+}
+
+.admin-deck__header {
+    position: relative;
+    display: flex;
+    min-height: 45px;
+    padding-right: 76px;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.admin-deck__header h1,
+.admin-deck__header p { margin: 0; }
+
+.admin-deck__header h1 {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 30px;
+    font-weight: 400;
+    letter-spacing: .5px;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.admin-deck__header p {
+    margin-top: 5px;
+    color: #ff6b1a;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: .9px;
+    text-transform: uppercase;
+}
+
+.admin-deck__header > span {
+    margin-top: 15px;
+    color: #d4a827;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.admin-deck__header .court-menu-trigger {
+    top: -8px;
+    right: 0;
+}
+
+.admin-metrics {
+    display: grid;
+    margin-top: 20px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.admin-metric {
+    position: relative;
+    display: flex;
+    min-height: 90px;
+    overflow: hidden;
+    border-radius: 3px;
+    padding: 18px 16px 10px;
+    flex-direction: column;
+    background: linear-gradient(90deg, #400e04, #1f0805);
+}
+
+.admin-metric::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 4px;
+    background: #ff6b1a;
+    content: "";
+}
+
+.admin-metric--yellow { background: linear-gradient(90deg, #332603, #1a1403); }
+.admin-metric--yellow::before { background: #d4a017; }
+.admin-metric--blue { background: linear-gradient(90deg, #0d1a3d, #0f082b); }
+.admin-metric--blue::before { background: #2b6cb0; }
+.admin-metric--pink { background: linear-gradient(90deg, #33091f, #2b0b05); }
+
+.admin-metric span {
+    color: #8a857c;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+.admin-metric strong {
+    margin-top: 7px;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1;
+}
+
+.registration-chart {
+    min-height: 240px;
+    margin-top: 30px;
+    border-radius: 3px;
+    padding: 16px 20px 0;
+    background: linear-gradient(90deg, rgb(28 6 41 / 96%), rgb(28 23 3 / 96%) 50%, rgb(3 28 38 / 96%));
+}
+
+.registration-chart h2,
+.approval-queue h2 {
+    margin: 0;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .7px;
+    text-transform: uppercase;
+}
+
+.registration-chart h2 { color: #8a857c; }
+
+.registration-chart__plot {
+    display: grid;
+    height: 195px;
+    margin-top: 12px;
+    align-items: end;
+    grid-template-columns: repeat(10, minmax(34px, 1fr));
+    gap: clamp(10px, 2.25vw, 38px);
+}
+
+.registration-bar {
+    position: relative;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-end;
+    flex-direction: column;
+}
+
+.registration-bar__fill {
+    width: min(60px, 100%);
+    height: var(--registration-level);
+    background: #ff6b1a;
+}
+
+.registration-bar--yellow .registration-bar__fill { background: #dca614; }
+.registration-bar--blue .registration-bar__fill { background: #3376b8; }
+
+.registration-bar small {
+    position: absolute;
+    bottom: 7px;
+    transform: rotate(-90deg);
+    color: rgb(242 239 233 / 0%);
+    font-size: 8px;
+    pointer-events: none;
+}
+
+.approval-queue {
+    min-height: 220px;
+    margin-top: 20px;
+    border-radius: 3px;
+    padding: 14px 16px 0;
+    background: linear-gradient(90deg, rgb(41 9 8 / 94%), rgb(5 23 31 / 94%));
+}
+
+.approval-queue h2 { color: #ff6b1a; }
+
+.approval-queue__list {
+    display: grid;
+    margin-top: 18px;
+    gap: 4px;
+}
+
+.approval-queue__list button {
+    display: flex;
+    min-height: 40px;
+    border: 0;
+    padding: 0 12px;
+    align-items: center;
+    justify-content: space-between;
+    background: rgb(11 11 10 / 98%);
+    color: #f2efe9;
+    cursor: pointer;
+    font-family: Inter, sans-serif;
+    font-size: 12px;
+    text-align: left;
+}
+
+.approval-queue__list button:nth-child(even) { background: rgb(15 15 14 / 98%); }
+.approval-queue__list button:hover { background: #1a1a1d; }
+
+.approval-queue__list button:focus-visible,
+.approval-dialog button:focus-visible {
+    outline: 3px solid #f5c400;
+    outline-offset: -3px;
+}
+
+.approval-queue__list strong { font-weight: 500; }
+
+.approval-queue__list b {
+    color: #d4a017;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 11px;
+    letter-spacing: .6px;
+    text-transform: uppercase;
+}
+
+.approval-dialog {
+    width: min(520px, calc(100% - 32px));
+    border: 1px solid #3a3a3d;
+    border-top: 5px solid #ff6b1a;
+    border-radius: 5px;
+    padding: 28px;
+    background: #0b0b0c;
+    color: #f2efe9;
+    box-shadow: 0 24px 100px #000;
+}
+
+.approval-dialog::backdrop { background: rgb(0 0 0 / 78%); }
+
+.approval-dialog__heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.approval-dialog__heading span {
+    color: #ff6b1a;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 13px;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.approval-dialog h2 {
+    margin: 4px 0 0;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 38px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.approval-dialog__heading button {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #3a3a3d;
+    border-radius: 50%;
+    background: transparent;
+    color: #f2efe9;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.approval-dialog dl { margin: 24px 0 0; }
+
+.approval-dialog dl div {
+    display: grid;
+    min-height: 48px;
+    border-bottom: 1px solid #232327;
+    padding: 12px 0;
+    grid-template-columns: 120px 1fr;
+}
+
+.approval-dialog dt {
+    color: #8a857c;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.approval-dialog dd { margin: 0; }
+.approval-dialog dd strong { color: #d4a017; text-transform: uppercase; }
+.approval-dialog > p { color: #b7b4ac; font-size: 13px; line-height: 1.5; }
+
+@media (max-width: 980px) {
+    .admin-deck { grid-template-columns: 150px minmax(0, 1fr); }
+    .admin-rail > strong { font-size: 28px; }
+    .admin-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .admin-deck__header > span { display: none; }
+    .registration-chart__plot { gap: 14px; }
+}
+
+@media (max-width: 640px) {
+    .admin-deck { display: block; min-height: 100vh; }
+    .admin-rail { min-height: 135px; height: 135px; border-left-width: 5px; }
+    .admin-rail > img { object-position: top; }
+    .admin-rail > a { top: 22px; }
+    .admin-rail > span { top: 39px; left: 42%; font-size: 56px; }
+    .admin-rail > strong,
+    .admin-rail > p { display: none; }
+    .admin-deck__content { padding: 26px 20px 48px; }
+    .admin-deck__header { padding-right: 64px; }
+    .admin-deck__header h1 { font-size: 28px; }
+    .admin-deck__header p { max-width: 230px; font-size: 12px; }
+    .admin-metrics { gap: 10px; }
+    .admin-metric { min-height: 82px; padding: 16px 12px 9px; }
+    .registration-chart { min-height: 220px; padding-right: 12px; padding-left: 12px; }
+    .registration-chart__plot { height: 175px; grid-template-columns: repeat(10, minmax(18px, 1fr)); gap: 7px; overflow: hidden; }
+    .approval-queue { padding-right: 10px; padding-left: 10px; }
+    .approval-queue__list button { min-height: 52px; gap: 12px; }
+    .approval-queue__list button span { line-height: 1.35; }
+    .approval-dialog { padding: 22px 20px; }
+}

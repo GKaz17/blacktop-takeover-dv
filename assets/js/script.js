@@ -158,3 +158,29 @@ if (matchTabs.length && matchPanels.length) {
         });
     });
 }
+
+const approvalDialog = document.querySelector('[data-approval-dialog]');
+const approvalReviewButtons = [...document.querySelectorAll('[data-approval-review]')];
+const approvalDialogClose = document.querySelector('[data-approval-close]');
+
+if (approvalDialog && approvalReviewButtons.length && approvalDialogClose) {
+    const approvalTeam = approvalDialog.querySelector('[data-approval-team]');
+    const approvalEvent = approvalDialog.querySelector('[data-approval-event]');
+    const approvalCaptain = approvalDialog.querySelector('[data-approval-captain]');
+    const approvalRoster = approvalDialog.querySelector('[data-approval-roster]');
+
+    approvalReviewButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            approvalTeam.textContent = button.dataset.teamName;
+            approvalEvent.textContent = button.dataset.teamEvent;
+            approvalCaptain.textContent = button.dataset.teamCaptain;
+            approvalRoster.textContent = button.dataset.teamRoster;
+            approvalDialog.showModal();
+        });
+    });
+
+    approvalDialogClose.addEventListener('click', () => approvalDialog.close());
+    approvalDialog.addEventListener('click', (event) => {
+        if (event.target === approvalDialog) approvalDialog.close();
+    });
+}
