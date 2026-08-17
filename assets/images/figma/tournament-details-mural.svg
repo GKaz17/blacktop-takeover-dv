@@ -1,0 +1,26 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="STREET PASS V2 / Jozi Heat Wall" clip-path="url(#clip0_0_46)">
+<path id="Vector" opacity="0.16" d="M-120 180L690 40L755 310L-55 450L-120 180Z" fill="#F5C400"/>
+<path id="Vector_2" opacity="0.14" d="M-80 390C180 235 390 290 590 435C730 535 875 500 1010 385" stroke="#21C16B" stroke-width="58" stroke-linecap="round"/>
+<path id="Vector_3" opacity="0.15" d="M45 860L590 490L720 645L180 990L45 860Z" fill="#FF3D2E"/>
+<path id="Vector_4" opacity="0.09" d="M905 105L1490 210L1380 690L830 560L905 105Z" fill="#FF2E88"/>
+<path id="Vector_5" opacity="0.12" d="M960 760C1080 565 1250 540 1495 620" stroke="#00C2FF" stroke-width="35" stroke-linecap="round"/>
+<path id="Vector_6" opacity="0.2" d="M15 690L540 520M-25 760L610 555" stroke="#FF6B1A" stroke-width="15"/>
+<path id="Vector_7" opacity="0.32" d="M1010 185C1120 95 1245 105 1325 180C1395 245 1365 335 1270 365" stroke="#F5C400" stroke-width="13" stroke-linecap="round"/>
+<g id="Group" opacity="0.72">
+<path id="Vector_8" d="M88 179C91.866 179 95 175.866 95 172C95 168.134 91.866 165 88 165C84.134 165 81 168.134 81 172C81 175.866 84.134 179 88 179Z" fill="#FF6B1A"/>
+<path id="Vector_9" d="M120 200C122.209 200 124 198.209 124 196C124 193.791 122.209 192 120 192C117.791 192 116 193.791 116 196C116 198.209 117.791 200 120 200Z" fill="#FF6B1A"/>
+<path id="Vector_10" d="M152 165C154.761 165 157 162.761 157 160C157 157.239 154.761 155 152 155C149.239 155 147 157.239 147 160C147 162.761 149.239 165 152 165Z" fill="#FF6B1A"/>
+</g>
+<g id="Group_2" opacity="0.65">
+<path id="Vector_11" d="M870 710C872.761 710 875 707.761 875 705C875 702.239 872.761 700 870 700C867.239 700 865 702.239 865 705C865 707.761 867.239 710 870 710Z" fill="#21C16B"/>
+<path id="Vector_12" d="M910 743C914.418 743 918 739.418 918 735C918 730.582 914.418 727 910 727C905.582 727 902 730.582 902 735C902 739.418 905.582 743 910 743Z" fill="#21C16B"/>
+<path id="Vector_13" d="M947 698C949.209 698 951 696.209 951 694C951 691.791 949.209 690 947 690C944.791 690 943 691.791 943 694C943 696.209 944.791 698 947 698Z" fill="#21C16B"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_46">
+<rect width="1440" height="900" fill="white"/>
+</clipPath>
+</defs>
+</svg>

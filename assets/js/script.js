@@ -12,6 +12,31 @@ visitorSkip?.addEventListener('click', () => {
     sessionStorage.setItem(accessKey, 'visitor');
 });
 
+const registrationForm = document.querySelector('[data-registration-form]');
+
+if (registrationForm) {
+    const roleInputs = [...registrationForm.querySelectorAll('[data-registration-role]')];
+    const roleFieldsets = [...registrationForm.querySelectorAll('[data-role-fields]')];
+    const captainRequiredFields = [...registrationForm.querySelectorAll('[data-captain-required]')];
+
+    const updateRegistrationRole = () => {
+        const selectedRole = roleInputs.find((input) => input.checked)?.value ?? 'player';
+
+        roleFieldsets.forEach((fieldset) => {
+            const isSelected = fieldset.dataset.roleFields === selectedRole;
+            fieldset.hidden = !isSelected;
+            fieldset.classList.toggle('is-active', isSelected);
+        });
+
+        captainRequiredFields.forEach((field) => {
+            field.required = selectedRole === 'captain';
+        });
+    };
+
+    roleInputs.forEach((input) => input.addEventListener('change', updateRegistrationRole));
+    updateRegistrationRole();
+}
+
 const discovery = document.querySelector('[data-discovery]');
 
 if (discovery) {
@@ -107,5 +132,80 @@ if (courtMenuTrigger && courtMenu && courtMenuClose) {
         if (event.key === 'Escape' && courtMenu.classList.contains('is-open')) {
             closeCourtMenu();
         }
+    });
+}
+
+const teamDialog = document.querySelector('[data-team-dialog]');
+const teamDialogOpen = document.querySelector('[data-team-dialog-open]');
+const teamDialogClose = document.querySelector('[data-team-dialog-close]');
+
+if (teamDialog && teamDialogOpen && teamDialogClose) {
+    teamDialogOpen.addEventListener('click', () => teamDialog.showModal());
+    teamDialogClose.addEventListener('click', () => teamDialog.close());
+
+    teamDialog.addEventListener('click', (event) => {
+        if (event.target === teamDialog) {
+            teamDialog.close();
+        }
+    });
+}
+
+const matchTabs = [...document.querySelectorAll('[data-match-tab]')];
+const matchPanels = [...document.querySelectorAll('[data-match-panel]')];
+
+if (matchTabs.length && matchPanels.length) {
+    const selectMatchView = (selectedTab) => {
+        const selectedView = selectedTab.dataset.matchTab;
+
+        matchTabs.forEach((tab) => {
+            const isSelected = tab === selectedTab;
+            tab.setAttribute('aria-selected', String(isSelected));
+            tab.tabIndex = isSelected ? 0 : -1;
+        });
+
+        matchPanels.forEach((panel) => {
+            const isSelected = panel.dataset.matchPanel === selectedView;
+            panel.hidden = !isSelected;
+            panel.classList.toggle('is-active', isSelected);
+        });
+    };
+
+    matchTabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => selectMatchView(tab));
+        tab.addEventListener('keydown', (event) => {
+            if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+
+            event.preventDefault();
+            const direction = event.key === 'ArrowRight' ? 1 : -1;
+            const nextIndex = (index + direction + matchTabs.length) % matchTabs.length;
+            matchTabs[nextIndex].focus();
+            selectMatchView(matchTabs[nextIndex]);
+        });
+    });
+}
+
+const approvalDialog = document.querySelector('[data-approval-dialog]');
+const approvalReviewButtons = [...document.querySelectorAll('[data-approval-review]')];
+const approvalDialogClose = document.querySelector('[data-approval-close]');
+
+if (approvalDialog && approvalReviewButtons.length && approvalDialogClose) {
+    const approvalTeam = approvalDialog.querySelector('[data-approval-team]');
+    const approvalEvent = approvalDialog.querySelector('[data-approval-event]');
+    const approvalCaptain = approvalDialog.querySelector('[data-approval-captain]');
+    const approvalRoster = approvalDialog.querySelector('[data-approval-roster]');
+
+    approvalReviewButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            approvalTeam.textContent = button.dataset.teamName;
+            approvalEvent.textContent = button.dataset.teamEvent;
+            approvalCaptain.textContent = button.dataset.teamCaptain;
+            approvalRoster.textContent = button.dataset.teamRoster;
+            approvalDialog.showModal();
+        });
+    });
+
+    approvalDialogClose.addEventListener('click', () => approvalDialog.close());
+    approvalDialog.addEventListener('click', (event) => {
+        if (event.target === approvalDialog) approvalDialog.close();
     });
 }

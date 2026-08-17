@@ -1,0 +1,24 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1280" height="800" viewBox="0 0 1280 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="STREET PASS V2 / Control Deck Mural" clip-path="url(#clip0_0_20)">
+<path id="Vector" opacity="0.1" d="M150 30L730 -60L790 160L210 255L150 30Z" fill="#FF6B1A"/>
+<path id="Vector_2" opacity="0.1" d="M185 280C390 140 565 190 735 320C865 420 985 365 1120 270" stroke="#F5C400" stroke-width="42" stroke-linecap="round"/>
+<path id="Vector_3" opacity="0.08" d="M515 60L1030 10L1105 430L585 485L515 60Z" fill="#7B2CBF"/>
+<path id="Vector_4" opacity="0.12" d="M790 720C915 520 1070 490 1325 610" stroke="#00C2FF" stroke-width="34" stroke-linecap="round"/>
+<path id="Vector_5" opacity="0.15" d="M215 780L690 520M175 850L755 555" stroke="#FF3D2E" stroke-width="13"/>
+<g id="Group" opacity="0.62">
+<path id="Vector_6" d="M1120 167C1123.87 167 1127 163.866 1127 160C1127 156.134 1123.87 153 1120 153C1116.13 153 1113 156.134 1113 160C1113 163.866 1116.13 167 1120 167Z" fill="#FF2E88"/>
+<path id="Vector_7" d="M1160 196C1162.21 196 1164 194.209 1164 192C1164 189.791 1162.21 188 1160 188C1157.79 188 1156 189.791 1156 192C1156 194.209 1157.79 196 1160 196Z" fill="#FF2E88"/>
+<path id="Vector_8" d="M1198 161C1201.31 161 1204 158.314 1204 155C1204 151.686 1201.31 149 1198 149C1194.69 149 1192 151.686 1192 155C1192 158.314 1194.69 161 1198 161Z" fill="#FF2E88"/>
+</g>
+<g id="Group_2" opacity="0.58">
+<path id="Vector_9" d="M320 615C322.761 615 325 612.761 325 610C325 607.239 322.761 605 320 605C317.239 605 315 607.239 315 610C315 612.761 317.239 615 320 615Z" fill="#21C16B"/>
+<path id="Vector_10" d="M355 648C359.418 648 363 644.418 363 640C363 635.582 359.418 632 355 632C350.582 632 347 635.582 347 640C347 644.418 350.582 648 355 648Z" fill="#21C16B"/>
+<path id="Vector_11" d="M392 606C394.209 606 396 604.209 396 602C396 599.791 394.209 598 392 598C389.791 598 388 599.791 388 602C388 604.209 389.791 606 392 606Z" fill="#21C16B"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_20">
+<rect width="1280" height="800" fill="white"/>
+</clipPath>
+</defs>
+</svg>

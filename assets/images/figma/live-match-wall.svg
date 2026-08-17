@@ -1,0 +1,26 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="STREET PASS V2 / Live Match Wall" clip-path="url(#clip0_0_10)">
+<path id="Vector" opacity="0.13" d="M-70 175L680 40L735 260L-20 395L-70 175Z" fill="#FF6B1A"/>
+<path id="Vector_2" opacity="0.12" d="M-90 470C185 285 405 350 620 485C780 585 930 520 1085 400" stroke="#F5C400" stroke-width="48" stroke-linecap="round"/>
+<path id="Vector_3" opacity="0.08" d="M635 120L1190 65L1250 520L705 575L635 120Z" fill="#FF2E88"/>
+<path id="Vector_4" opacity="0.14" d="M770 745C900 500 1085 435 1285 525C1365 560 1430 625 1505 710" stroke="#21C16B" stroke-width="50" stroke-linecap="round"/>
+<path id="Vector_5" opacity="0.09" d="M1010 100L1510 240L1400 730L920 595L1010 100Z" fill="#00C2FF"/>
+<path id="Vector_6" opacity="0.18" d="M5 820L610 610M-25 890L690 645" stroke="#FF3D2E" stroke-width="15"/>
+<path id="Vector_7" opacity="0.36" d="M810 210C900 120 1020 130 1085 200C1145 265 1110 345 1025 372" stroke="#7B2CBF" stroke-width="17" stroke-linecap="round"/>
+<g id="Group" opacity="0.75">
+<path id="Vector_8" d="M80 267C83.866 267 87 263.866 87 260C87 256.134 83.866 253 80 253C76.134 253 73 256.134 73 260C73 263.866 76.134 267 80 267Z" fill="#FF6B1A"/>
+<path id="Vector_9" d="M117 291C119.209 291 121 289.209 121 287C121 284.791 119.209 283 117 283C114.791 283 113 284.791 113 287C113 289.209 114.791 291 117 291Z" fill="#FF6B1A"/>
+<path id="Vector_10" d="M148 252C150.761 252 153 249.761 153 247C153 244.239 150.761 242 148 242C145.239 242 143 244.239 143 247C143 249.761 145.239 252 148 252Z" fill="#FF6B1A"/>
+</g>
+<g id="Group_2" opacity="0.68">
+<path id="Vector_11" d="M1250 716C1253.31 716 1256 713.314 1256 710C1256 706.686 1253.31 704 1250 704C1246.69 704 1244 706.686 1244 710C1244 713.314 1246.69 716 1250 716Z" fill="#21C16B"/>
+<path id="Vector_12" d="M1290 749C1294.97 749 1299 744.971 1299 740C1299 735.029 1294.97 731 1290 731C1285.03 731 1281 735.029 1281 740C1281 744.971 1285.03 749 1290 749Z" fill="#21C16B"/>
+<path id="Vector_13" d="M1330 704C1332.21 704 1334 702.209 1334 700C1334 697.791 1332.21 696 1330 696C1327.79 696 1326 697.791 1326 700C1326 702.209 1327.79 704 1330 704Z" fill="#21C16B"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_10">
+<rect width="1440" height="900" fill="white"/>
+</clipPath>
+</defs>
+</svg>

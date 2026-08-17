@@ -1,0 +1,18 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="200" height="800" viewBox="0 0 200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="STREET PASS V2 / Organiser Rail" clip-path="url(#clip0_0_7)">
+<path id="Vector" opacity="0.28" d="M-65 165L180 70L245 230L5 330L-65 165Z" fill="#FF6B1A"/>
+<path id="Vector_2" opacity="0.24" d="M-55 470C35 350 100 390 210 310" stroke="#F5C400" stroke-width="34" stroke-linecap="round"/>
+<path id="Vector_3" opacity="0.25" d="M-75 735L170 500L250 610L15 845L-75 735Z" fill="#7B2CBF"/>
+<path id="Vector_4" opacity="0.22" d="M5 80L195 730M-35 170L160 800" stroke="#00C2FF" stroke-width="4"/>
+<g id="Group" opacity="0.74">
+<path id="Vector_5" d="M145 266C148.314 266 151 263.314 151 260C151 256.686 148.314 254 145 254C141.686 254 139 256.686 139 260C139 263.314 141.686 266 145 266Z" fill="#FF2E88"/>
+<path id="Vector_6" d="M170 296C172.209 296 174 294.209 174 292C174 289.791 172.209 288 170 288C167.791 288 166 289.791 166 292C166 294.209 167.791 296 170 296Z" fill="#FF2E88"/>
+<path id="Vector_7" d="M132 320C134.761 320 137 317.761 137 315C137 312.239 134.761 310 132 310C129.239 310 127 312.239 127 315C127 317.761 129.239 320 132 320Z" fill="#FF2E88"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_7">
+<rect width="200" height="800" fill="white"/>
+</clipPath>
+</defs>
+</svg>
