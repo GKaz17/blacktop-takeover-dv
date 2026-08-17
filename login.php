@@ -28,6 +28,7 @@ require __DIR__ . '/includes/header.php';
                 <button class="takeover-button" type="submit">Enter the court</button>
             </form>
             <div class="auth-actions">
+                <a class="register-link" href="/blacktop-takeover/register.php">Create account</a>
                 <a class="visitor-link" href="/blacktop-takeover/home.php" data-visitor-skip>Skip sign-up · continue as visitor</a>
                 <a class="back-link" href="/blacktop-takeover/">Back</a>
             </div>

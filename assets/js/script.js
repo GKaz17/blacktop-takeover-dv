@@ -12,6 +12,31 @@ visitorSkip?.addEventListener('click', () => {
     sessionStorage.setItem(accessKey, 'visitor');
 });
 
+const registrationForm = document.querySelector('[data-registration-form]');
+
+if (registrationForm) {
+    const roleInputs = [...registrationForm.querySelectorAll('[data-registration-role]')];
+    const roleFieldsets = [...registrationForm.querySelectorAll('[data-role-fields]')];
+    const captainRequiredFields = [...registrationForm.querySelectorAll('[data-captain-required]')];
+
+    const updateRegistrationRole = () => {
+        const selectedRole = roleInputs.find((input) => input.checked)?.value ?? 'player';
+
+        roleFieldsets.forEach((fieldset) => {
+            const isSelected = fieldset.dataset.roleFields === selectedRole;
+            fieldset.hidden = !isSelected;
+            fieldset.classList.toggle('is-active', isSelected);
+        });
+
+        captainRequiredFields.forEach((field) => {
+            field.required = selectedRole === 'captain';
+        });
+    };
+
+    roleInputs.forEach((input) => input.addEventListener('change', updateRegistrationRole));
+    updateRegistrationRole();
+}
+
 const discovery = document.querySelector('[data-discovery]');
 
 if (discovery) {

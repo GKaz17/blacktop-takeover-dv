@@ -2924,3 +2924,216 @@ body.has-open-court-menu {
     .approval-queue__list button span { line-height: 1.35; }
     .approval-dialog { padding: 22px 20px; }
 }
+
+/* Registration uses the approved D01 entry visual system.
+   The form intentionally exposes only public player and captain roles. */
+.register-link {
+    color: var(--orange);
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.auth-actions { flex-wrap: wrap; }
+
+.registration-shell {
+    grid-template-columns: minmax(420px, .92fr) minmax(560px, 1.08fr);
+}
+
+.registration-entry {
+    align-items: start;
+    padding: clamp(2rem, 4vw, 4.5rem);
+    overflow-y: auto;
+}
+
+.registration-brand strong,
+.registration-brand span {
+    font-size: clamp(4.7rem, 8vw, 8.5rem);
+}
+
+.registration-panel {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 650px);
+}
+
+.registration-kicker {
+    margin: 0 0 7px;
+    color: var(--orange);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.registration-panel h1 {
+    margin: 0 0 22px;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(52px, 5vw, 76px);
+    font-weight: 400;
+    line-height: .95;
+    text-transform: uppercase;
+}
+
+.registration-panel form {
+    display: grid;
+    gap: 17px;
+}
+
+.registration-panel label,
+.role-selector legend {
+    color: var(--concrete);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+}
+
+.registration-panel label {
+    display: grid;
+    gap: 7px;
+}
+
+.registration-panel label > small {
+    color: #8a857c;
+    font-size: 10px;
+    letter-spacing: .06em;
+}
+
+.registration-panel input[type="text"],
+.registration-panel input[type="email"],
+.registration-panel input[type="password"] {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid rgb(246 242 232 / 28%);
+    border-radius: 0;
+    padding: 10px 13px;
+    outline: 0;
+    background: rgb(11 11 10 / 84%);
+    color: var(--chalk);
+    font: 500 15px Inter, sans-serif;
+}
+
+.registration-panel input:focus { border-color: var(--orange); }
+
+.role-selector {
+    min-width: 0;
+    margin: 0;
+    border: 0;
+    padding: 0;
+}
+
+.role-selector legend { margin-bottom: 9px; }
+
+.role-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.role-option {
+    position: relative;
+    cursor: pointer;
+}
+
+.role-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+
+.role-option > span {
+    display: flex;
+    min-height: 84px;
+    border: 1px solid #3a3a3d;
+    border-left: 5px solid #3a3a3d;
+    padding: 14px 15px;
+    flex-direction: column;
+    background: rgb(26 26 29 / 88%);
+}
+
+.role-option strong {
+    color: var(--chalk);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 21px;
+    letter-spacing: .04em;
+}
+
+.role-option small {
+    margin-top: 5px;
+    color: var(--concrete);
+    font-family: Inter, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.35;
+    text-transform: none;
+}
+
+.role-option input:checked + span {
+    border-color: var(--orange);
+    border-left-color: var(--orange);
+    background: linear-gradient(90deg, rgb(64 14 4 / 94%), rgb(26 26 29 / 94%));
+}
+
+.role-option input:focus-visible + span {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+}
+
+.registration-fields--split {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.registration-role-fields[hidden] { display: none; }
+
+.registration-panel .takeover-button {
+    width: 100%;
+    margin-top: 3px;
+}
+
+.registration-actions {
+    display: flex;
+    margin-top: 24px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.registration-actions a {
+    color: var(--concrete);
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.registration-actions a:last-child {
+    color: var(--chalk);
+    text-decoration-color: var(--orange);
+    text-underline-offset: 4px;
+}
+
+@media (max-width: 980px) {
+    .registration-shell { grid-template-columns: 1fr; }
+    .registration-page .culture-panel { min-height: 34vh; border-right: 0; border-bottom: 6px solid var(--orange); }
+    .registration-page .landing-entry { min-height: auto; }
+    .registration-brand strong,
+    .registration-brand span { font-size: clamp(4.2rem, 17vw, 7rem); }
+}
+
+@media (max-width: 560px) {
+    .registration-entry { padding: 34px 20px 48px; }
+    .registration-panel h1 { font-size: 52px; }
+    .role-options,
+    .registration-fields--split { grid-template-columns: 1fr; }
+    .role-option > span { min-height: 72px; }
+    .registration-actions { align-items: flex-start; flex-direction: column; }
+}
