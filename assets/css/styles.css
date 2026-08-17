@@ -118,7 +118,7 @@ main {
 .brand-lockup {
     position: absolute;
     top: clamp(2rem, 7vh, 5.5rem);
-    left: clamp(1.5rem, 5vw, 5rem);
+        left: clamp(1.5rem, 5vw, 5rem);
     display: flex;
     transform: rotate(-2deg);
     flex-direction: column;
