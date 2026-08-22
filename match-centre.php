@@ -1,17 +1,66 @@
 <?php
-$standings = [
-    ['position' => 1, 'team' => 'Jozi Reign', 'played' => 2, 'points' => 6],
-    ['position' => 2, 'team' => 'Soweto Stars', 'played' => 2, 'points' => 3],
-    ['position' => 3, 'team' => 'Vuka Eleven', 'played' => 2, 'points' => 3],
-    ['position' => 4, 'team' => 'Eastside FC', 'played' => 2, 'points' => 0],
-];
+require_once __DIR__ . '/config/connection.php';
 
-$fixtures = [
-    ['time' => '10:00', 'round' => 'Group A · R1', 'fixture' => 'Jozi Ballers  2 — 1  Eastside FC', 'court' => 'Court 1', 'status' => 'Final'],
-    ['time' => '11:15', 'round' => 'Group B · R1', 'fixture' => 'Pretoria Kings  vs  Braam United', 'court' => 'Court 2', 'status' => 'Live'],
-    ['time' => '12:30', 'round' => 'Group A · R2', 'fixture' => 'Jozi Reign  vs  Soweto Stars', 'court' => 'Court 1', 'status' => 'Up next'],
-    ['time' => '13:45', 'round' => 'Group B · R2', 'fixture' => 'Vuka Eleven  vs  Tembisa City', 'court' => 'Court 2', 'status' => 'Scheduled'],
-];
+$requestedEvent = trim((string) ($_GET['event'] ?? ''));
+if ($requestedEvent !== '') {
+    $eventQuery = $conn->prepare("SELECT id, name, slug FROM tournaments WHERE slug = ? AND status <> 'cancelled' LIMIT 1");
+    $eventQuery->bind_param('s', $requestedEvent);
+} else {
+    $eventQuery = $conn->prepare("SELECT id, name, slug FROM tournaments WHERE status <> 'cancelled' ORDER BY status = 'in_progress' DESC, starts_at LIMIT 1");
+}
+$eventQuery->execute();
+$selectedEvent = $eventQuery->get_result()->fetch_assoc();
+
+$matches = [];
+if ($selectedEvent) {
+    $eventId = (int) $selectedEvent['id'];
+    $matchQuery = $conn->prepare(
+        "SELECT m.id, m.round_name, m.court, m.scheduled_at, m.home_score, m.away_score, m.status,
+                home.name AS home_team, away.name AS away_team
+         FROM matches m
+         JOIN teams home ON home.id = m.home_team_id
+         JOIN teams away ON away.id = m.away_team_id
+         WHERE m.tournament_id = ?
+         ORDER BY m.scheduled_at, m.id"
+    );
+    $matchQuery->bind_param('i', $eventId);
+    $matchQuery->execute();
+    $matches = $matchQuery->get_result()->fetch_all(MYSQLI_ASSOC);
+}
+
+$standingsByTeam = [];
+$results = [];
+$nextMatch = null;
+foreach ($matches as &$match) {
+    $match['date'] = new DateTimeImmutable($match['scheduled_at']);
+    if ($match['status'] === 'final') {
+        $results[] = $match;
+        foreach (['home_team', 'away_team'] as $teamKey) {
+            $teamName = $match[$teamKey];
+            $standingsByTeam[$teamName] ??= ['team' => $teamName, 'played' => 0, 'points' => 0];
+            $standingsByTeam[$teamName]['played']++;
+        }
+
+        if ((int) $match['home_score'] === (int) $match['away_score']) {
+            $standingsByTeam[$match['home_team']]['points']++;
+            $standingsByTeam[$match['away_team']]['points']++;
+        } elseif ((int) $match['home_score'] > (int) $match['away_score']) {
+            $standingsByTeam[$match['home_team']]['points'] += 3;
+        } else {
+            $standingsByTeam[$match['away_team']]['points'] += 3;
+        }
+    } elseif ($nextMatch === null && in_array($match['status'], ['live', 'scheduled'], true)) {
+        $nextMatch = $match;
+    }
+}
+unset($match);
+
+$standings = array_values($standingsByTeam);
+usort($standings, static fn (array $a, array $b): int => [$b['points'], $b['played'], $a['team']] <=> [$a['points'], $a['played'], $b['team']]);
+foreach ($standings as $index => &$standing) {
+    $standing['position'] = $index + 1;
+}
+unset($standing);
 
 $pageTitle = 'Match Centre';
 $pageDescription = 'Live fixtures, results and group standings for Blacktop Takeover.';
@@ -34,7 +83,7 @@ require __DIR__ . '/includes/header.php';
     <div class="match-centre__content">
         <div class="match-centre__intro">
             <h1>Match centre</h1>
-            <p>COJ Summer Showdown <span>/</span> Live event operations</p>
+            <p><?= e($selectedEvent['name'] ?? 'No published event') ?> <span>/</span> Live event operations</p>
         </div>
 
         <div class="match-tabs" role="tablist" aria-label="Match centre views">
@@ -46,16 +95,21 @@ require __DIR__ . '/includes/header.php';
         <div id="match-panel-fixtures" class="match-panel is-active" role="tabpanel" aria-labelledby="match-tab-fixtures" data-match-panel="fixtures">
             <div class="match-overview">
                 <article class="next-match" aria-labelledby="next-match-title">
-                    <p id="next-match-title">Next fixture <span>·</span> Group A <span>·</span> Court 1</p>
-                    <div class="next-match__teams">
-                        <strong>Jozi Reign</strong>
-                        <time datetime="2026-08-14T12:30">12:30</time>
-                        <strong>Soweto Stars</strong>
-                    </div>
-                    <div class="next-match__footer">
-                        <span>Check-in opens 30 min before kick-off</span>
-                        <b>Up next</b>
-                    </div>
+                    <?php if ($nextMatch): ?>
+                        <p id="next-match-title">Next fixture <span>·</span> <?= e($nextMatch['round_name']) ?> <span>·</span> <?= e($nextMatch['court'] ?: 'Court TBA') ?></p>
+                        <div class="next-match__teams">
+                            <strong><?= e($nextMatch['home_team']) ?></strong>
+                            <time datetime="<?= e($nextMatch['date']->format(DateTimeInterface::ATOM)) ?>"><?= e($nextMatch['date']->format('H:i')) ?></time>
+                            <strong><?= e($nextMatch['away_team']) ?></strong>
+                        </div>
+                        <div class="next-match__footer">
+                            <span>Check-in opens 30 min before tip-off</span>
+                            <b><?= e($nextMatch['status'] === 'live' ? 'Live' : 'Up next') ?></b>
+                        </div>
+                    <?php else: ?>
+                        <p id="next-match-title">Next fixture</p>
+                        <div class="next-match__empty">The organiser has not published a fixture yet.</div>
+                    <?php endif; ?>
                 </article>
 
                 <aside class="match-standings" aria-labelledby="group-standings-title">
@@ -71,6 +125,9 @@ require __DIR__ . '/includes/header.php';
                                     <td><?= e((string) $row['points']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
+                            <?php if ($standings === []): ?>
+                                <tr><td colspan="4">Standings begin after the first final score.</td></tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                     <p>D.O.G. seed watch · every result moves the road</p>
@@ -83,15 +140,29 @@ require __DIR__ . '/includes/header.php';
                     <table>
                         <thead><tr><th>Time</th><th>Round</th><th>Fixture</th><th>Court</th><th>Status</th></tr></thead>
                         <tbody>
-                            <?php foreach ($fixtures as $fixture): ?>
+                            <?php foreach ($matches as $fixture): ?>
+                                <?php
+                                $statusLabel = match ($fixture['status']) {
+                                    'final' => 'Final',
+                                    'live' => 'Live',
+                                    'postponed' => 'Postponed',
+                                    default => $nextMatch && (int) $fixture['id'] === (int) $nextMatch['id'] ? 'Up next' : 'Scheduled',
+                                };
+                                $scoreline = $fixture['status'] === 'final'
+                                    ? $fixture['home_team'] . '  ' . $fixture['home_score'] . ' — ' . $fixture['away_score'] . '  ' . $fixture['away_team']
+                                    : $fixture['home_team'] . '  vs  ' . $fixture['away_team'];
+                                ?>
                                 <tr>
-                                    <td><time><?= e($fixture['time']) ?></time></td>
-                                    <td><?= e($fixture['round']) ?></td>
-                                    <td><?= e($fixture['fixture']) ?></td>
+                                    <td><time datetime="<?= e($fixture['date']->format(DateTimeInterface::ATOM)) ?>"><?= e($fixture['date']->format('H:i')) ?></time></td>
+                                    <td><?= e($fixture['round_name']) ?></td>
+                                    <td><?= e($scoreline) ?></td>
                                     <td><?= e($fixture['court']) ?></td>
-                                    <td class="match-status match-status--<?= e(str_replace(' ', '-', strtolower($fixture['status']))) ?>"><?= e($fixture['status']) ?></td>
+                                    <td class="match-status match-status--<?= e(str_replace(' ', '-', strtolower($statusLabel))) ?>"><?= e($statusLabel) ?></td>
                                 </tr>
                             <?php endforeach; ?>
+                            <?php if ($matches === []): ?>
+                                <tr><td colspan="5">Fixtures will appear here when an organiser schedules the draw.</td></tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -100,20 +171,27 @@ require __DIR__ . '/includes/header.php';
 
         <div id="match-panel-results" class="match-panel" role="tabpanel" aria-labelledby="match-tab-results" data-match-panel="results" hidden>
             <section class="match-secondary-view">
-                <p class="match-secondary-view__eyebrow">Latest confirmed result</p>
-                <h2>Jozi Ballers <span>2 — 1</span> Eastside FC</h2>
-                <p>Group A · Round 1 · Court 1</p>
+                <?php if ($results): ?>
+                    <?php $latestResult = end($results); ?>
+                    <p class="match-secondary-view__eyebrow">Latest confirmed result</p>
+                    <h2><?= e($latestResult['home_team']) ?> <span><?= e((string) $latestResult['home_score']) ?> — <?= e((string) $latestResult['away_score']) ?></span> <?= e($latestResult['away_team']) ?></h2>
+                    <p><?= e($latestResult['round_name']) ?> · <?= e($latestResult['court'] ?: 'Court TBA') ?></p>
+                <?php else: ?>
+                    <p class="match-secondary-view__eyebrow">Results</p>
+                    <h2>No final scores yet</h2>
+                    <p>Confirmed results will appear here.</p>
+                <?php endif; ?>
             </section>
         </div>
 
         <div id="match-panel-standings" class="match-panel" role="tabpanel" aria-labelledby="match-tab-standings" data-match-panel="standings" hidden>
             <section class="match-secondary-view match-secondary-view--standings">
                 <h2>Group A table</h2>
-                <p>Jozi Reign lead after two fixtures with six points.</p>
+                <p><?= $standings ? e($standings[0]['team'] . ' lead with ' . $standings[0]['points'] . ' points.') : 'The table starts after the first confirmed result.' ?></p>
             </section>
         </div>
 
-        <!-- Next pass: load fixtures/results from MySQL and add organiser score-entry controls with validation. -->
+        <!-- Organiser score-entry controls belong to the protected organiser page. -->
     </div>
 </section>
 

@@ -1,12 +1,5 @@
 const accessKey = 'blacktop-preview-access';
-const loginForm = document.querySelector('[data-demo-login]');
 const visitorSkip = document.querySelector('[data-visitor-skip]');
-
-loginForm?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    sessionStorage.setItem(accessKey, 'player');
-    window.location.assign('/blacktop-takeover/home.php');
-});
 
 visitorSkip?.addEventListener('click', () => {
     sessionStorage.setItem(accessKey, 'visitor');
@@ -193,6 +186,8 @@ if (approvalDialog && approvalReviewButtons.length && approvalDialogClose) {
     const approvalEvent = approvalDialog.querySelector('[data-approval-event]');
     const approvalCaptain = approvalDialog.querySelector('[data-approval-captain]');
     const approvalRoster = approvalDialog.querySelector('[data-approval-roster]');
+    const approvalTournamentId = approvalDialog.querySelector('[data-approval-tournament-id]');
+    const approvalTeamId = approvalDialog.querySelector('[data-approval-team-id]');
 
     approvalReviewButtons.forEach((button) => {
         button.addEventListener('click', () => {
@@ -200,6 +195,8 @@ if (approvalDialog && approvalReviewButtons.length && approvalDialogClose) {
             approvalEvent.textContent = button.dataset.teamEvent;
             approvalCaptain.textContent = button.dataset.teamCaptain;
             approvalRoster.textContent = button.dataset.teamRoster;
+            approvalTournamentId.value = button.dataset.tournamentId;
+            approvalTeamId.value = button.dataset.teamId;
             approvalDialog.showModal();
         });
     });
@@ -208,4 +205,85 @@ if (approvalDialog && approvalReviewButtons.length && approvalDialogClose) {
     approvalDialog.addEventListener('click', (event) => {
         if (event.target === approvalDialog) approvalDialog.close();
     });
+}
+
+const fixtureDateInput = document.querySelector('[data-fixture-date]');
+const fixtureDateOpen = document.querySelector('[data-fixture-date-open]');
+const fixtureTimeInput = document.querySelector('[data-fixture-time]');
+const fixtureTimeOpen = document.querySelector('[data-fixture-time-open]');
+
+const connectNativePicker = (input, button) => {
+    if (!input || !button) return;
+
+    button.addEventListener('click', () => {
+        input.focus();
+
+        if (typeof input.showPicker === 'function') {
+            input.showPicker();
+        }
+    });
+};
+
+connectNativePicker(fixtureDateInput, fixtureDateOpen);
+connectNativePicker(fixtureTimeInput, fixtureTimeOpen);
+
+const fixtureTournament = document.querySelector('[data-fixture-tournament]');
+const fixtureHomeTeam = document.querySelector('[data-fixture-home-team]');
+const fixtureAwayTeam = document.querySelector('[data-fixture-away-team]');
+const fixtureWarning = document.querySelector('[data-fixture-warning]');
+const fixtureSubmit = document.querySelector('[data-fixture-submit]');
+
+if (fixtureTournament && fixtureHomeTeam && fixtureAwayTeam && fixtureWarning && fixtureSubmit) {
+    const teamOptions = (select) => [...select.options].filter((option) => option.value !== '');
+
+    const refreshFixtureTeams = () => {
+        const tournamentId = fixtureTournament.value;
+
+        [fixtureHomeTeam, fixtureAwayTeam].forEach((select) => {
+            teamOptions(select).forEach((option) => {
+                const belongsToTournament = tournamentId !== '' && option.dataset.tournamentId === tournamentId;
+                option.disabled = !belongsToTournament;
+                option.hidden = !belongsToTournament;
+            });
+
+            if (select.selectedOptions[0]?.disabled) {
+                select.value = '';
+            }
+        });
+
+        if (fixtureHomeTeam.value !== '' && fixtureHomeTeam.value === fixtureAwayTeam.value) {
+            fixtureAwayTeam.value = '';
+        }
+
+        teamOptions(fixtureAwayTeam).forEach((option) => {
+            if (option.dataset.tournamentId === tournamentId) {
+                option.disabled = option.value === fixtureHomeTeam.value;
+            }
+        });
+
+        teamOptions(fixtureHomeTeam).forEach((option) => {
+            if (option.dataset.tournamentId === tournamentId) {
+                option.disabled = option.value === fixtureAwayTeam.value;
+            }
+        });
+
+        const eligibleCount = teamOptions(fixtureHomeTeam)
+            .filter((option) => option.dataset.tournamentId === tournamentId)
+            .length;
+
+        if (tournamentId === '') {
+            fixtureWarning.textContent = 'Select a tournament to load its approved teams.';
+        } else if (eligibleCount < 2) {
+            fixtureWarning.textContent = `This tournament currently has ${eligibleCount} approved team${eligibleCount === 1 ? '' : 's'}. Approve at least two before creating a fixture.`;
+        } else {
+            fixtureWarning.textContent = 'Choose two different approved teams, then set the fixture date and time.';
+        }
+
+        fixtureSubmit.disabled = eligibleCount < 2;
+    };
+
+    fixtureTournament.addEventListener('change', refreshFixtureTeams);
+    fixtureHomeTeam.addEventListener('change', refreshFixtureTeams);
+    fixtureAwayTeam.addEventListener('change', refreshFixtureTeams);
+    refreshFixtureTeams();
 }

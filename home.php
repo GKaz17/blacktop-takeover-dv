@@ -1,40 +1,33 @@
 <?php
+require_once __DIR__ . '/config/connection.php';
+
 $pageTitle = 'Tournament Discovery';
 $pageDescription = 'Discover upcoming Blacktop Takeover tournaments across Jozi and Pitori.';
 $hideNavigation = true;
 $bodyClass = 'takeover-home';
 $courtMenuActive = 'discover';
 
-$tournaments = [
-    [
+$tournamentArt = [
+    'coj-summer-showdown' => [
         'slug' => 'coj-summer-showdown',
         'region' => 'coj',
-        'title' => 'COJ Summer Showdown',
-        'meta' => 'Aug 14 / Jozi',
         'keywords' => 'Johannesburg 011',
-        'action' => 'Open',
         'image' => '/blacktop-takeover/assets/images/figma/coj-summer-showdown.png',
         'accent' => 'orange',
         'tilt' => 'left',
     ],
-    [
+    'cop-regional-qualifier' => [
         'slug' => 'cop-regional-qualifier',
         'region' => 'cop',
-        'title' => 'COP Regional Qualifier',
-        'meta' => 'Aug 21 / PTA',
         'keywords' => 'Pretoria Pitori 012',
-        'action' => 'Open',
         'image' => '/blacktop-takeover/assets/images/figma/cop-regional-qualifier.png',
         'accent' => 'blue',
         'tilt' => 'right',
     ],
-    [
+    'kon-kos-invitational' => [
         'slug' => 'kon-kos-invitational',
         'region' => 'open',
-        'title' => 'KON + KOS Invitational Qualifiers',
-        'meta' => 'Braamfontein / Pitori - Two paths open',
         'keywords' => 'Johannesburg Jozi Pretoria PTA 011 012',
-        'action' => 'Qualify now',
         'images' => [
             '/blacktop-takeover/assets/images/official/kos-basketball-poster.png',
             '/blacktop-takeover/assets/images/official/kon-basketball-poster.png',
@@ -44,6 +37,29 @@ $tournaments = [
         'tilt' => 'none',
     ],
 ];
+
+$tournaments = [];
+$tournamentResult = $conn->query(
+    "SELECT name, slug, city, venue, starts_at, status
+     FROM tournaments
+     WHERE status <> 'cancelled'
+     ORDER BY starts_at
+     LIMIT 3"
+);
+foreach ($tournamentResult->fetch_all(MYSQLI_ASSOC) as $event) {
+    if (!isset($tournamentArt[$event['slug']])) {
+        continue;
+    }
+
+    $startsAt = new DateTimeImmutable($event['starts_at']);
+    $art = $tournamentArt[$event['slug']];
+    $art['title'] = $event['name'];
+    $art['meta'] = $startsAt->format('M d') . ' / ' . $event['city'];
+    $art['keywords'] .= ' ' . $event['venue'] . ' ' . $event['city'];
+    $art['action'] = $event['status'] === 'open' ? ($event['slug'] === 'kon-kos-invitational' ? 'Qualify now' : 'Open') : ucfirst(str_replace('_', ' ', $event['status']));
+    $art['registration'] = $event['status'];
+    $tournaments[] = $art;
+}
 
 require __DIR__ . '/includes/header.php';
 ?>
@@ -98,7 +114,7 @@ require __DIR__ . '/includes/header.php';
                 class="tournament-card tournament-card--<?= e($tournament['accent']) ?> tournament-card--tilt-<?= e($tournament['tilt']) ?>"
                 data-tournament-card
                 data-region="<?= e($tournament['region']) ?>"
-                data-registration="open"
+                data-registration="<?= e($tournament['registration']) ?>"
                 data-search="<?= e(strtolower($tournament['title'] . ' ' . $tournament['meta'] . ' ' . $tournament['keywords'])) ?>"
             >
                 <a class="tournament-card__link" href="/blacktop-takeover/tournament-details.php?event=<?= e($tournament['slug']) ?>">
@@ -122,7 +138,7 @@ require __DIR__ . '/includes/header.php';
         <?php endforeach; ?>
     </div>
 
-    <p class="sr-only" aria-live="polite" data-filter-status>Showing all three tournaments.</p>
+    <p class="sr-only" aria-live="polite" data-filter-status>Showing <?= e((string) count($tournaments)) ?> tournaments.</p>
 
     <div class="street-tags" aria-hidden="true">
         <span class="street-tag street-tag--jozi">Jozi 011</span>

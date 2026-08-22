@@ -1,69 +1,106 @@
 <?php
-$events = [
-    'coj-summer-showdown' => [
-        'eyebrow' => 'COJ / Regional qualifier',
-        'title' => 'COJ Summer Showdown',
-        'date' => '14 Aug 2026',
-        'time' => '10:00',
-        'venue' => 'Ellis Park Courts',
-        'city' => 'Johannesburg',
-        'description' => 'Sixteen squads. One regional crown. The champions advance to King of the North.',
-        'road' => 'The road to KON',
-        'spots' => '08',
-        'fee' => 'R500',
-        'format' => '5V5',
-        'roster' => '8',
-        'check_in' => '09:15 — captain and full squad',
-        'structure' => 'Group stage into knockout bracket',
-        'prize' => 'Regional title, champion kit + KON qualification',
-    ],
-    'cop-regional-qualifier' => [
-        'eyebrow' => 'COP / Regional qualifier',
-        'title' => 'COP Regional Qualifier',
-        'date' => '21 Aug 2026',
-        'time' => '10:00',
-        'venue' => 'Pitori Central Courts',
-        'city' => 'Pretoria',
-        'description' => 'Pitori squads meet for a direct route into the King of the South bracket.',
-        'road' => 'The road to KOS',
-        'spots' => '06',
-        'fee' => 'R500',
-        'format' => '5V5',
-        'roster' => '8',
-        'check_in' => '09:15 — captain and full squad',
-        'structure' => 'Group stage into knockout bracket',
-        'prize' => 'Regional title, champion kit + KOS qualification',
-    ],
-    'kon-kos-invitational' => [
-        'eyebrow' => 'Open / Invitational qualifier',
-        'title' => 'KON + KOS Invitational',
-        'date' => '29 Aug 2026',
-        'time' => '11:00',
-        'venue' => 'Braamfontein Courts',
-        'city' => 'Johannesburg',
-        'description' => 'Two paths stay open for squads ready to earn their place in the Gauteng final.',
-        'road' => 'The road to D.O.G.',
-        'spots' => '04',
-        'fee' => 'R650',
-        'format' => '5V5',
-        'roster' => '8',
-        'check_in' => '10:15 — captain and full squad',
-        'structure' => 'Invitational knockout bracket',
-        'prize' => 'KON or KOS seeding + D.O.G. qualification route',
-    ],
-];
+session_start();
 
-$eventSlug = (string) ($_POST['event'] ?? $_GET['event'] ?? 'coj-summer-showdown');
-if (!isset($events[$eventSlug])) {
-    $eventSlug = 'coj-summer-showdown';
+require_once __DIR__ . '/config/connection.php';
+
+$eventSlug = trim((string) ($_POST['event'] ?? $_GET['event'] ?? 'coj-summer-showdown'));
+$eventQuery = $conn->prepare(
+    "SELECT t.*,
+            COUNT(DISTINCT CASE WHEN te.status IN ('pending', 'confirmed') THEN te.team_id END) AS entry_count
+     FROM tournaments t
+     LEFT JOIN tournament_entries te ON te.tournament_id = t.id
+     WHERE t.slug = ?
+     GROUP BY t.id
+     LIMIT 1"
+);
+$eventQuery->bind_param('s', $eventSlug);
+$eventQuery->execute();
+$event = $eventQuery->get_result()->fetch_assoc();
+
+if (!$event) {
+    http_response_code(404);
+    $pageTitle = 'Tournament not found';
+    $hideNavigation = true;
+    require __DIR__ . '/includes/header.php';
+    ?>
+    <section class="blank-state"><h1>Tournament not found</h1><a href="/blacktop-takeover/tournaments.php">Return to tournaments</a></section>
+    <?php
+    require __DIR__ . '/includes/footer.php';
+    exit;
 }
 
-$event = $events[$eventSlug];
-$applicationSent = $_SERVER['REQUEST_METHOD'] === 'POST'
-    && ($_POST['team'] ?? '') === 'jozi-reign';
+$userId = (int) ($_SESSION['user_id'] ?? 0);
+$userRole = $_SESSION['user_role'] ?? null;
+$captainTeam = null;
 
-$pageTitle = $event['title'];
-$pageDescription = 'Tournament information and team application for ' . $event['title'] . '.';
+if ($userRole === 'captain') {
+    $teamQuery = $conn->prepare(
+        "SELECT t.id, t.name, t.captain_id,
+                COUNT(DISTINCT CASE WHEN tm.status = 'active' THEN tm.user_id END) AS roster_count,
+                MAX(te.status) AS entry_status
+         FROM teams t
+         LEFT JOIN team_members tm ON tm.team_id = t.id
+         LEFT JOIN tournament_entries te ON te.team_id = t.id AND te.tournament_id = ?
+         WHERE t.captain_id = ?
+         GROUP BY t.id
+         LIMIT 1"
+    );
+    $eventId = (int) $event['id'];
+    $teamQuery->bind_param('ii', $eventId, $userId);
+    $teamQuery->execute();
+    $captainTeam = $teamQuery->get_result()->fetch_assoc();
+}
+
+if (empty($_SESSION['tournament_csrf'])) {
+    $_SESSION['tournament_csrf'] = bin2hex(random_bytes(32));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $feedback = ['type' => 'error', 'message' => 'Only a team captain can submit an application.'];
+    $submittedToken = (string) ($_POST['csrf_token'] ?? '');
+
+    if (!hash_equals($_SESSION['tournament_csrf'], $submittedToken)) {
+        $feedback = ['type' => 'error', 'message' => 'Your session expired. Please try again.'];
+    } elseif ($userRole !== 'captain' || !$captainTeam) {
+        $feedback = ['type' => 'error', 'message' => 'Sign in with a captain account to apply.'];
+    } elseif (in_array($captainTeam['entry_status'], ['pending', 'confirmed'], true)) {
+        $feedback = ['type' => 'success', 'message' => 'Your team already has an application for this event.'];
+    } elseif ($event['status'] !== 'open') {
+        $feedback = ['type' => 'error', 'message' => 'Registration is not open for this event.'];
+    } elseif ((int) $event['entry_count'] >= (int) $event['capacity']) {
+        $feedback = ['type' => 'error', 'message' => 'This tournament has reached capacity.'];
+    } elseif ((int) $captainTeam['roster_count'] < 3) {
+        $feedback = ['type' => 'error', 'message' => 'Your squad needs at least three active members before applying.'];
+    } else {
+        $teamId = (int) $captainTeam['id'];
+        if ($captainTeam['entry_status'] === 'withdrawn') {
+            $entryUpdate = $conn->prepare("UPDATE tournament_entries SET status = 'pending', registered_at = CURRENT_TIMESTAMP WHERE tournament_id = ? AND team_id = ?");
+            $entryUpdate->bind_param('ii', $eventId, $teamId);
+            $entryUpdate->execute();
+        } else {
+            $entryInsert = $conn->prepare("INSERT INTO tournament_entries (tournament_id, team_id, status) VALUES (?, ?, 'pending')");
+            $entryInsert->bind_param('ii', $eventId, $teamId);
+            $entryInsert->execute();
+        }
+        $feedback = ['type' => 'success', 'message' => $captainTeam['name'] . ' is queued for organiser review.'];
+    }
+
+    $_SESSION['tournament_feedback'] = $feedback;
+    header('Location: /blacktop-takeover/tournament-details.php?event=' . rawurlencode($eventSlug));
+    exit;
+}
+
+$feedback = $_SESSION['tournament_feedback'] ?? null;
+unset($_SESSION['tournament_feedback']);
+
+$startsAt = new DateTimeImmutable($event['starts_at']);
+$spotsLeft = max(0, (int) $event['capacity'] - (int) $event['entry_count']);
+$fee = 'R' . number_format(((int) $event['entry_fee_cents']) / 100, 0);
+$applicationSent = $captainTeam && in_array($captainTeam['entry_status'], ['pending', 'confirmed'], true);
+$rosterCount = (int) ($captainTeam['roster_count'] ?? 0);
+
+$pageTitle = $event['name'];
+$pageDescription = 'Tournament information and team application for ' . $event['name'] . '.';
 $hideNavigation = true;
 $bodyClass = 'tournament-detail-page';
 $courtMenuActive = 'tournaments';
@@ -83,13 +120,13 @@ require __DIR__ . '/includes/header.php';
     <section class="event-hero">
         <div class="event-hero__copy">
             <p class="event-eyebrow"><?= e($event['eyebrow']) ?></p>
-            <h1><?= e($event['title']) ?></h1>
-            <p class="event-meta"><?= e($event['date']) ?> <span>&middot;</span> <?= e($event['time']) ?> <span>&middot;</span> <?= e($event['venue']) ?></p>
+            <h1><?= e($event['name']) ?></h1>
+            <p class="event-meta"><?= e($startsAt->format('d M Y')) ?> <span>&middot;</span> <?= e($startsAt->format('H:i')) ?> <span>&middot;</span> <?= e($event['venue']) ?></p>
             <p class="event-summary"><?= e($event['description']) ?></p>
         </div>
         <div class="event-hero__road">
             <img src="/blacktop-takeover/assets/images/figma/champion-feather-crown.svg" alt="" aria-hidden="true">
-            <strong><?= e($event['road']) ?></strong>
+            <strong><?= e($event['route_label']) ?></strong>
             <span>KON is the gate. D.O.G. is the throne.</span>
             <small>Duke of Gauteng &middot; franchise final</small>
         </div>
@@ -98,19 +135,19 @@ require __DIR__ . '/includes/header.php';
     <div class="event-detail__body">
         <div class="event-detail__main">
             <section class="event-facts" aria-label="Tournament facts">
-                <div><strong><?= e($event['spots']) ?></strong><span>Spots left</span></div>
-                <div><strong><?= e($event['fee']) ?></strong><span>Team fee</span></div>
-                <div><strong><?= e($event['format']) ?></strong><span>Format</span></div>
-                <div><strong><?= e($event['roster']) ?></strong><span>Max roster</span></div>
+                <div><strong><?= e(str_pad((string) $spotsLeft, 2, '0', STR_PAD_LEFT)) ?></strong><span>Spots left</span></div>
+                <div><strong><?= e($fee) ?></strong><span>Team fee</span></div>
+                <div><strong><?= e(strtoupper($event['format'])) ?></strong><span>Format</span></div>
+                <div><strong><?= e((string) $event['max_roster']) ?></strong><span>Max roster</span></div>
             </section>
 
             <section class="event-information">
                 <h2>Event information</h2>
                 <dl>
                     <div><dt>Venue</dt><dd><?= e($event['venue'] . ', ' . $event['city']) ?></dd></div>
-                    <div><dt>Check-in</dt><dd><?= e($event['check_in']) ?></dd></div>
-                    <div><dt>Format</dt><dd><?= e($event['structure']) ?></dd></div>
-                    <div><dt>Prize</dt><dd><?= e($event['prize']) ?></dd></div>
+                    <div><dt>Check-in</dt><dd><?= e($event['check_in_notes']) ?></dd></div>
+                    <div><dt>Format</dt><dd><?= e($event['structure_notes']) ?></dd></div>
+                    <div><dt>Prize</dt><dd><?= e($event['prize_notes']) ?></dd></div>
                 </dl>
             </section>
         </div>
@@ -119,29 +156,44 @@ require __DIR__ . '/includes/header.php';
             <h2 id="application-title">Team application</h2>
             <p>Applications are reviewed by a Blacktop organiser.</p>
 
-            <?php if ($applicationSent): ?>
-                <div class="application-confirmation" role="status">
-                    <strong>Application received.</strong>
-                    <span>Jozi Reign is queued for organiser review.</span>
+            <?php if ($feedback): ?>
+                <div class="application-confirmation application-confirmation--<?= e($feedback['type']) ?>" role="status">
+                    <strong><?= $feedback['type'] === 'success' ? 'Application update.' : 'Application blocked.' ?></strong>
+                    <span><?= e($feedback['message']) ?></span>
                 </div>
             <?php endif; ?>
 
-            <form method="post" action="/blacktop-takeover/tournament-details.php?event=<?= e($eventSlug) ?>">
-                <input type="hidden" name="event" value="<?= e($eventSlug) ?>">
-                <label for="application-team">Select team</label>
-                <select id="application-team" name="team" required>
-                    <option value="jozi-reign">Jozi Reign &middot; 8 players</option>
-                </select>
+            <?php if ($userRole === 'captain' && $captainTeam): ?>
+                <form method="post" action="/blacktop-takeover/tournament-details.php?event=<?= e($eventSlug) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['tournament_csrf']) ?>">
+                    <input type="hidden" name="event" value="<?= e($eventSlug) ?>">
+                    <label for="application-team">Captain team</label>
+                    <select id="application-team" name="team" required>
+                        <option value="<?= e((string) $captainTeam['id']) ?>"><?= e($captainTeam['name']) ?> &middot; <?= e((string) $rosterCount) ?> players</option>
+                    </select>
 
-                <span class="application-label">Roster status</span>
-                <progress value="8" max="8">8 of 8 players</progress>
-                <strong class="application-roster">8 / 8 players &middot; complete</strong>
+                    <span class="application-label">Roster status</span>
+                    <strong class="application-roster"><?= e((string) $rosterCount) ?> / <?= e((string) $event['max_roster']) ?> players &middot; <?= $rosterCount >= 3 ? 'entry minimum met' : 'minimum 3 required' ?></strong>
 
-                <button type="submit"<?= $applicationSent ? ' disabled' : '' ?>>
-                    <?= $applicationSent ? 'Application submitted' : 'Submit team application' ?>
-                </button>
-            </form>
-            <!-- Next pass: bind the team selector and tournament_entries insert to the authenticated captain record. -->
+                    <button type="submit"<?= $applicationSent ? ' disabled' : '' ?>>
+                        <?php if ($applicationSent): ?>
+                            <?= e(ucfirst($captainTeam['entry_status']) . ' application') ?>
+                        <?php elseif ($captainTeam['entry_status'] === 'withdrawn'): ?>
+                            Resubmit team application
+                        <?php else: ?>
+                            Submit team application
+                        <?php endif; ?>
+                    </button>
+                </form>
+            <?php elseif ($userRole === 'captain'): ?>
+                <p class="application-access-copy">Your captain account needs a team before it can enter.</p>
+                <a class="application-access-link" href="/blacktop-takeover/team.php">Open my squad</a>
+            <?php elseif ($userRole !== null): ?>
+                <p class="application-access-copy">Only the team captain can submit the squad application.</p>
+            <?php else: ?>
+                <p class="application-access-copy">Sign in as a captain to submit a team.</p>
+                <a class="application-access-link" href="/blacktop-takeover/login.php">Captain sign in</a>
+            <?php endif; ?>
         </aside>
     </div>
 </article>
