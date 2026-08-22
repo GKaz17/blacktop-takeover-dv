@@ -12,6 +12,7 @@ $tournamentArt = [
         'slug' => 'coj-summer-showdown',
         'region' => 'coj',
         'keywords' => 'Johannesburg 011',
+        'location_label' => 'Jozi',
         'image' => '/blacktop-takeover/assets/images/figma/coj-summer-showdown.png',
         'accent' => 'orange',
         'tilt' => 'left',
@@ -20,6 +21,7 @@ $tournamentArt = [
         'slug' => 'cop-regional-qualifier',
         'region' => 'cop',
         'keywords' => 'Pretoria Pitori 012',
+        'location_label' => 'PTA',
         'image' => '/blacktop-takeover/assets/images/figma/cop-regional-qualifier.png',
         'accent' => 'blue',
         'tilt' => 'right',
@@ -28,6 +30,8 @@ $tournamentArt = [
         'slug' => 'kon-kos-invitational',
         'region' => 'open',
         'keywords' => 'Johannesburg Jozi Pretoria PTA 011 012',
+        'display_title' => 'KON + KOS Invitational Qualifiers',
+        'display_meta' => 'Braamfontein ↔ Pitori · Two paths open',
         'images' => [
             '/blacktop-takeover/assets/images/official/kos-basketball-poster.png',
             '/blacktop-takeover/assets/images/official/kon-basketball-poster.png',
@@ -53,8 +57,9 @@ foreach ($tournamentResult->fetch_all(MYSQLI_ASSOC) as $event) {
 
     $startsAt = new DateTimeImmutable($event['starts_at']);
     $art = $tournamentArt[$event['slug']];
-    $art['title'] = $event['name'];
-    $art['meta'] = $startsAt->format('M d') . ' / ' . $event['city'];
+    $art['title'] = $art['display_title'] ?? $event['name'];
+    $art['meta'] = $art['display_meta']
+        ?? $startsAt->format('M d') . ' · ' . ($art['location_label'] ?? $event['city']);
     $art['keywords'] .= ' ' . $event['venue'] . ' ' . $event['city'];
     $art['action'] = $event['status'] === 'open' ? ($event['slug'] === 'kon-kos-invitational' ? 'Qualify now' : 'Open') : ucfirst(str_replace('_', ' ', $event['status']));
     $art['registration'] = $event['status'];
@@ -63,7 +68,7 @@ foreach ($tournamentResult->fetch_all(MYSQLI_ASSOC) as $event) {
 
 require __DIR__ . '/includes/header.php';
 ?>
-<section class="discovery-page" data-discovery>
+<section class="discovery-page" data-discovery data-figma-node="48:124">
     <img
         class="discovery-culture-layer"
         src="/blacktop-takeover/assets/images/figma/discovery-poster-wall.svg"
@@ -121,7 +126,9 @@ require __DIR__ . '/includes/header.php';
                     <span class="tournament-card__art<?= isset($tournament['art_class']) ? ' tournament-card__art--' . e($tournament['art_class']) : '' ?>">
                         <?php if (isset($tournament['images'])): ?>
                             <?php foreach ($tournament['images'] as $image): ?>
-                                <img src="<?= e($image) ?>" alt="" aria-hidden="true">
+                                <span class="tournament-card__art-panel">
+                                    <img src="<?= e($image) ?>" alt="" aria-hidden="true">
+                                </span>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <img src="<?= e($tournament['image']) ?>" alt="" aria-hidden="true">
