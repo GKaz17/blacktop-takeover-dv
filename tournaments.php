@@ -22,6 +22,22 @@ $tournamentQuery->bind_param('i', $userId);
 $tournamentQuery->execute();
 $tournaments = $tournamentQuery->get_result()->fetch_all(MYSQLI_ASSOC);
 
+$openTournamentCount = 0;
+$totalOpenSpots = 0;
+
+foreach ($tournaments as $tournament) {
+    if ($tournament['status'] === 'open') {
+        $openTournamentCount++;
+    }
+
+    $totalOpenSpots += max(0, (int) $tournament['capacity'] - (int) $tournament['entry_count']);
+}
+
+$nextTournament = $tournaments[0] ?? null;
+$nextTournamentDate = $nextTournament
+    ? (new DateTimeImmutable($nextTournament['starts_at']))->format('d M')
+    : 'TBC';
+
 $pageTitle = 'Tournaments';
 $pageDescription = 'Tournament dates, registration status and qualification routes for Blacktop Takeover.';
 $hideNavigation = true;
@@ -33,6 +49,11 @@ require __DIR__ . '/includes/header.php';
 <section class="tournament-board">
     <img class="tournament-board__mural" src="/blacktop-takeover/assets/images/figma/tournament-details-mural.svg" alt="" aria-hidden="true">
 
+    <div class="tournament-board__street-tags" aria-hidden="true">
+        <span>Run Gauteng</span>
+        <span>011 / 012</span>
+    </div>
+
     <header class="screen-header">
         <a class="screen-wordmark" href="/blacktop-takeover/home.php">Blacktop Takeover</a>
         <button class="court-menu-trigger" type="button" aria-label="Open Blacktop menu" aria-controls="court-menu" aria-expanded="false" data-court-menu-trigger>
@@ -41,10 +62,32 @@ require __DIR__ . '/includes/header.php';
     </header>
 
     <div class="tournament-board__content">
-        <div class="tournament-board__heading">
-            <p>Season board / Gauteng</p>
-            <h1>Tournament run</h1>
-            <span>Dates, capacity and your entry status in one place.</span>
+        <div class="tournament-board__hero">
+            <div class="tournament-board__heading">
+                <p>Season board / Gauteng</p>
+                <h1>Tournament run</h1>
+                <span>Dates, capacity and your entry status in one place.</span>
+            </div>
+
+            <dl class="tournament-board__summary" aria-label="Tournament season summary">
+                <div>
+                    <dt>Open events</dt>
+                    <dd><?= e((string) $openTournamentCount) ?></dd>
+                </div>
+                <div>
+                    <dt>Open spots</dt>
+                    <dd><?= e((string) $totalOpenSpots) ?></dd>
+                </div>
+                <div>
+                    <dt>Next run</dt>
+                    <dd><?= e(strtoupper($nextTournamentDate)) ?></dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="tournament-board__section-heading">
+            <h2>Published events</h2>
+            <p>COJ / COP <span>&rarr;</span> KON / KOS <span>&rarr;</span> D.O.G.</p>
         </div>
 
         <div class="tournament-board__list">
@@ -61,7 +104,7 @@ require __DIR__ . '/includes/header.php';
                     </div>
                     <div class="tournament-row__main">
                         <p><?= e($tournament['eyebrow']) ?></p>
-                        <h2><?= e($tournament['name']) ?></h2>
+                        <h3><?= e($tournament['name']) ?></h3>
                         <span><?= e($tournament['venue']) ?> / <?= e($tournament['city']) ?></span>
                     </div>
                     <dl class="tournament-row__facts">

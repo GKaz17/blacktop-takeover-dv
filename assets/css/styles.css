@@ -3506,8 +3506,48 @@ body.has-open-court-menu {
     inset: 0;
     width: 100%;
     height: 100%;
-    opacity: .34;
+    z-index: 0;
+    opacity: .42;
     object-fit: cover;
+}
+
+.tournament-board__street-tags {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.tournament-board__street-tags span {
+    position: absolute;
+    font-family: "Rubik Spray Paint", sans-serif;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tournament-board__street-tags span:first-child {
+    top: 610px;
+    left: -14px;
+    transform: rotate(-7deg);
+    color: #ff2e87;
+    font-size: 94px;
+    opacity: .12;
+}
+
+.tournament-board__street-tags span:last-child {
+    top: 184px;
+    right: 72px;
+    transform: rotate(5deg);
+    color: #00c2ff;
+    font-size: 72px;
+    opacity: .1;
+}
+
+.tournament-board .court-menu-trigger {
+    top: 20px;
+    right: 40px;
 }
 
 .tournament-board .screen-header,
@@ -3517,9 +3557,17 @@ body.has-open-court-menu {
 }
 
 .tournament-board__content {
-    width: min(1180px, calc(100% - 48px));
+    width: min(1332px, calc(100% - 108px));
     margin: 0 auto;
-    padding: 76px 0 90px;
+    padding: 42px 0 76px;
+}
+
+.tournament-board__hero {
+    display: grid;
+    min-height: 184px;
+    align-items: end;
+    grid-template-columns: minmax(0, 1fr) 510px;
+    gap: 54px;
 }
 
 .tournament-board__heading p {
@@ -3535,10 +3583,10 @@ body.has-open-court-menu {
 .tournament-board__heading h1 {
     margin: 0;
     font-family: "Bebas Neue", sans-serif;
-    font-size: clamp(62px, 9vw, 112px);
+    font-size: clamp(72px, 8vw, 108px);
     font-weight: 400;
     letter-spacing: .01em;
-    line-height: .86;
+    line-height: .82;
     text-transform: uppercase;
 }
 
@@ -3549,9 +3597,75 @@ body.has-open-court-menu {
     font-size: 13px;
 }
 
+.tournament-board__summary {
+    display: grid;
+    margin: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.tournament-board__summary div {
+    min-height: 112px;
+    border-top: 5px solid #f05a1a;
+    padding: 17px 16px 12px;
+    background: rgb(16 16 17 / 94%);
+}
+
+.tournament-board__summary div:nth-child(2) { border-color: #0f7fb5; }
+.tournament-board__summary div:nth-child(3) { border-color: #d4a827; }
+
+.tournament-board__summary dt {
+    color: #b7b4ac;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.tournament-board__summary dd {
+    margin: 7px 0 0;
+    color: #f6f2e8;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 42px;
+    line-height: 1;
+}
+
+.tournament-board__section-heading {
+    display: flex;
+    margin-top: 54px;
+    align-items: end;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(246 242 232 / 16%);
+    padding-bottom: 12px;
+}
+
+.tournament-board__section-heading h2,
+.tournament-board__section-heading p {
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.tournament-board__section-heading h2 {
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 24px;
+}
+
+.tournament-board__section-heading p {
+    color: #d4a827;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.tournament-board__section-heading p span {
+    padding: 0 7px;
+}
+
 .tournament-board__list {
     display: grid;
-    margin-top: 48px;
+    margin-top: 18px;
     gap: 14px;
 }
 
@@ -3566,6 +3680,13 @@ body.has-open-court-menu {
     background: linear-gradient(90deg, rgb(12 12 12 / 97%), rgb(24 24 24 / 91%));
     grid-template-columns: 90px minmax(240px, 1fr) minmax(300px, .9fr) 150px;
     gap: 22px;
+    transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.tournament-row:hover,
+.tournament-row:focus-within {
+    border-color: rgb(246 242 232 / 32%);
+    transform: translateX(5px);
 }
 
 .tournament-row--blue { --row-accent: #0f7fb5; }
@@ -3599,7 +3720,8 @@ body.has-open-court-menu {
 
 .tournament-row__main p { margin: 0 0 6px; color: var(--row-accent); }
 
-.tournament-row__main h2 {
+.tournament-row__main h2,
+.tournament-row__main h3 {
     margin: 0;
     font-family: "Barlow Condensed", sans-serif;
     font-size: 27px;
@@ -3674,6 +3796,10 @@ body.has-open-court-menu {
 .application-access-link { margin-top: 12px; --row-accent: #d4a827; }
 
 @media (max-width: 980px) {
+    .tournament-board__content { width: min(100% - 48px, 1332px); }
+    .tournament-board__hero { grid-template-columns: 1fr; gap: 36px; }
+    .tournament-board__summary { width: min(100%, 620px); }
+
     .tournament-row {
         grid-template-columns: 75px minmax(0, 1fr) 130px;
     }
@@ -3682,15 +3808,25 @@ body.has-open-court-menu {
 }
 
 @media (max-width: 640px) {
-    .tournament-board__content { width: min(100% - 30px, 1180px); padding-top: 42px; }
-    .tournament-board__list { margin-top: 34px; }
+    .tournament-board .court-menu-trigger { top: 16px; right: 18px; }
+    .tournament-board__street-tags { display: none; }
+    .tournament-board__content { width: min(100% - 30px, 1180px); padding-top: 34px; }
+    .tournament-board__heading h1 { font-size: 68px; }
+    .tournament-board__summary { gap: 7px; }
+    .tournament-board__summary div { min-height: 92px; padding: 14px 10px 10px; }
+    .tournament-board__summary dt { font-size: 9px; }
+    .tournament-board__summary dd { font-size: 32px; }
+    .tournament-board__section-heading { margin-top: 42px; align-items: flex-start; flex-direction: column; gap: 8px; }
+    .tournament-board__section-heading p { font-size: 11px; }
+    .tournament-board__list { margin-top: 18px; }
     .tournament-row {
         padding: 18px 16px;
         grid-template-columns: 56px minmax(0, 1fr);
         gap: 14px;
     }
     .tournament-row__date strong { font-size: 42px; }
-    .tournament-row__main h2 { font-size: 22px; }
+    .tournament-row__main h2,
+    .tournament-row__main h3 { font-size: 22px; }
     .tournament-row__action {
         grid-column: 2;
         align-items: flex-start;
