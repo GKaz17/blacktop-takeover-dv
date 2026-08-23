@@ -98,6 +98,11 @@ $spotsLeft = max(0, (int) $event['capacity'] - (int) $event['entry_count']);
 $fee = 'R' . number_format(((int) $event['entry_fee_cents']) / 100, 0);
 $applicationSent = $captainTeam && in_array($captainTeam['entry_status'], ['pending', 'confirmed'], true);
 $rosterCount = (int) ($captainTeam['roster_count'] ?? 0);
+$rosterMaximum = max(1, (int) $event['max_roster']);
+$rosterProgress = min($rosterCount, $rosterMaximum);
+$rosterStatus = $rosterCount >= $rosterMaximum
+    ? 'complete'
+    : ($rosterCount >= 3 ? 'entry minimum met' : 'minimum 3 required');
 
 $pageTitle = $event['name'];
 $pageDescription = 'Tournament information and team application for ' . $event['name'] . '.';
@@ -107,8 +112,13 @@ $courtMenuActive = 'tournaments';
 
 require __DIR__ . '/includes/header.php';
 ?>
-<article class="event-detail">
+<article class="event-detail" data-figma-node="48:216">
     <img class="event-detail__mural" src="/blacktop-takeover/assets/images/figma/tournament-details-mural.svg" alt="" aria-hidden="true">
+    <div class="event-detail__street-tags" aria-hidden="true">
+        <span class="event-detail__street-tag event-detail__street-tag--jozi">Jozi 011</span>
+        <span class="event-detail__street-tag event-detail__street-tag--egoli">011 / Egoli</span>
+        <span class="event-detail__street-tag event-detail__street-tag--block">Own the block</span>
+    </div>
 
     <header class="screen-header">
         <a class="screen-wordmark" href="/blacktop-takeover/home.php">Blacktop Takeover</a>
@@ -167,13 +177,18 @@ require __DIR__ . '/includes/header.php';
                 <form method="post" action="/blacktop-takeover/tournament-details.php?event=<?= e($eventSlug) ?>">
                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['tournament_csrf']) ?>">
                     <input type="hidden" name="event" value="<?= e($eventSlug) ?>">
-                    <label for="application-team">Captain team</label>
+                    <label for="application-team">Select team</label>
                     <select id="application-team" name="team" required>
                         <option value="<?= e((string) $captainTeam['id']) ?>"><?= e($captainTeam['name']) ?> &middot; <?= e((string) $rosterCount) ?> players</option>
                     </select>
 
                     <span class="application-label">Roster status</span>
-                    <strong class="application-roster"><?= e((string) $rosterCount) ?> / <?= e((string) $event['max_roster']) ?> players &middot; <?= $rosterCount >= 3 ? 'entry minimum met' : 'minimum 3 required' ?></strong>
+                    <progress
+                        value="<?= e((string) $rosterProgress) ?>"
+                        max="<?= e((string) $rosterMaximum) ?>"
+                        aria-label="<?= e((string) $rosterCount) ?> of <?= e((string) $rosterMaximum) ?> roster places filled"
+                    ></progress>
+                    <strong class="application-roster"><?= e((string) $rosterCount) ?> / <?= e((string) $rosterMaximum) ?> players &middot; <?= e($rosterStatus) ?></strong>
 
                     <button type="submit"<?= $applicationSent ? ' disabled' : '' ?>>
                         <?php if ($applicationSent): ?>

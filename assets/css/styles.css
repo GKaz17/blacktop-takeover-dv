@@ -1341,9 +1341,7 @@ body.has-open-court-menu {
     }
 }
 
-/* FINAL D03 — Tournament details
-   Current pass establishes the event view and captain application path.
-   Database-backed team discovery and organiser decisions remain for the next pass. */
+/* FINAL D03 — Tournament details / Figma node 48:216 */
 .tournament-detail-page main,
 .team-roster-page main {
     background: #0b0b0c;
@@ -1369,6 +1367,10 @@ body.has-open-court-menu {
     pointer-events: none;
 }
 
+.event-detail::after {
+    background: linear-gradient(112deg, transparent 15%, rgb(0 0 0 / 8%) 52%, transparent 78%);
+}
+
 .event-detail__mural,
 .squad-screen__mural {
     position: absolute;
@@ -1378,6 +1380,55 @@ body.has-open-court-menu {
     height: 100%;
     object-fit: cover;
     pointer-events: none;
+}
+
+.event-detail__street-tags {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.event-detail__street-tag {
+    position: absolute;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.event-detail__street-tag--jozi {
+    top: 73%;
+    left: 4.4%;
+    transform: rotate(-8deg);
+    color: #f2efe9;
+    font-size: 104px;
+    opacity: .12;
+}
+
+.event-detail__street-tag--egoli {
+    top: 72%;
+    left: 3.2%;
+    transform: rotate(7deg);
+    color: #f5c400;
+    font-family: "Rubik Spray Paint", sans-serif;
+    font-size: 82px;
+    opacity: .31;
+}
+
+.event-detail__street-tag--block {
+    top: 65%;
+    left: 63.2%;
+    transform: rotate(-5deg);
+    color: #ff2e87;
+    font-family: "Rubik Spray Paint", sans-serif;
+    font-size: 64px;
+    opacity: .22;
+}
+
+.event-detail .court-menu-trigger {
+    top: 22px;
+    right: 48px;
 }
 
 .screen-header {
@@ -1416,15 +1467,15 @@ body.has-open-court-menu {
     display: grid;
     min-height: 290px;
     border-left: 18px solid #f05a1a;
-    padding: 30px clamp(36px, 3.05vw, 44px) 24px;
-    align-items: center;
+    padding: 36px 40px 24px;
+    align-items: start;
     background: linear-gradient(90deg, #1a1a1c, #381105 50%, #062617);
-    grid-template-columns: minmax(0, 1fr) 390px;
-    gap: 40px;
+    grid-template-columns: minmax(0, 760px) 390px;
+    gap: 48px;
 }
 
 .event-hero__copy {
-    max-width: 780px;
+    width: min(760px, 100%);
 }
 
 .event-eyebrow,
@@ -1451,11 +1502,12 @@ body.has-open-court-menu {
     letter-spacing: .4px;
     line-height: .98;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .event-meta {
     color: #b7b4ac;
-    font-size: 16px;
+    font-size: 18px;
     text-transform: uppercase;
 }
 
@@ -1468,13 +1520,17 @@ body.has-open-court-menu {
     max-width: 700px;
     margin-top: 14px;
     color: #f6f2e8;
-    font-size: 17px;
+    font-size: 19px;
     line-height: 1.35;
 }
 
 .event-hero__road {
+    position: absolute;
+    top: 16px;
+    right: 54px;
     display: flex;
-    min-height: 230px;
+    width: 390px;
+    min-height: 260px;
     align-items: center;
     justify-content: center;
     flex-direction: column;
@@ -1482,8 +1538,8 @@ body.has-open-court-menu {
 }
 
 .event-hero__road img {
-    width: 150px;
-    height: 118px;
+    width: 190px;
+    height: 150px;
     object-fit: contain;
 }
 
@@ -1491,7 +1547,8 @@ body.has-open-court-menu {
     margin-top: -2px;
     color: #d4a827;
     font-family: "Barlow Condensed", sans-serif;
-    font-size: 25px;
+    font-size: 28px;
+    font-weight: 700;
     text-transform: uppercase;
 }
 
@@ -1499,7 +1556,7 @@ body.has-open-court-menu {
     margin-top: 7px;
     color: #d4a827;
     font-family: "Barlow Condensed", sans-serif;
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 700;
     letter-spacing: .6px;
     text-transform: uppercase;
@@ -1508,23 +1565,23 @@ body.has-open-court-menu {
 .event-hero__road small {
     margin-top: 5px;
     color: rgb(246 242 232 / 64%);
-    font-size: 9px;
+    font-size: 10px;
     letter-spacing: .8px;
     text-transform: uppercase;
 }
 
 .event-detail__body {
     display: grid;
-    padding: 38px clamp(28px, 3.75vw, 54px) 80px;
-    grid-template-columns: minmax(0, 904px) minmax(340px, 450px);
-    gap: clamp(24px, 3.2vw, 46px);
+    padding: 38px 16px 80px 54px;
+    grid-template-columns: 904px 450px;
+    gap: 16px;
 }
 
 .event-facts {
     display: grid;
     max-width: 904px;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
+    gap: 24px;
 }
 
 .event-facts div {
@@ -1547,6 +1604,11 @@ body.has-open-court-menu {
     background: repeating-radial-gradient(circle at 40% 30%, #fff 0 1px, transparent 1px 6px);
     content: "";
     pointer-events: none;
+}
+
+.event-facts div::after,
+.event-application::after {
+    display: none;
 }
 
 .event-facts div:nth-child(2) { background: #300a08; }
@@ -1574,7 +1636,7 @@ body.has-open-court-menu {
 
 .event-information {
     max-width: 760px;
-    margin-top: 34px;
+    margin-top: 40px;
 }
 
 .event-information h2,
@@ -1594,14 +1656,14 @@ body.has-open-court-menu {
 }
 
 .event-information dl {
-    margin: 14px 0 0;
+    margin: 0;
 }
 
 .event-information dl div {
     display: grid;
     min-height: 55px;
     border-bottom: 1px solid #232327;
-    padding: 14px 0 10px;
+    padding: 8px 0 7px;
     align-items: start;
     grid-template-columns: 120px 1fr;
 }
@@ -1623,6 +1685,7 @@ body.has-open-court-menu {
 .event-application {
     position: relative;
     overflow: hidden;
+    min-height: 408px;
     border-radius: 8px;
     padding: 28px 34px 24px;
     align-self: start;
@@ -1643,7 +1706,7 @@ body.has-open-court-menu {
 .event-application > p {
     margin: 7px 0 20px;
     color: #b7b4ac;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.35;
 }
 
@@ -1655,7 +1718,7 @@ body.has-open-court-menu {
 .application-label {
     margin-bottom: 8px;
     color: #f05a1a;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
 }
@@ -1668,7 +1731,7 @@ body.has-open-court-menu {
     padding: 0 16px;
     background: #1a1a1d;
     color: #f2efe9;
-    font: 15px Inter, sans-serif;
+    font: 17px Inter, sans-serif;
 }
 
 .application-label {
@@ -2272,12 +2335,15 @@ body.has-open-court-menu {
 @media (max-width: 840px) {
     .event-detail { min-height: 100svh; }
     .screen-wordmark { top: 28px; font-size: 23px; }
+    .event-detail .court-menu-trigger { top: 16px; right: 18px; }
+    .event-detail__street-tags { display: none; }
     .event-hero {
         padding: 34px 24px 28px;
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    .event-hero__road { min-height: 190px; }
+    .event-hero h1 { white-space: normal; }
+    .event-hero__road { position: static; width: 100%; min-height: 190px; }
     .event-hero__road img { width: 130px; height: 105px; }
     .event-detail__body { padding: 28px 20px 56px; grid-template-columns: 1fr; }
     .event-application { width: min(100%, 520px); }
