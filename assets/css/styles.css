@@ -6,6 +6,7 @@
     --concrete: #b7b4ac;
     --blue: #2d6b9f;
     --gold: #d4a827;
+    --app-wordmark-size: 30px;
 }
 
 * {
@@ -180,6 +181,12 @@ main {
     font-size: clamp(.8rem, 1.2vw, 1rem);
     font-weight: 700;
     letter-spacing: .16em;
+}
+
+.landing-page .paint-mark--streets,
+.registration-page .paint-mark--streets {
+    font-size: clamp(1.75rem, 2.8vw, 2.75rem);
+    letter-spacing: .1em;
 }
 
 .landing-cta,
@@ -605,8 +612,9 @@ main {
 
 .discovery-wordmark {
     color: #f2efe9;
-    font-family: "Bebas Neue", sans-serif;
-    font-size: 24px;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: var(--app-wordmark-size);
+    font-weight: 700;
     letter-spacing: 1px;
     line-height: 1;
     text-decoration: none;
@@ -1444,7 +1452,7 @@ body.has-open-court-menu {
     left: clamp(30px, 3.75vw, 54px);
     color: #f6f2e8;
     font-family: "Barlow Condensed", sans-serif;
-    font-size: 30px;
+    font-size: var(--app-wordmark-size);
     font-weight: 700;
     line-height: 1;
     text-decoration: none;
@@ -1841,7 +1849,7 @@ body.has-open-court-menu {
     left: 34px;
     color: #f6f2e8;
     font-family: "Barlow Condensed", sans-serif;
-    font-size: 31px;
+    font-size: var(--app-wordmark-size);
     font-weight: 700;
     line-height: .95;
     text-decoration: none;
@@ -2333,8 +2341,10 @@ body.has-open-court-menu {
 }
 
 @media (max-width: 840px) {
+    :root { --app-wordmark-size: 26px; }
+
     .event-detail { min-height: 100svh; }
-    .screen-wordmark { top: 28px; font-size: 23px; }
+    .screen-wordmark { top: 28px; }
     .event-detail .court-menu-trigger { top: 16px; right: 18px; }
     .event-detail__street-tags { display: none; }
     .event-hero {
@@ -2351,7 +2361,7 @@ body.has-open-court-menu {
     .squad-screen { display: block; min-height: 100svh; }
     .squad-rail { min-height: 150px; height: 150px; }
     .squad-rail > img { object-position: top; }
-    .squad-rail__brand { top: 24px; left: 24px; font-size: 26px; }
+    .squad-rail__brand { top: 24px; left: 24px; }
     .squad-rail__tag { top: 40px; left: 45%; font-size: 70px; }
     .squad-rail__captain { display: none; }
     .squad-rail__account { right: 88px; bottom: 25px; left: auto; }
@@ -2381,9 +2391,7 @@ body.has-open-court-menu {
     .squad-cards { grid-template-columns: 1fr; }
 }
 
-/* FINAL D05 — Match Centre
-   This pass establishes the public fixture views and accessible tabs.
-   Live score entry and database-driven event operations remain for the next pass. */
+/* FINAL D05 — Match Centre / Figma node 48:345 */
 .match-centre-page main { background: #0b0b0c; }
 
 .match-centre {
@@ -2398,7 +2406,7 @@ body.has-open-court-menu {
 .match-centre__mural {
     position: absolute;
     inset: 0;
-    z-index: -1;
+    z-index: -2;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -2428,7 +2436,7 @@ body.has-open-court-menu {
 
 .match-tabs {
     display: flex;
-    margin-top: 28px;
+    margin-top: 35px;
     gap: 12px;
 }
 
@@ -2459,9 +2467,8 @@ body.has-open-court-menu {
 .match-panel[hidden] { display: none; }
 
 .match-overview {
-    display: grid;
-    grid-template-columns: minmax(0, 836px) minmax(360px, 460px);
-    gap: 34px;
+    position: relative;
+    min-height: 220px;
 }
 
 .next-match,
@@ -2469,6 +2476,7 @@ body.has-open-court-menu {
 .match-secondary-view { border-radius: 8px; }
 
 .next-match {
+    width: min(836px, calc(100% - 494px));
     min-height: 220px;
     padding: 25px 28px 28px;
     background: linear-gradient(90deg, rgb(61 14 4 / 94%), rgb(43 31 4 / 94%) 48%, rgb(5 41 26 / 94%));
@@ -2535,6 +2543,10 @@ body.has-open-court-menu {
 }
 
 .match-standings {
+    position: absolute;
+    top: -78px;
+    right: 0;
+    width: 460px;
     min-height: 298px;
     padding: 23px 20px 18px;
     background: linear-gradient(90deg, rgb(28 9 43 / 96%), rgb(4 31 46 / 96%));
@@ -2542,7 +2554,7 @@ body.has-open-court-menu {
 
 .match-standings h2,
 .match-schedule h2,
-.match-secondary-view h2 {
+.match-view-heading h2 {
     margin: 0;
     font-family: "Barlow Condensed", sans-serif;
     font-weight: 700;
@@ -2581,7 +2593,11 @@ body.has-open-court-menu {
 .match-standings tbody tr:not(.is-leading) td:last-child { color: #f05a1a; }
 
 .match-standings > p {
-    margin: 22px 0 0;
+    position: absolute;
+    top: calc(100% + 18px);
+    left: 0;
+    width: 100%;
+    margin: 0;
     color: #d4a827;
     font-family: "Barlow Condensed", sans-serif;
     font-size: 11px;
@@ -2591,7 +2607,7 @@ body.has-open-court-menu {
     text-transform: uppercase;
 }
 
-.match-schedule { margin-top: 38px; }
+.match-schedule { margin-top: 42px; }
 .match-schedule h2 { font-size: 26px; }
 
 .match-schedule__table-wrap {
@@ -2625,31 +2641,117 @@ body.has-open-court-menu {
 .match-schedule th:nth-child(4) { width: 145px; }
 .match-schedule th:last-child { width: 148px; }
 .match-status--up-next { color: #f05a1a; }
+.match-status--live { color: #4db977; }
+.match-status--postponed { color: #d4a827; }
 
-.match-secondary-view {
-    display: flex;
-    min-height: 420px;
-    padding: 58px;
-    align-items: flex-start;
-    justify-content: center;
-    flex-direction: column;
+.match-results,
+.match-table-view {
+    min-height: 500px;
+    border-radius: 8px;
+    padding: 32px 34px 40px;
     background: linear-gradient(120deg, rgb(61 14 4 / 94%), rgb(5 41 26 / 94%));
 }
 
-.match-secondary-view__eyebrow {
+.match-table-view { background: linear-gradient(120deg, rgb(28 9 43 / 96%), rgb(4 31 46 / 96%)); }
+
+.match-view-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.match-view-heading p {
+    margin: 0 0 4px;
     color: #f05a1a;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .8px;
     text-transform: uppercase;
 }
 
-.match-secondary-view h2 { font-size: clamp(34px, 5vw, 68px); }
-.match-secondary-view h2 span { padding: 0 18px; color: #f05a1a; }
-.match-secondary-view > p:last-child { color: #b7b4ac; text-transform: uppercase; }
-.match-secondary-view--standings { background: linear-gradient(120deg, rgb(28 9 43 / 96%), rgb(4 31 46 / 96%)); }
+.match-view-heading h2 { font-size: 40px; }
 
-@media (max-width: 1000px) {
-    .match-overview { grid-template-columns: 1fr; }
-    .match-standings { width: min(100%, 620px); }
+.match-view-heading > span {
+    color: #d4a827;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.match-results .match-schedule__table-wrap,
+.match-table-view__wrap { margin-top: 24px; overflow-x: auto; }
+
+.match-results__table,
+.match-table-view table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.match-results__table th,
+.match-results__table td,
+.match-table-view th,
+.match-table-view td {
+    height: 54px;
+    padding: 0 18px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.match-results__table th,
+.match-table-view th {
+    height: 42px;
+    background: #1a1a18;
+    color: #b7b4ac;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.match-results__table tbody tr,
+.match-table-view tbody tr { background: rgb(11 11 12 / 97%); }
+.match-results__table tbody tr:nth-child(even),
+.match-table-view tbody tr:nth-child(even) { background: rgb(17 17 18 / 97%); }
+.match-results__table td,
+.match-table-view td { font-size: 13px; }
+.match-results__table th:first-child { width: 84px; }
+.match-results__table th:nth-child(2) { width: 180px; }
+.match-results__table th:nth-child(4) { width: 145px; }
+.match-results__table th:last-child { width: 110px; }
+
+.match-results__score {
+    display: grid;
+    align-items: center;
+    grid-template-columns: minmax(100px, 1fr) 90px minmax(100px, 1fr);
+    gap: 12px;
+}
+
+.match-results__score b {
+    color: #f05a1a;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.match-results__score span:last-child { text-align: right; }
+.match-table-view th:first-child { width: 110px; }
+.match-table-view th:nth-child(3),
+.match-table-view th:last-child { width: 150px; text-align: center; }
+.match-table-view td:nth-child(3),
+.match-table-view td:last-child { text-align: center; }
+.match-table-view td:first-child b { color: #2d6da3; font-family: "Bebas Neue", sans-serif; font-size: 23px; }
+.match-table-view tr.is-leading { background: #f05a1a; }
+.match-table-view tr.is-leading td:first-child b { color: #f5c400; }
+
+@media (max-width: 1180px) {
+    .match-overview { display: grid; min-height: 0; grid-template-columns: 1fr; gap: 28px; }
+    .next-match { width: 100%; }
+    .match-standings { position: relative; top: auto; right: auto; width: min(100%, 620px); }
+    .match-schedule { margin-top: 72px; }
 }
 
 @media (max-width: 640px) {
@@ -2657,6 +2759,7 @@ body.has-open-court-menu {
     .match-centre__content { padding: 30px 20px 48px; }
     .match-centre__intro h1 { font-size: 48px; }
     .match-centre__intro p { font-size: 13px; line-height: 1.5; }
+    .match-centre__culture-type { display: none; }
     .match-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
     .match-tabs button { min-width: 0; padding: 0 8px; font-size: 12px; }
     .match-panel { margin-top: 24px; }
@@ -2667,7 +2770,10 @@ body.has-open-court-menu {
     .next-match__footer { align-items: stretch; flex-direction: column; }
     .next-match__footer b { width: 100%; }
     .match-standings { padding-right: 12px; padding-left: 12px; }
-    .match-secondary-view { min-height: 340px; padding: 28px; }
+    .match-results,
+    .match-table-view { min-height: 340px; padding: 26px 20px 32px; }
+    .match-view-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
+    .match-view-heading h2 { font-size: 34px; }
 }
 
 /* FINAL D06 — Admin Control Deck
@@ -2726,9 +2832,10 @@ body.has-open-court-menu {
     top: 28px;
     left: 18px;
     color: #f2efe9;
-    font-family: "Bebas Neue", sans-serif;
-    font-size: 24px;
-    letter-spacing: .5px;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: var(--app-wordmark-size);
+    font-weight: 700;
+    letter-spacing: 0;
     line-height: 1;
     text-decoration: none;
     text-transform: uppercase;
@@ -3517,6 +3624,57 @@ body.has-open-court-menu {
     z-index: 1;
     overflow: hidden;
     pointer-events: none;
+}
+
+.match-centre__culture-type {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    text-transform: uppercase;
+}
+
+.match-centre__tag {
+    position: absolute;
+    display: block;
+    white-space: nowrap;
+}
+
+.match-centre__tag--versus {
+    top: 102px;
+    left: 880px;
+    color: #21c26b;
+    font: 62px/1 "Rubik Spray Paint", sans-serif;
+    opacity: .2;
+    transform: rotate(-5deg);
+}
+
+.match-centre__tag--districts {
+    top: 187px;
+    left: 1095px;
+    color: #f2efe9;
+    font: 64px/1 Inter, sans-serif;
+    opacity: .13;
+    transform: rotate(8deg);
+}
+
+.match-centre__tag--live {
+    top: 620px;
+    left: 60px;
+    color: #f2efe9;
+    font: 92px/1 Inter, sans-serif;
+    opacity: .13;
+    transform: rotate(-6deg);
+}
+
+.match-centre__tag--tar {
+    top: 690px;
+    left: 55px;
+    color: #f5c400;
+    font: 70px/1 "Rubik Spray Paint", sans-serif;
+    opacity: .23;
+    transform: rotate(5deg);
 }
 
 .tournament-board__street-tags span {

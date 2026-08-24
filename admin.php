@@ -178,7 +178,7 @@ require __DIR__ . '/includes/header.php';
 
     <aside class="admin-rail">
         <img src="/blacktop-takeover/assets/images/figma/admin-organiser-rail.svg" alt="" aria-hidden="true">
-        <a href="/blacktop-takeover/home.php">Blacktop<br>Admin</a>
+        <a href="/blacktop-takeover/home.php">Blacktop<br>Takeover</a>
         <span>011 × 012</span>
         <strong>Run the<br>court</strong>
         <p>Run the court<br>Own the night</p>

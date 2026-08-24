@@ -78,7 +78,7 @@ require __DIR__ . '/includes/header.php';
 
     <header class="discovery-header">
         <a class="discovery-wordmark" href="/blacktop-takeover/" aria-label="Blacktop Takeover landing page">
-            Blacktop
+            Blacktop Takeover
         </a>
         <button
             class="court-menu-trigger"

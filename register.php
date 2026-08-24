@@ -207,7 +207,7 @@ require __DIR__ . '/includes/header.php';
         </div>
         <p class="paint-mark paint-mark--011">011</p>
         <p class="paint-mark paint-mark--pitori">012</p>
-        <p class="paint-mark paint-mark--streets">YOUR TEAM STARTS HERE</p>
+        <p class="paint-mark paint-mark--streets">STREETS &gt; SCREENS</p>
     </div>
 
     <div class="landing-entry registration-entry">

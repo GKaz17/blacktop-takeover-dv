@@ -33,11 +33,16 @@ $results = [];
 $nextMatch = null;
 foreach ($matches as &$match) {
     $match['date'] = new DateTimeImmutable($match['scheduled_at']);
+
+    foreach (['home_team', 'away_team'] as $teamKey) {
+        $teamName = $match[$teamKey];
+        $standingsByTeam[$teamName] ??= ['team' => $teamName, 'played' => 0, 'points' => 0];
+    }
+
     if ($match['status'] === 'final') {
         $results[] = $match;
         foreach (['home_team', 'away_team'] as $teamKey) {
             $teamName = $match[$teamKey];
-            $standingsByTeam[$teamName] ??= ['team' => $teamName, 'played' => 0, 'points' => 0];
             $standingsByTeam[$teamName]['played']++;
         }
 
@@ -70,8 +75,15 @@ $courtMenuActive = 'matches';
 
 require __DIR__ . '/includes/header.php';
 ?>
-<section class="match-centre" data-match-centre>
+<section class="match-centre" data-match-centre data-figma-node="48:345">
     <img class="match-centre__mural" src="/blacktop-takeover/assets/images/figma/live-match-wall.svg" alt="" aria-hidden="true">
+    <div class="match-centre__culture-type" aria-hidden="true">
+        <!-- Approved graffiti text layers from FINAL D05, kept separate from the mural SVG so they scale cleanly. -->
+        <span class="match-centre__tag match-centre__tag--versus">011 vs Soweto</span>
+        <span class="match-centre__tag match-centre__tag--districts">011 × 012</span>
+        <span class="match-centre__tag match-centre__tag--live">Live from the Blacktop</span>
+        <span class="match-centre__tag match-centre__tag--tar">Live on the tar</span>
+    </div>
 
     <header class="screen-header">
         <a class="screen-wordmark" href="/blacktop-takeover/home.php">Blacktop Takeover</a>
@@ -125,12 +137,12 @@ require __DIR__ . '/includes/header.php';
                                     <td><?= e((string) $row['points']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
-                            <?php if ($standings === []): ?>
-                                <tr><td colspan="4">Standings begin after the first final score.</td></tr>
+                            <?php if ($matches === []): ?>
+                                <tr><td colspan="4">Standings begin when the draw is published.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
-                    <p>D.O.G. seed watch · every result moves the road</p>
+                    <p>D.O.G. seed watch&nbsp; · &nbsp;every result moves the road</p>
                 </aside>
             </div>
 
@@ -170,24 +182,69 @@ require __DIR__ . '/includes/header.php';
         </div>
 
         <div id="match-panel-results" class="match-panel" role="tabpanel" aria-labelledby="match-tab-results" data-match-panel="results" hidden>
-            <section class="match-secondary-view">
-                <?php if ($results): ?>
-                    <?php $latestResult = end($results); ?>
-                    <p class="match-secondary-view__eyebrow">Latest confirmed result</p>
-                    <h2><?= e($latestResult['home_team']) ?> <span><?= e((string) $latestResult['home_score']) ?> — <?= e((string) $latestResult['away_score']) ?></span> <?= e($latestResult['away_team']) ?></h2>
-                    <p><?= e($latestResult['round_name']) ?> · <?= e($latestResult['court'] ?: 'Court TBA') ?></p>
-                <?php else: ?>
-                    <p class="match-secondary-view__eyebrow">Results</p>
-                    <h2>No final scores yet</h2>
-                    <p>Confirmed results will appear here.</p>
-                <?php endif; ?>
+            <section class="match-results" aria-labelledby="confirmed-results-title">
+                <div class="match-view-heading">
+                    <div>
+                        <p>Score archive</p>
+                        <h2 id="confirmed-results-title">Confirmed results</h2>
+                    </div>
+                    <span><?= e((string) count($results)) ?> final<?= count($results) === 1 ? '' : 's' ?></span>
+                </div>
+
+                <div class="match-schedule__table-wrap">
+                    <table class="match-results__table">
+                        <thead><tr><th>Time</th><th>Round</th><th>Final score</th><th>Court</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <?php foreach (array_reverse($results) as $result): ?>
+                                <tr>
+                                    <td><time datetime="<?= e($result['date']->format(DateTimeInterface::ATOM)) ?>"><?= e($result['date']->format('H:i')) ?></time></td>
+                                    <td><?= e($result['round_name']) ?></td>
+                                    <td class="match-results__score">
+                                        <span><?= e($result['home_team']) ?></span>
+                                        <b><?= e((string) $result['home_score']) ?> — <?= e((string) $result['away_score']) ?></b>
+                                        <span><?= e($result['away_team']) ?></span>
+                                    </td>
+                                    <td><?= e($result['court'] ?: 'Court TBA') ?></td>
+                                    <td class="match-status match-status--final">Final</td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php if ($results === []): ?>
+                                <tr><td colspan="5">Confirmed scores will appear here after the organiser closes a match.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </div>
 
         <div id="match-panel-standings" class="match-panel" role="tabpanel" aria-labelledby="match-tab-standings" data-match-panel="standings" hidden>
-            <section class="match-secondary-view match-secondary-view--standings">
-                <h2>Group A table</h2>
-                <p><?= $standings ? e($standings[0]['team'] . ' lead with ' . $standings[0]['points'] . ' points.') : 'The table starts after the first confirmed result.' ?></p>
+            <section class="match-table-view" aria-labelledby="full-standings-title">
+                <div class="match-view-heading">
+                    <div>
+                        <p>D.O.G. seed watch</p>
+                        <h2 id="full-standings-title">Group A table</h2>
+                    </div>
+                    <span><?= e((string) count($standings)) ?> teams</span>
+                </div>
+
+                <div class="match-table-view__wrap">
+                    <table>
+                        <thead><tr><th>Seed</th><th>Team</th><th>Played</th><th>Points</th></tr></thead>
+                        <tbody>
+                            <?php foreach ($standings as $row): ?>
+                                <tr<?= $row['position'] === 1 ? ' class="is-leading"' : '' ?>>
+                                    <td><b><?= e(str_pad((string) $row['position'], 2, '0', STR_PAD_LEFT)) ?></b></td>
+                                    <td><?= e($row['team']) ?></td>
+                                    <td><?= e((string) $row['played']) ?></td>
+                                    <td><?= e((string) $row['points']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php if ($matches === []): ?>
+                                <tr><td colspan="4">The table starts when the organiser publishes the draw.</td></tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </section>
         </div>
 
