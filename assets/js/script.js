@@ -143,6 +143,41 @@ if (teamDialog && teamDialogOpen && teamDialogClose) {
     });
 }
 
+const memberDialog = document.querySelector('[data-member-dialog]');
+const memberDialogOpeners = [...document.querySelectorAll('[data-member-dialog-open]')];
+const memberDialogClose = document.querySelector('[data-member-dialog-close]');
+
+if (memberDialog && memberDialogOpeners.length && memberDialogClose) {
+    const memberId = memberDialog.querySelector('[data-member-id-field]');
+    const memberName = memberDialog.querySelector('[data-member-name]');
+    const memberJersey = memberDialog.querySelector('[data-member-jersey-field]');
+    const memberPosition = memberDialog.querySelector('[data-member-position-field]');
+    const memberStatus = memberDialog.querySelector('[data-member-status-field]');
+    const memberRemove = memberDialog.querySelector('[data-member-remove]');
+
+    memberDialogOpeners.forEach((button) => {
+        button.addEventListener('click', () => {
+            memberId.value = button.dataset.memberId;
+            memberName.textContent = button.dataset.memberName;
+            memberJersey.value = button.dataset.memberJersey;
+            memberPosition.value = button.dataset.memberPosition;
+            memberStatus.value = button.dataset.memberStatus === 'inactive' ? 'inactive' : 'active';
+            memberDialog.showModal();
+        });
+    });
+
+    memberDialogClose.addEventListener('click', () => memberDialog.close());
+    memberDialog.addEventListener('click', (event) => {
+        if (event.target === memberDialog) memberDialog.close();
+    });
+
+    memberRemove.addEventListener('click', (event) => {
+        if (!window.confirm(`Remove ${memberName.textContent} from this squad?`)) {
+            event.preventDefault();
+        }
+    });
+}
+
 const matchTabs = [...document.querySelectorAll('[data-match-tab]')];
 const matchPanels = [...document.querySelectorAll('[data-match-panel]')];
 
@@ -286,4 +321,28 @@ if (fixtureTournament && fixtureHomeTeam && fixtureAwayTeam && fixtureWarning &&
     fixtureHomeTeam.addEventListener('change', refreshFixtureTeams);
     fixtureAwayTeam.addEventListener('change', refreshFixtureTeams);
     refreshFixtureTeams();
+}
+
+const seedTournament = document.querySelector('[data-seed-tournament]');
+const seedTeam = document.querySelector('[data-seed-team]');
+
+if (seedTournament && seedTeam) {
+    const seedOptions = [...seedTeam.options].filter((option) => option.value !== '');
+
+    const refreshSeedTeams = () => {
+        const tournamentId = seedTournament.value;
+
+        seedOptions.forEach((option) => {
+            const isAvailable = tournamentId !== '' && option.dataset.tournamentId === tournamentId;
+            option.hidden = !isAvailable;
+            option.disabled = !isAvailable;
+        });
+
+        if (seedTeam.selectedOptions[0]?.disabled) {
+            seedTeam.value = '';
+        }
+    };
+
+    seedTournament.addEventListener('change', refreshSeedTeams);
+    refreshSeedTeams();
 }
