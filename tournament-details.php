@@ -2,6 +2,7 @@
 session_start();
 
 require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/includes/competition.php';
 
 $eventSlug = trim((string) ($_POST['event'] ?? $_GET['event'] ?? 'coj-summer-showdown'));
 $eventQuery = $conn->prepare(
@@ -31,24 +32,29 @@ if (!$event) {
 
 $userId = (int) ($_SESSION['user_id'] ?? 0);
 $userRole = $_SESSION['user_role'] ?? null;
-$captainTeam = null;
+$eventId = (int) $event['id'];
+$applicationTeam = null;
 
-if ($userRole === 'captain') {
+if ($userId > 0 && in_array($userRole, ['player', 'captain'], true)) {
     $teamQuery = $conn->prepare(
         "SELECT t.id, t.name, t.captain_id,
                 COUNT(DISTINCT CASE WHEN tm.status = 'active' THEN tm.user_id END) AS roster_count,
-                MAX(te.status) AS entry_status
+                MAX(te.status) AS entry_status,
+                MAX(t.captain_id = ?) AS is_captain,
+                MAX(viewer.squad_role = 'vice_captain' AND viewer.status = 'active') AS is_vice_captain
          FROM teams t
+         LEFT JOIN team_members viewer ON viewer.team_id = t.id AND viewer.user_id = ?
          LEFT JOIN team_members tm ON tm.team_id = t.id
          LEFT JOIN tournament_entries te ON te.team_id = t.id AND te.tournament_id = ?
          WHERE t.captain_id = ?
+            OR (viewer.squad_role = 'vice_captain' AND viewer.status = 'active')
          GROUP BY t.id
+         ORDER BY (t.captain_id = ?) DESC
          LIMIT 1"
     );
-    $eventId = (int) $event['id'];
-    $teamQuery->bind_param('ii', $eventId, $userId);
+    $teamQuery->bind_param('iiiii', $userId, $userId, $eventId, $userId, $userId);
     $teamQuery->execute();
-    $captainTeam = $teamQuery->get_result()->fetch_assoc();
+    $applicationTeam = $teamQuery->get_result()->fetch_assoc();
 }
 
 if (empty($_SESSION['tournament_csrf'])) {
@@ -56,33 +62,37 @@ if (empty($_SESSION['tournament_csrf'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $feedback = ['type' => 'error', 'message' => 'Only a team captain can submit an application.'];
+    $feedback = ['type' => 'error', 'message' => 'Only a team captain or active vice captain can submit an application.'];
     $submittedToken = (string) ($_POST['csrf_token'] ?? '');
 
     if (!hash_equals($_SESSION['tournament_csrf'], $submittedToken)) {
         $feedback = ['type' => 'error', 'message' => 'Your session expired. Please try again.'];
-    } elseif ($userRole !== 'captain' || !$captainTeam) {
-        $feedback = ['type' => 'error', 'message' => 'Sign in with a captain account to apply.'];
-    } elseif (in_array($captainTeam['entry_status'], ['pending', 'confirmed'], true)) {
+    } elseif (!$applicationTeam) {
+        $feedback = ['type' => 'error', 'message' => 'You need captain or active vice-captain access to apply.'];
+    } elseif (in_array($applicationTeam['entry_status'], ['pending', 'confirmed'], true)) {
         $feedback = ['type' => 'success', 'message' => 'Your team already has an application for this event.'];
     } elseif ($event['status'] !== 'open') {
         $feedback = ['type' => 'error', 'message' => 'Registration is not open for this event.'];
     } elseif ((int) $event['entry_count'] >= (int) $event['capacity']) {
         $feedback = ['type' => 'error', 'message' => 'This tournament has reached capacity.'];
-    } elseif ((int) $captainTeam['roster_count'] < 3) {
-        $feedback = ['type' => 'error', 'message' => 'Your squad needs at least three active members before applying.'];
     } else {
-        $teamId = (int) $captainTeam['id'];
-        if ($captainTeam['entry_status'] === 'withdrawn') {
-            $entryUpdate = $conn->prepare("UPDATE tournament_entries SET status = 'pending', registered_at = CURRENT_TIMESTAMP WHERE tournament_id = ? AND team_id = ?");
-            $entryUpdate->bind_param('ii', $eventId, $teamId);
-            $entryUpdate->execute();
+        $teamId = (int) $applicationTeam['id'];
+        $eligibility = competitionTeamEligibility($conn, $eventId, $teamId);
+
+        if (!$eligibility || !$eligibility['eligible']) {
+            $feedback = ['type' => 'error', 'message' => $eligibility['reason'] ?? 'The squad is not eligible for this tournament.'];
         } else {
-            $entryInsert = $conn->prepare("INSERT INTO tournament_entries (tournament_id, team_id, status) VALUES (?, ?, 'pending')");
-            $entryInsert->bind_param('ii', $eventId, $teamId);
-            $entryInsert->execute();
+            if ($applicationTeam['entry_status'] === 'withdrawn') {
+                $entryUpdate = $conn->prepare("UPDATE tournament_entries SET status = 'pending', registered_at = CURRENT_TIMESTAMP WHERE tournament_id = ? AND team_id = ?");
+                $entryUpdate->bind_param('ii', $eventId, $teamId);
+                $entryUpdate->execute();
+            } else {
+                $entryInsert = $conn->prepare("INSERT INTO tournament_entries (tournament_id, team_id, status) VALUES (?, ?, 'pending')");
+                $entryInsert->bind_param('ii', $eventId, $teamId);
+                $entryInsert->execute();
+            }
+            $feedback = ['type' => 'success', 'message' => $applicationTeam['name'] . ' is queued for organiser review.'];
         }
-        $feedback = ['type' => 'success', 'message' => $captainTeam['name'] . ' is queued for organiser review.'];
     }
 
     $_SESSION['tournament_feedback'] = $feedback;
@@ -96,13 +106,14 @@ unset($_SESSION['tournament_feedback']);
 $startsAt = new DateTimeImmutable($event['starts_at']);
 $spotsLeft = max(0, (int) $event['capacity'] - (int) $event['entry_count']);
 $fee = 'R' . number_format(((int) $event['entry_fee_cents']) / 100, 0);
-$applicationSent = $captainTeam && in_array($captainTeam['entry_status'], ['pending', 'confirmed'], true);
-$rosterCount = (int) ($captainTeam['roster_count'] ?? 0);
+$applicationSent = $applicationTeam && in_array($applicationTeam['entry_status'], ['pending', 'confirmed'], true);
+$rosterCount = (int) ($applicationTeam['roster_count'] ?? 0);
 $rosterMaximum = max(1, (int) $event['max_roster']);
+$rosterMinimum = competitionMinimumRoster($event['format']);
 $rosterProgress = min($rosterCount, $rosterMaximum);
 $rosterStatus = $rosterCount >= $rosterMaximum
     ? 'complete'
-    : ($rosterCount >= 3 ? 'entry minimum met' : 'minimum 3 required');
+    : ($rosterCount >= $rosterMinimum ? 'entry minimum met' : 'minimum ' . $rosterMinimum . ' required');
 
 $pageTitle = $event['name'];
 $pageDescription = 'Tournament information and team application for ' . $event['name'] . '.';
@@ -173,13 +184,13 @@ require __DIR__ . '/includes/header.php';
                 </div>
             <?php endif; ?>
 
-            <?php if ($userRole === 'captain' && $captainTeam): ?>
+            <?php if ($applicationTeam): ?>
                 <form method="post" action="/blacktop-takeover/tournament-details.php?event=<?= e($eventSlug) ?>">
                     <input type="hidden" name="csrf_token" value="<?= e($_SESSION['tournament_csrf']) ?>">
                     <input type="hidden" name="event" value="<?= e($eventSlug) ?>">
                     <label for="application-team">Select team</label>
                     <select id="application-team" name="team" required>
-                        <option value="<?= e((string) $captainTeam['id']) ?>"><?= e($captainTeam['name']) ?> &middot; <?= e((string) $rosterCount) ?> players</option>
+                        <option value="<?= e((string) $applicationTeam['id']) ?>"><?= e($applicationTeam['name']) ?> &middot; <?= e((string) $rosterCount) ?> players</option>
                     </select>
 
                     <span class="application-label">Roster status</span>
@@ -192,22 +203,22 @@ require __DIR__ . '/includes/header.php';
 
                     <button type="submit"<?= $applicationSent ? ' disabled' : '' ?>>
                         <?php if ($applicationSent): ?>
-                            <?= e(ucfirst($captainTeam['entry_status']) . ' application') ?>
-                        <?php elseif ($captainTeam['entry_status'] === 'withdrawn'): ?>
+                            <?= e(ucfirst($applicationTeam['entry_status']) . ' application') ?>
+                        <?php elseif ($applicationTeam['entry_status'] === 'withdrawn'): ?>
                             Resubmit team application
                         <?php else: ?>
                             Submit team application
                         <?php endif; ?>
                     </button>
                 </form>
-            <?php elseif ($userRole === 'captain'): ?>
-                <p class="application-access-copy">Your captain account needs a team before it can enter.</p>
+            <?php elseif (in_array($userRole, ['player', 'captain'], true)): ?>
+                <p class="application-access-copy">You need a team as its captain or active vice captain before it can enter.</p>
                 <a class="application-access-link" href="/blacktop-takeover/team.php">Open my squad</a>
             <?php elseif ($userRole !== null): ?>
-                <p class="application-access-copy">Only the team captain can submit the squad application.</p>
+                <p class="application-access-copy">Only a team captain or active vice captain can submit the squad application.</p>
             <?php else: ?>
-                <p class="application-access-copy">Sign in as a captain to submit a team.</p>
-                <a class="application-access-link" href="/blacktop-takeover/login.php">Captain sign in</a>
+                <p class="application-access-copy">Sign in with team leadership access to submit a team.</p>
+                <a class="application-access-link" href="/blacktop-takeover/login.php">Team sign in</a>
             <?php endif; ?>
         </aside>
     </div>

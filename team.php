@@ -31,6 +31,25 @@ if (empty($_SESSION['team_csrf'])) {
     $_SESSION['team_csrf'] = bin2hex(random_bytes(32));
 }
 
+$teamAccessQuery = $conn->prepare(
+    "SELECT team.id, team.captain_id, membership.squad_role, membership.status
+     FROM teams team
+     LEFT JOIN team_members membership ON membership.team_id = team.id AND membership.user_id = ?
+     WHERE team.captain_id = ? OR (membership.user_id = ? AND membership.status = 'active')
+     ORDER BY (team.captain_id = ?) DESC
+     LIMIT 1"
+);
+$teamAccessQuery->bind_param('iiii', $userId, $userId, $userId, $userId);
+$teamAccessQuery->execute();
+$teamAccess = $teamAccessQuery->get_result()->fetch_assoc();
+$isOwnedTeamCaptain = $teamAccess && (int) $teamAccess['captain_id'] === $userId;
+$isActiveViceCaptain = $teamAccess
+    && $teamAccess['squad_role'] === 'vice_captain'
+    && $teamAccess['status'] === 'active';
+$canManageRoster = $isOwnedTeamCaptain || $isActiveViceCaptain;
+$managedTeamId = (int) ($teamAccess['id'] ?? 0);
+$managedCaptainId = (int) ($teamAccess['captain_id'] ?? 0);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $postedToken = (string) ($_POST['csrf_token'] ?? '');
     $response = ['type' => 'error', 'message' => 'That squad action could not be completed.'];
@@ -71,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $response['message'] = 'That team name is already in use.';
                 }
             }
-        } elseif ($action === 'update_team' && $userRole === 'captain') {
+        } elseif ($action === 'update_team' && $isOwnedTeamCaptain) {
             $teamName = trim((string) ($_POST['team_name'] ?? ''));
             $teamCity = trim((string) ($_POST['team_city'] ?? ''));
 
@@ -87,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $response['message'] = 'That team name is already in use.';
                 }
             }
-        } elseif ($action === 'regenerate_invite' && $userRole === 'captain') {
+        } elseif ($action === 'regenerate_invite' && $isOwnedTeamCaptain) {
             $inviteCode = teamPageInviteCode();
             $regenerateInvite = $conn->prepare('UPDATE teams SET invite_code = ? WHERE captain_id = ?');
             $regenerateInvite->bind_param('si', $inviteCode, $userId);
@@ -95,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response = $regenerateInvite->affected_rows > 0
                 ? ['type' => 'success', 'message' => 'A fresh invite code is ready. The old code no longer works.']
                 : ['type' => 'error', 'message' => 'Create your squad before generating an invite code.'];
-        } elseif ($action === 'update_member' && $userRole === 'captain') {
+        } elseif ($action === 'update_member' && $canManageRoster) {
             $memberId = filter_input(INPUT_POST, 'member_id', FILTER_VALIDATE_INT);
             $jerseyInput = trim((string) ($_POST['jersey_number'] ?? ''));
             $position = trim((string) ($_POST['position'] ?? ''));
@@ -105,20 +124,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$memberId || ($jerseyInput !== '' && $jerseyNumber === false) || strlen($position) > 40 || !in_array($memberStatus, ['active', 'inactive'], true)) {
                 $response['message'] = 'Use a jersey number from 0 to 99 and choose a valid roster state.';
             } else {
+                $captainOverride = $isOwnedTeamCaptain ? 1 : 0;
                 $memberUpdate = $conn->prepare(
-                    "UPDATE team_members tm
-                     JOIN teams t ON t.id = tm.team_id
-                     SET tm.jersey_number = ?, tm.position = ?, tm.status = ?,
-                         tm.joined_at = CASE WHEN ? = 'active' AND tm.joined_at IS NULL THEN NOW() ELSE tm.joined_at END
-                     WHERE tm.user_id = ? AND t.captain_id = ? AND tm.user_id <> t.captain_id"
+                    "UPDATE team_members
+                     SET jersey_number = ?, position = ?, status = ?,
+                         squad_role = CASE WHEN ? = 'inactive' THEN 'player' ELSE squad_role END,
+                         joined_at = CASE WHEN ? = 'active' AND joined_at IS NULL THEN NOW() ELSE joined_at END
+                     WHERE team_id = ? AND user_id = ? AND (? = 1 OR user_id <> ?)"
                 );
-                $memberUpdate->bind_param('isssii', $jerseyNumber, $position, $memberStatus, $memberStatus, $memberId, $userId);
+                $memberUpdate->bind_param('issssiiii', $jerseyNumber, $position, $memberStatus, $memberStatus, $memberStatus, $managedTeamId, $memberId, $captainOverride, $managedCaptainId);
                 $memberUpdate->execute();
                 $response = $memberUpdate->affected_rows > 0
                     ? ['type' => 'success', 'message' => 'Player roster details updated.']
                     : ['type' => 'error', 'message' => 'That player is not editable or the details did not change.'];
             }
-        } elseif ($action === 'remove_member' && $userRole === 'captain') {
+        } elseif ($action === 'set_vice_captain' && $isOwnedTeamCaptain) {
+            $memberId = filter_input(INPUT_POST, 'member_id', FILTER_VALIDATE_INT) ?: 0;
+
+            try {
+                $conn->begin_transaction();
+                $clearViceCaptain = $conn->prepare("UPDATE team_members SET squad_role = 'player' WHERE team_id = ? AND squad_role = 'vice_captain'");
+                $clearViceCaptain->bind_param('i', $managedTeamId);
+                $clearViceCaptain->execute();
+
+                if ($memberId > 0) {
+                    $setViceCaptain = $conn->prepare(
+                        "UPDATE team_members
+                         SET squad_role = 'vice_captain'
+                         WHERE team_id = ? AND user_id = ? AND user_id <> ? AND status = 'active'"
+                    );
+                    $setViceCaptain->bind_param('iii', $managedTeamId, $memberId, $managedCaptainId);
+                    $setViceCaptain->execute();
+
+                    if ($setViceCaptain->affected_rows < 1) {
+                        throw new RuntimeException('Vice captain must be an active squad member.');
+                    }
+                }
+
+                $conn->commit();
+                $response = ['type' => 'success', 'message' => $memberId > 0 ? 'Vice captain assigned.' : 'Vice captain assignment cleared.'];
+            } catch (Throwable $error) {
+                $conn->rollback();
+                $response['message'] = $error->getMessage();
+            }
+        } elseif ($action === 'remove_member' && $isOwnedTeamCaptain) {
             $memberId = filter_input(INPUT_POST, 'member_id', FILTER_VALIDATE_INT);
 
             if ($memberId) {
@@ -180,16 +229,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $teamQuery = $conn->prepare(
     "SELECT t.id, t.name, t.city, t.captain_id, t.invite_code,
-            captain.first_name AS captain_first_name, captain.last_name AS captain_last_name
+            captain.first_name AS captain_first_name, captain.last_name AS captain_last_name,
+            membership.squad_role AS viewer_squad_role, membership.status AS viewer_status
      FROM teams t
      JOIN users captain ON captain.id = t.captain_id
-     LEFT JOIN team_members membership ON membership.team_id = t.id
+     LEFT JOIN team_members membership ON membership.team_id = t.id AND membership.user_id = ?
      WHERE t.captain_id = ?
         OR (membership.user_id = ? AND membership.status IN ('invited', 'active'))
      ORDER BY (t.captain_id = ?) DESC
      LIMIT 1"
 );
-$teamQuery->bind_param('iii', $userId, $userId, $userId);
+$teamQuery->bind_param('iiii', $userId, $userId, $userId, $userId);
 $teamQuery->execute();
 $team = $teamQuery->get_result()->fetch_assoc();
 
@@ -201,7 +251,7 @@ if ($team) {
     $teamId = (int) $team['id'];
     $captainId = (int) $team['captain_id'];
     $rosterQuery = $conn->prepare(
-        "SELECT u.id, u.first_name, u.last_name, u.role, tm.jersey_number, tm.position, tm.status
+        "SELECT u.id, u.first_name, u.last_name, u.role, tm.jersey_number, tm.position, tm.squad_role, tm.status
          FROM team_members tm
          JOIN users u ON u.id = tm.user_id
          WHERE tm.team_id = ?
@@ -233,7 +283,14 @@ $teamName = $team['name'] ?? 'No squad yet';
 $teamCity = $team['city'] ?? 'Build or join a team to unlock your roster';
 $captainName = $team ? trim($team['captain_first_name'] . ' ' . $team['captain_last_name']) : 'Not assigned';
 $rosterReady = $activeRosterCount >= 3;
+$fiveOnFiveReady = $activeRosterCount >= 5;
 $isTeamCaptain = $team && (int) $team['captain_id'] === $userId;
+$isViceCaptain = $team
+    && $team['viewer_squad_role'] === 'vice_captain'
+    && $team['viewer_status'] === 'active';
+$canManageRoster = $isTeamCaptain || $isViceCaptain;
+$viceCaptain = $team ? array_values(array_filter($roster, static fn (array $member): bool => $member['squad_role'] === 'vice_captain')) : [];
+$viceCaptainName = $viceCaptain ? trim($viceCaptain[0]['first_name'] . ' ' . $viceCaptain[0]['last_name']) : 'Not assigned';
 
 $pageTitle = 'My Squad';
 $pageDescription = 'Manage your squad roster and Blacktop tournament applications.';
@@ -249,7 +306,7 @@ require __DIR__ . '/includes/header.php';
         <a class="squad-rail__brand" href="/blacktop-takeover/home.php">Blacktop<br>Takeover</a>
         <span class="squad-rail__tag" aria-hidden="true">011</span>
         <span class="squad-rail__captain" aria-hidden="true">Captain</span>
-        <div class="squad-rail__account"><strong><?= e(ucfirst($userRole)) ?> account</strong><span><?= e($userName) ?></span></div>
+        <div class="squad-rail__account"><strong><?= e($isViceCaptain ? 'Vice captain' : ucfirst($userRole)) ?> account</strong><span><?= e($userName) ?></span></div>
     </aside>
 
     <section class="squad-content">
@@ -264,7 +321,7 @@ require __DIR__ . '/includes/header.php';
         <section class="team-banner" aria-labelledby="team-name">
             <div>
                 <h2 id="team-name"><?= e($teamName) ?></h2>
-                <p><?= e($teamCity) ?> <span>&middot;</span> Captain: <?= e($captainName) ?></p>
+                <p><?= e($teamCity) ?> <span>&middot;</span> Captain: <?= e($captainName) ?> <span>&middot;</span> Vice captain: <?= e($viceCaptainName) ?></p>
                 <?php if ($isTeamCaptain): ?>
                     <div class="team-code-controls">
                         <small>Invite code: <strong><?= e($team['invite_code'] ?: 'Not set') ?></strong></small>
@@ -284,22 +341,44 @@ require __DIR__ . '/includes/header.php';
                 <h2>Squad roster</h2><p>Only active players count toward tournament eligibility.</p>
                 <?php if ($team): ?>
                     <div class="roster-table-wrap">
-                        <table class="roster-table<?= $isTeamCaptain ? ' roster-table--managed' : '' ?>">
-                            <thead><tr><th>No.</th><th>Player</th><th>Role</th><th>Status</th><?php if ($isTeamCaptain): ?><th>Manage</th><?php endif; ?></tr></thead>
+                        <table class="roster-table<?= $canManageRoster ? ' roster-table--managed' : '' ?>">
+                            <thead><tr><th>No.</th><th>Player</th><th>Role</th><th>Status</th><?php if ($canManageRoster): ?><th>Manage</th><?php endif; ?></tr></thead>
                             <tbody>
                                 <?php foreach ($roster as $player): ?>
-                                    <?php $playerName = trim($player['first_name'] . ' ' . $player['last_name']); $isCaptain = (int) $player['id'] === (int) $team['captain_id']; $playerRole = $isCaptain ? 'Captain' : ($player['position'] ?: 'Player'); ?>
+                                    <?php
+                                    $playerName = trim($player['first_name'] . ' ' . $player['last_name']);
+                                    $isCaptain = (int) $player['id'] === (int) $team['captain_id'];
+                                    $isDeputy = $player['squad_role'] === 'vice_captain';
+                                    $playerRole = $isCaptain ? 'Captain' : ($isDeputy ? 'Vice captain' : ($player['position'] ?: 'Player'));
+                                    $canEditMember = $isTeamCaptain || !$isCaptain;
+                                    $canRemoveMember = $isTeamCaptain && !$isCaptain;
+                                    ?>
                                     <tr class="roster-row roster-row--<?= e($player['status']) ?>">
                                         <td><?= e($player['jersey_number'] !== null ? str_pad((string) $player['jersey_number'], 2, '0', STR_PAD_LEFT) : '--') ?></td>
                                         <td><?= e($playerName) ?></td><td><?= e($playerRole) ?></td><td class="roster-status roster-status--<?= e(strtolower($player['status'])) ?>"><?= e(ucfirst($player['status'])) ?></td>
-                                        <?php if ($isTeamCaptain): ?>
-                                            <td><?php if (!$isCaptain): ?><button class="roster-manage-button" type="button" data-member-dialog-open data-member-id="<?= e((string) $player['id']) ?>" data-member-name="<?= e($playerName) ?>" data-member-jersey="<?= e((string) ($player['jersey_number'] ?? '')) ?>" data-member-position="<?= e((string) ($player['position'] ?? '')) ?>" data-member-status="<?= e($player['status']) ?>">Edit</button><?php else: ?><span class="roster-captain-lock">Locked</span><?php endif; ?></td>
+                                        <?php if ($canManageRoster): ?>
+                                            <td><?php if ($canEditMember): ?><button class="roster-manage-button" type="button" data-member-dialog-open data-member-id="<?= e((string) $player['id']) ?>" data-member-name="<?= e($playerName) ?>" data-member-jersey="<?= e((string) ($player['jersey_number'] ?? '')) ?>" data-member-position="<?= e((string) ($player['position'] ?? '')) ?>" data-member-status="<?= e($player['status']) ?>" data-member-removable="<?= $canRemoveMember ? 'true' : 'false' ?>">Edit</button><?php else: ?><span class="roster-captain-lock">Captain only</span><?php endif; ?></td>
                                         <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
+                    <?php if ($isTeamCaptain): ?>
+                        <form class="squad-vice-form" method="post" action="/blacktop-takeover/team.php">
+                            <input type="hidden" name="csrf_token" value="<?= e($_SESSION['team_csrf']) ?>"><input type="hidden" name="action" value="set_vice_captain">
+                            <label for="vice-captain-member">Vice captain</label>
+                            <select id="vice-captain-member" name="member_id">
+                                <option value="0">No vice captain assigned</option>
+                                <?php foreach ($roster as $player): ?>
+                                    <?php if ((int) $player['id'] !== (int) $team['captain_id'] && $player['status'] === 'active'): ?>
+                                        <option value="<?= e((string) $player['id']) ?>"<?= $player['squad_role'] === 'vice_captain' ? ' selected' : '' ?>><?= e(trim($player['first_name'] . ' ' . $player['last_name'])) ?></option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </select>
+                            <button type="submit">Save deputy</button>
+                        </form>
+                    <?php endif; ?>
                     <?php if ($userRole === 'player'): ?>
                         <form class="squad-leave-form" method="post" action="/blacktop-takeover/team.php" onsubmit="return confirm('Leave this squad?');"><input type="hidden" name="csrf_token" value="<?= e($_SESSION['team_csrf']) ?>"><input type="hidden" name="action" value="leave_team"><button type="submit">Leave squad</button></form>
                     <?php endif; ?>
@@ -320,7 +399,7 @@ require __DIR__ . '/includes/header.php';
                         <p>Fixture board</p><strong>Awaiting draw</strong><span class="fixture-card__empty">Your next approved match will appear here as soon as an organiser publishes it.</span>
                     <?php endif; ?>
                 </section>
-                <section class="entry-ready-card"><h2>Ready to enter?</h2><p><?= $rosterReady ? 'Your active roster meets the minimum requirements.' : 'Build an active roster of at least three players first.' ?></p><?php if ($rosterReady): ?><a href="/blacktop-takeover/tournaments.php">Choose an event</a><?php endif; ?></section>
+                <section class="entry-ready-card"><h2>Ready to enter?</h2><p><?= $fiveOnFiveReady ? 'Your active roster meets the 3v3 and 5v5 entry floors.' : ($rosterReady ? 'Your squad can enter 3v3. Build to five active players for 5v5.' : 'Build an active roster of at least three players first.') ?></p><?php if ($rosterReady): ?><a href="/blacktop-takeover/tournaments.php">Choose an event</a><?php endif; ?></section>
             </aside>
         </div>
     </section>
@@ -328,7 +407,9 @@ require __DIR__ . '/includes/header.php';
 
 <?php if ($isTeamCaptain): ?>
 <dialog class="team-dialog" data-team-dialog><form method="post" action="/blacktop-takeover/team.php"><input type="hidden" name="csrf_token" value="<?= e($_SESSION['team_csrf']) ?>"><input type="hidden" name="action" value="update_team"><div class="team-dialog__heading"><h2>Edit team details</h2><button type="button" aria-label="Close team editor" data-team-dialog-close>&times;</button></div><label for="team-name-input">Team name</label><input id="team-name-input" name="team_name" value="<?= e($teamName) ?>" maxlength="100" required><label for="team-city-input">Home city</label><input id="team-city-input" name="team_city" value="<?= e($teamCity) ?>" maxlength="80" required><button class="team-dialog__save" type="submit">Save team details</button></form></dialog>
+<?php endif; ?>
 
+<?php if ($canManageRoster): ?>
 <dialog class="team-dialog member-dialog" data-member-dialog aria-labelledby="member-dialog-title">
     <form method="post" action="/blacktop-takeover/team.php">
         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['team_csrf']) ?>"><input type="hidden" name="action" value="update_member"><input type="hidden" name="member_id" value="" data-member-id-field>

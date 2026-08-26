@@ -2,6 +2,7 @@
 session_start();
 
 require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/includes/competition.php';
 
 $currentUserId = (int) ($_SESSION['user_id'] ?? 0);
 $currentUserRole = (string) ($_SESSION['user_role'] ?? '');
@@ -58,12 +59,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $newStatus = $decision === 'approve' ? 'confirmed' : ($decision === 'decline' ? 'withdrawn' : null);
 
             if ($tournamentId && $teamId && $newStatus) {
-                $review = $conn->prepare("UPDATE tournament_entries SET status = ? WHERE tournament_id = ? AND team_id = ? AND status = 'pending'");
-                $review->bind_param('sii', $newStatus, $tournamentId, $teamId);
-                $review->execute();
-                $feedback = $review->affected_rows > 0
-                    ? ['type' => 'success', 'message' => $newStatus === 'confirmed' ? 'Team application approved.' : 'Team application declined.']
-                    : ['type' => 'error', 'message' => 'That application is no longer pending.'];
+                $eligibility = $newStatus === 'confirmed'
+                    ? competitionTeamEligibility($conn, $tournamentId, $teamId)
+                    : null;
+
+                if ($newStatus === 'confirmed' && (!$eligibility || !$eligibility['eligible'])) {
+                    $feedback['message'] = $eligibility['reason'] ?? 'That team is not currently eligible for this tournament.';
+                } else {
+                    $review = $conn->prepare("UPDATE tournament_entries SET status = ? WHERE tournament_id = ? AND team_id = ? AND status = 'pending'");
+                    $review->bind_param('sii', $newStatus, $tournamentId, $teamId);
+                    $review->execute();
+                    $feedback = $review->affected_rows > 0
+                        ? ['type' => 'success', 'message' => $newStatus === 'confirmed' ? 'Team application approved.' : 'Team application declined.']
+                        : ['type' => 'error', 'message' => 'That application is no longer pending.'];
+                }
             }
         } elseif ($action === 'create_tournament') {
             $name = trim((string) ($_POST['name'] ?? ''));
@@ -81,14 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $deadline = adminPageDateTime((string) ($_POST['deadline_date'] ?? ''), (string) ($_POST['deadline_time'] ?? ''));
             $description = trim((string) ($_POST['description'] ?? ''));
 
-            if ($name === '' || $eyebrow === '' || $routeLabel === '' || $city === '' || $venue === '' || !$startsAt || !$deadline || $deadline > $startsAt || !$capacity || !$maxRoster || $entryFeeCents === null || $prizeCents === null || !in_array($format, ['3v3', '5v5'], true) || !in_array($status, ['draft', 'open'], true)) {
+            if ($name === '' || $eyebrow === '' || $routeLabel === '' || $city === '' || $venue === '' || !$startsAt || !$deadline || $deadline > $startsAt || !$capacity || !$maxRoster || $entryFeeCents === null || $prizeCents === null || !in_array($format, ['3v3', '5v5'], true) || $maxRoster < competitionMinimumRoster($format) || !in_array($status, ['draft', 'open'], true)) {
                 $feedback['message'] = 'Complete the event details and keep the registration deadline before tip-off.';
             } else {
                 try {
                     $slug = adminPageSlug($name);
                     $startsAtSql = $startsAt->format('Y-m-d H:i:s');
                     $deadlineSql = $deadline->format('Y-m-d H:i:s');
-                    $checkInNotes = 'Captain and full active roster required';
+                    $checkInNotes = 'Active roster and captain or vice captain required';
                     $structureNotes = $format === '3v3' ? 'Pool play into knockout bracket' : 'Group stage into knockout bracket';
                     $prizeNotes = $prizeCents > 0 ? 'Prize purse and qualification route' : 'Qualification route and champion recognition';
                     $insertTournament = $conn->prepare(
@@ -135,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $startsAt = adminPageDateTime((string) ($_POST['starts_date'] ?? ''), (string) ($_POST['starts_time'] ?? ''));
             $deadline = adminPageDateTime((string) ($_POST['deadline_date'] ?? ''), (string) ($_POST['deadline_time'] ?? ''));
 
-            if (!$tournamentId || $name === '' || $city === '' || $venue === '' || !$startsAt || !$deadline || $deadline > $startsAt || !$capacity || !$maxRoster || !in_array($format, ['3v3', '5v5'], true) || !in_array($status, ['draft', 'open', 'full', 'in_progress', 'completed', 'cancelled'], true)) {
+            if (!$tournamentId || $name === '' || $city === '' || $venue === '' || !$startsAt || !$deadline || $deadline > $startsAt || !$capacity || !$maxRoster || !in_array($format, ['3v3', '5v5'], true) || $maxRoster < competitionMinimumRoster($format) || !in_array($status, ['draft', 'open', 'full', 'in_progress', 'completed', 'cancelled'], true)) {
                 $feedback['message'] = 'Check the tournament fields before saving the season update.';
             } else {
                 $startsAtSql = $startsAt->format('Y-m-d H:i:s');
@@ -193,11 +202,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $eligibleCount = (int) $eligibleTeams->get_result()->fetch_assoc()['eligible_count'];
 
                 if ($eligibleCount === 2) {
-                    $scheduledAtSql = $scheduledAt->format('Y-m-d H:i:s');
-                    $fixture = $conn->prepare("INSERT INTO matches (tournament_id, home_team_id, away_team_id, round_name, court, scheduled_at, status) VALUES (?, ?, ?, ?, ?, ?, 'scheduled')");
-                    $fixture->bind_param('iiisss', $tournamentId, $homeTeamId, $awayTeamId, $roundName, $court, $scheduledAtSql);
-                    $fixture->execute();
-                    $feedback = ['type' => 'success', 'message' => 'Fixture published to Match Centre.'];
+                    $homeEligibility = competitionTeamEligibility($conn, $tournamentId, $homeTeamId);
+                    $awayEligibility = competitionTeamEligibility($conn, $tournamentId, $awayTeamId);
+
+                    if (!$homeEligibility || !$homeEligibility['eligible']) {
+                        $feedback['message'] = $homeEligibility['reason'] ?? 'The home team is no longer eligible for this tournament.';
+                    } elseif (!$awayEligibility || !$awayEligibility['eligible']) {
+                        $feedback['message'] = $awayEligibility['reason'] ?? 'The away team is no longer eligible for this tournament.';
+                    } else {
+                        $scheduledAtSql = $scheduledAt->format('Y-m-d H:i:s');
+                        $fixture = $conn->prepare("INSERT INTO matches (tournament_id, home_team_id, away_team_id, round_name, court, scheduled_at, status) VALUES (?, ?, ?, ?, ?, ?, 'scheduled')");
+                        $fixture->bind_param('iiisss', $tournamentId, $homeTeamId, $awayTeamId, $roundName, $court, $scheduledAtSql);
+                        $fixture->execute();
+                        $feedback = ['type' => 'success', 'message' => 'Fixture published to Match Centre.'];
+                    }
                 } else {
                     $feedback['message'] = 'Both teams must be approved for that tournament first.';
                 }
@@ -317,7 +335,7 @@ $pendingTeams = $conn->query(
     "SELECT te.tournament_id, te.team_id, t.name, tournament.name AS event,
             CONCAT(captain.first_name, ' ', captain.last_name) AS captain,
             COUNT(DISTINCT CASE WHEN tm.status = 'active' THEN tm.user_id END) AS roster_count,
-            tournament.max_roster
+            tournament.max_roster, tournament.format
      FROM tournament_entries te
      JOIN teams t ON t.id = te.team_id JOIN users captain ON captain.id = t.captain_id
      JOIN tournaments tournament ON tournament.id = te.tournament_id LEFT JOIN team_members tm ON tm.team_id = t.id
@@ -385,7 +403,7 @@ require __DIR__ . '/includes/header.php';
             <h2 id="approval-queue-title">Pending team approvals</h2>
             <div class="approval-queue__list">
                 <?php foreach ($pendingTeams as $team): ?>
-                    <button type="button" data-approval-review data-team-name="<?= e($team['name']) ?>" data-team-event="<?= e($team['event']) ?>" data-team-captain="<?= e($team['captain']) ?>" data-team-roster="<?= e($team['roster_count'] . ' / ' . $team['max_roster']) ?>" data-tournament-id="<?= e((string) $team['tournament_id']) ?>" data-team-id="<?= e((string) $team['team_id']) ?>"><span><strong><?= e($team['name']) ?></strong> — <?= e($team['event']) ?></span><b>Pending</b></button>
+                    <button type="button" data-approval-review data-team-name="<?= e($team['name']) ?>" data-team-event="<?= e($team['event']) ?>" data-team-captain="<?= e($team['captain']) ?>" data-team-roster="<?= e($team['roster_count'] . ' active · minimum ' . competitionMinimumRoster($team['format']) . ' · max ' . $team['max_roster']) ?>" data-tournament-id="<?= e((string) $team['tournament_id']) ?>" data-team-id="<?= e((string) $team['team_id']) ?>"><span><strong><?= e($team['name']) ?></strong> — <?= e($team['event']) ?></span><b>Pending</b></button>
                 <?php endforeach; ?>
                 <?php if ($pendingTeams === []): ?><p class="admin-empty-state">No team applications are waiting for review.</p><?php endif; ?>
             </div>

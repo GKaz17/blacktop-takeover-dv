@@ -2418,6 +2418,45 @@ body.has-open-court-menu {
     color: #f05a1a;
 }
 
+.squad-vice-form {
+    display: flex;
+    margin-top: 14px;
+    align-items: end;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.squad-vice-form label {
+    color: #d4a827;
+    font-family: "Barlow Condensed", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+.squad-vice-form select,
+.squad-vice-form button {
+    min-height: 36px;
+    border: 1px solid rgb(212 168 39 / 52%);
+    padding: 0 12px;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.squad-vice-form select {
+    min-width: 210px;
+    background: #101012;
+    color: #f6f2e8;
+}
+
+.squad-vice-form button {
+    background: #d4a827;
+    color: #080808;
+    cursor: pointer;
+}
+
 .squad-create-form {
     display: grid;
     border: 1px solid rgb(240 90 26 / 35%);
@@ -2507,6 +2546,8 @@ body.has-open-court-menu {
     text-transform: uppercase;
 }
 
+.member-dialog__remove[hidden] { display: none; }
+
 @media (max-width: 1120px) {
     .event-hero { grid-template-columns: minmax(0, 1fr) 300px; }
     .event-detail__body { grid-template-columns: minmax(0, 1fr) 350px; }
@@ -2574,6 +2615,8 @@ body.has-open-court-menu {
     .squad-cards { grid-template-columns: 1fr; }
     .squad-create-form { grid-template-columns: 1fr; }
     .squad-create-form > div { grid-column: auto; }
+    .squad-vice-form { align-items: stretch; flex-direction: column; }
+    .squad-vice-form select { width: 100%; }
     .member-dialog__actions { grid-template-columns: 1fr; }
     .member-dialog__remove { margin-top: 0; }
 }

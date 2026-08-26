@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS team_members (
     user_id INT UNSIGNED NOT NULL,
     jersey_number TINYINT UNSIGNED,
     position VARCHAR(40),
+    squad_role ENUM('player', 'vice_captain') NOT NULL DEFAULT 'player',
     status ENUM('invited', 'active', 'inactive') NOT NULL DEFAULT 'invited',
     joined_at TIMESTAMP NULL,
     PRIMARY KEY (team_id, user_id),

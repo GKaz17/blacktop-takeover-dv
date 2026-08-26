@@ -162,6 +162,7 @@ if (memberDialog && memberDialogOpeners.length && memberDialogClose) {
             memberJersey.value = button.dataset.memberJersey;
             memberPosition.value = button.dataset.memberPosition;
             memberStatus.value = button.dataset.memberStatus === 'inactive' ? 'inactive' : 'active';
+            if (memberRemove) memberRemove.hidden = button.dataset.memberRemovable !== 'true';
             memberDialog.showModal();
         });
     });
@@ -171,11 +172,13 @@ if (memberDialog && memberDialogOpeners.length && memberDialogClose) {
         if (event.target === memberDialog) memberDialog.close();
     });
 
-    memberRemove.addEventListener('click', (event) => {
-        if (!window.confirm(`Remove ${memberName.textContent} from this squad?`)) {
-            event.preventDefault();
-        }
-    });
+    if (memberRemove) {
+        memberRemove.addEventListener('click', (event) => {
+            if (!window.confirm(`Remove ${memberName.textContent} from this squad?`)) {
+                event.preventDefault();
+            }
+        });
+    }
 }
 
 const matchTabs = [...document.querySelectorAll('[data-match-tab]')];
