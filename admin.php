@@ -147,6 +147,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $updateTournament->execute();
                 $feedback = ['type' => 'success', 'message' => 'Tournament schedule and status updated.'];
             }
+        } elseif ($action === 'delete_tournament') {
+            $tournamentId = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
+
+            if ($tournamentId) {
+                $deleteCheck = $conn->prepare(
+                    'SELECT t.name,
+                            COUNT(DISTINCT te.team_id) AS entry_count,
+                            COUNT(DISTINCT m.id) AS match_count
+                     FROM tournaments t
+                     LEFT JOIN tournament_entries te ON te.tournament_id = t.id
+                     LEFT JOIN matches m ON m.tournament_id = t.id
+                     WHERE t.id = ?
+                     GROUP BY t.id'
+                );
+                $deleteCheck->bind_param('i', $tournamentId);
+                $deleteCheck->execute();
+                $tournamentDeleteState = $deleteCheck->get_result()->fetch_assoc();
+
+                if (!$tournamentDeleteState) {
+                    $feedback['message'] = 'That tournament no longer exists.';
+                } elseif ((int) $tournamentDeleteState['entry_count'] > 0 || (int) $tournamentDeleteState['match_count'] > 0) {
+                    $feedback['message'] = 'This tournament has applications or fixtures. Mark it cancelled to preserve its competition history.';
+                } else {
+                    $deleteTournament = $conn->prepare('DELETE FROM tournaments WHERE id = ?');
+                    $deleteTournament->bind_param('i', $tournamentId);
+                    $deleteTournament->execute();
+                    $feedback = ['type' => 'success', 'message' => $tournamentDeleteState['name'] . ' was permanently deleted.'];
+                }
+            }
         } elseif ($action === 'create_fixture') {
             $tournamentId = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
             $homeTeamId = filter_input(INPUT_POST, 'home_team_id', FILTER_VALIDATE_INT);
@@ -195,6 +224,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $fixtureUpdate->bind_param('sssiisi', $roundName, $court, $scheduledAtSql, $homeScore, $awayScore, $matchStatus, $matchId);
                 $fixtureUpdate->execute();
                 $feedback = ['type' => 'success', 'message' => $matchStatus === 'final' ? 'Final result saved and standings recalculated.' : 'Fixture controls updated.'];
+            }
+        } elseif ($action === 'delete_fixture') {
+            $matchId = filter_input(INPUT_POST, 'match_id', FILTER_VALIDATE_INT);
+
+            if ($matchId) {
+                $deleteFixture = $conn->prepare("DELETE FROM matches WHERE id = ? AND status IN ('scheduled', 'postponed')");
+                $deleteFixture->bind_param('i', $matchId);
+                $deleteFixture->execute();
+                $feedback = $deleteFixture->affected_rows > 0
+                    ? ['type' => 'success', 'message' => 'Fixture removed from the schedule.']
+                    : ['type' => 'error', 'message' => 'Live and final fixtures cannot be deleted. Update their status or preserve the result history.'];
             }
         } elseif ($action === 'set_seed') {
             $tournamentId = filter_input(INPUT_POST, 'tournament_id', FILTER_VALIDATE_INT);
@@ -382,6 +422,11 @@ require __DIR__ . '/includes/header.php';
                                 <div class="admin-operation-card__quad"><label>Capacity<input type="number" name="capacity" min="2" max="128" value="<?= e((string) $tournament['capacity']) ?>" required></label><label>Max roster<input type="number" name="max_roster" min="3" max="20" value="<?= e((string) $tournament['max_roster']) ?>" required></label><label>Format<select name="format"><option value="5v5"<?= $tournament['format'] === '5v5' ? ' selected' : '' ?>>5V5</option><option value="3v3"<?= $tournament['format'] === '3v3' ? ' selected' : '' ?>>3V3</option></select></label><label>Status<select name="status"><?php foreach (['draft', 'open', 'full', 'in_progress', 'completed', 'cancelled'] as $status): ?><option value="<?= e($status) ?>"<?= $tournament['status'] === $status ? ' selected' : '' ?>><?= e(str_replace('_', ' ', ucfirst($status))) ?></option><?php endforeach; ?></select></label></div>
                                 <button type="submit">Save event changes</button>
                             </form>
+                            <form class="admin-delete-form" method="post" action="/blacktop-takeover/admin.php" data-confirm-delete data-delete-label="<?= e($tournament['name']) ?>">
+                                <input type="hidden" name="csrf_token" value="<?= e($_SESSION['admin_csrf']) ?>"><input type="hidden" name="action" value="delete_tournament"><input type="hidden" name="tournament_id" value="<?= e((string) $tournament['id']) ?>">
+                                <small>Permanent delete is available only before applications or fixtures exist.</small>
+                                <button type="submit">Delete tournament</button>
+                            </form>
                         </details>
                     <?php endforeach; ?>
                 </div>
@@ -415,6 +460,15 @@ require __DIR__ . '/includes/header.php';
                                 <label>Match state<select name="match_status"><?php foreach (['scheduled', 'live', 'final', 'postponed'] as $status): ?><option value="<?= e($status) ?>"<?= $match['status'] === $status ? ' selected' : '' ?>><?= e(ucfirst($status)) ?></option><?php endforeach; ?></select></label>
                                 <button type="submit">Save fixture</button>
                             </form>
+                            <?php if (in_array($match['status'], ['scheduled', 'postponed'], true)): ?>
+                                <form class="admin-delete-form" method="post" action="/blacktop-takeover/admin.php" data-confirm-delete data-delete-label="<?= e($match['home_team'] . ' vs ' . $match['away_team']) ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= e($_SESSION['admin_csrf']) ?>"><input type="hidden" name="action" value="delete_fixture"><input type="hidden" name="match_id" value="<?= e((string) $match['id']) ?>">
+                                    <small>This removes the unpublished fixture from Match Centre.</small>
+                                    <button type="submit">Delete fixture</button>
+                                </form>
+                            <?php else: ?>
+                                <p class="admin-delete-lock">Live and final results are retained for standings history.</p>
+                            <?php endif; ?>
                         </details>
                     <?php endforeach; ?>
                     <?php if ($adminMatches === []): ?><p class="admin-empty-state">No fixtures have been created yet.</p><?php endif; ?>

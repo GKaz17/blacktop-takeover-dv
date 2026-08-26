@@ -346,3 +346,16 @@ if (seedTournament && seedTeam) {
     seedTournament.addEventListener('change', refreshSeedTeams);
     refreshSeedTeams();
 }
+
+const guardedDeleteForms = [...document.querySelectorAll('[data-confirm-delete]')];
+
+guardedDeleteForms.forEach((form) => {
+    form.addEventListener('submit', (event) => {
+        const label = form.dataset.deleteLabel || 'this record';
+        const confirmed = window.confirm(`Permanently delete ${label}? This cannot be undone.`);
+
+        if (!confirmed) {
+            event.preventDefault();
+        }
+    });
+});

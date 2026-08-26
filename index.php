@@ -8,12 +8,9 @@ require __DIR__ . '/includes/header.php';
 <section class="landing-shell" data-figma-node="48:3">
     <div class="culture-panel" aria-hidden="true">
         <img class="culture-fill" src="/blacktop-takeover/assets/images/figma/login-mural.svg" alt="">
-        <!-- BUILDING VECTOR NOTE:
-             This skyline is a temporary stylised landmark layer. Replace it with vectors
-             traced from properly licensed, authentic Jozi/PTA high-rise photographs when
-             those references are ready; keep the resulting artwork decorative in the UI. -->
-        <img class="skyline" src="/blacktop-takeover/assets/images/figma/jozi-landmarks.svg" alt="">
-        <!-- END BUILDING VECTOR NOTE -->
+        <!-- Authentic Johannesburg skyline artwork replaces the temporary hand-drawn towers.
+             Keep this decorative layer replaceable so a licensed final source can be swapped in. -->
+        <img class="skyline skyline--johannesburg" src="/blacktop-takeover/assets/images/figma/johannesburg-skyline-cutout.png" alt="">
         <div class="brand-lockup">
             <strong>BLACKTOP</strong>
             <span>TAKEOVER</span>
