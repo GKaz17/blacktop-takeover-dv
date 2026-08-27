@@ -2,14 +2,26 @@
 require_once __DIR__ . '/config/connection.php';
 
 $requestedEvent = trim((string) ($_GET['event'] ?? ''));
+$eventOptions = $conn->query(
+    "SELECT t.id, t.name, t.slug, t.status, t.starts_at,
+            COUNT(m.id) AS match_count,
+            COUNT(CASE WHEN m.status = 'final' THEN 1 END) AS final_count
+     FROM tournaments t
+     LEFT JOIN matches m ON m.tournament_id = t.id
+     WHERE t.status <> 'cancelled'
+     GROUP BY t.id
+     ORDER BY t.status = 'in_progress' DESC, t.starts_at, t.id"
+)->fetch_all(MYSQLI_ASSOC);
+
+$selectedEvent = $eventOptions[0] ?? null;
 if ($requestedEvent !== '') {
-    $eventQuery = $conn->prepare("SELECT id, name, slug FROM tournaments WHERE slug = ? AND status <> 'cancelled' LIMIT 1");
-    $eventQuery->bind_param('s', $requestedEvent);
-} else {
-    $eventQuery = $conn->prepare("SELECT id, name, slug FROM tournaments WHERE status <> 'cancelled' ORDER BY status = 'in_progress' DESC, starts_at LIMIT 1");
+    foreach ($eventOptions as $eventOption) {
+        if ($eventOption['slug'] === $requestedEvent) {
+            $selectedEvent = $eventOption;
+            break;
+        }
+    }
 }
-$eventQuery->execute();
-$selectedEvent = $eventQuery->get_result()->fetch_assoc();
 
 $matches = [];
 if ($selectedEvent) {
@@ -72,6 +84,7 @@ $pageDescription = 'Live fixtures, results and group standings for Blacktop Take
 $hideNavigation = true;
 $bodyClass = 'match-centre-page';
 $courtMenuActive = 'matches';
+$matchCentreEvent = $selectedEvent['slug'] ?? '';
 
 require __DIR__ . '/includes/header.php';
 ?>
@@ -97,6 +110,25 @@ require __DIR__ . '/includes/header.php';
             <h1>Match centre</h1>
             <p><?= e($selectedEvent['name'] ?? 'No published event') ?> <span>/</span> Live event operations</p>
         </div>
+
+        <?php if ($eventOptions !== []): ?>
+            <nav class="match-event-switcher" aria-label="Choose tournament match feed">
+                <span class="match-event-switcher__label">Event feed</span>
+                <div class="match-event-switcher__options">
+                    <?php foreach ($eventOptions as $eventOption): ?>
+                        <?php $isSelectedEvent = $selectedEvent && (int) $eventOption['id'] === (int) $selectedEvent['id']; ?>
+                        <a
+                            href="/blacktop-takeover/match-centre.php?event=<?= e(rawurlencode($eventOption['slug'])) ?>"
+                            class="<?= $isSelectedEvent ? 'is-active' : '' ?>"
+                            <?= $isSelectedEvent ? 'aria-current="page"' : '' ?>
+                        >
+                            <strong><?= e($eventOption['name']) ?></strong>
+                            <span><?= e((string) $eventOption['match_count']) ?> fixture<?= (int) $eventOption['match_count'] === 1 ? '' : 's' ?> / <?= e((string) $eventOption['final_count']) ?> final</span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </nav>
+        <?php endif; ?>
 
         <div class="match-tabs" role="tablist" aria-label="Match centre views">
             <button id="match-tab-fixtures" type="button" role="tab" aria-selected="true" aria-controls="match-panel-fixtures" data-match-tab="fixtures">Fixtures</button>

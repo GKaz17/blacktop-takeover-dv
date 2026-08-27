@@ -125,6 +125,7 @@ $pageDescription = 'Tournament information and team application for ' . $event['
 $hideNavigation = true;
 $bodyClass = 'tournament-detail-page';
 $courtMenuActive = 'tournaments';
+$matchCentreEvent = $eventSlug;
 
 require __DIR__ . '/includes/header.php';
 ?>

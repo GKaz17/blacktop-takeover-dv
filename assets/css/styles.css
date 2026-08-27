@@ -2935,6 +2935,73 @@ body.has-open-court-menu {
 
 .match-centre__intro span { padding: 0 8px; }
 
+.match-event-switcher {
+    display: grid;
+    margin-top: 24px;
+    border-top: 1px solid rgb(242 239 233 / 18%);
+    border-bottom: 1px solid rgb(242 239 233 / 18%);
+    padding: 16px 0;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 18px;
+}
+
+.match-event-switcher__label {
+    color: #f5c400;
+    font: 600 13px "Barlow Condensed", sans-serif;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+
+.match-event-switcher__options {
+    display: flex;
+    min-width: 0;
+    overflow-x: auto;
+    padding-bottom: 3px;
+    gap: 10px;
+    scrollbar-width: thin;
+}
+
+.match-event-switcher a {
+    display: grid;
+    min-width: min(280px, 72vw);
+    border: 1px solid rgb(242 239 233 / 20%);
+    border-radius: 4px;
+    padding: 11px 14px;
+    background: rgb(13 13 15 / 82%);
+    color: #f2efe9;
+    text-decoration: none;
+    gap: 3px;
+}
+
+.match-event-switcher a:hover,
+.match-event-switcher a:focus-visible {
+    border-color: #2d6da3;
+}
+
+.match-event-switcher a:focus-visible {
+    outline: 3px solid #f5c400;
+    outline-offset: 3px;
+}
+
+.match-event-switcher a.is-active {
+    border-color: #f05a1a;
+    background: rgb(240 90 26 / 16%);
+}
+
+.match-event-switcher strong {
+    font: 500 18px "Bebas Neue", sans-serif;
+    letter-spacing: .035em;
+    text-transform: uppercase;
+}
+
+.match-event-switcher span:not(.match-event-switcher__label) {
+    color: rgb(242 239 233 / 64%);
+    font: 500 11px "Barlow Condensed", sans-serif;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
 .match-tabs {
     display: flex;
     margin-top: 35px;
@@ -3304,6 +3371,8 @@ body.has-open-court-menu {
     .match-centre__intro h1 { font-size: 48px; }
     .match-centre__intro p { font-size: 13px; line-height: 1.5; }
     .match-centre__culture-type { display: none; }
+    .match-event-switcher { grid-template-columns: 1fr; gap: 10px; }
+    .match-event-switcher a { min-width: min(260px, 78vw); }
     .match-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
     .match-tabs button { min-width: 0; padding: 0 8px; font-size: 12px; }
     .match-panel { margin-top: 24px; }

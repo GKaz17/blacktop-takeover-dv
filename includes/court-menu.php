@@ -3,6 +3,10 @@ $courtMenuActive = $courtMenuActive ?? '';
 $currentRole = $_SESSION['user_role'] ?? null;
 $hasSquadAccess = in_array($currentRole, ['player', 'captain'], true);
 $hasOrganiserAccess = in_array($currentRole, ['organiser', 'admin'], true);
+$matchCentreHref = '/blacktop-takeover/match-centre.php';
+if (!empty($matchCentreEvent)) {
+    $matchCentreHref .= '?event=' . rawurlencode((string) $matchCentreEvent);
+}
 ?>
 <div class="court-menu" id="court-menu" aria-hidden="true" data-court-menu>
     <div class="court-menu__paint" aria-hidden="true"></div>
@@ -18,7 +22,7 @@ $hasOrganiserAccess = in_array($currentRole, ['organiser', 'admin'], true);
         <?php if ($hasSquadAccess): ?>
             <a href="/blacktop-takeover/team.php"<?= $courtMenuActive === 'team' ? ' aria-current="page"' : '' ?>><span>03</span> My squad</a>
         <?php endif; ?>
-        <a href="/blacktop-takeover/match-centre.php"<?= $courtMenuActive === 'matches' ? ' aria-current="page"' : '' ?>><span>04</span> Match centre</a>
+        <a href="<?= e($matchCentreHref) ?>"<?= $courtMenuActive === 'matches' ? ' aria-current="page"' : '' ?>><span>04</span> Match centre</a>
         <a href="/blacktop-takeover/about.php"<?= $courtMenuActive === 'about' ? ' aria-current="page"' : '' ?>><span>05</span> About the movement</a>
         <?php if ($hasOrganiserAccess): ?>
             <a href="/blacktop-takeover/admin.php"<?= $courtMenuActive === 'organiser' ? ' aria-current="page"' : '' ?>><span>06</span> Organiser</a>
