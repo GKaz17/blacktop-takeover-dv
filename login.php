@@ -67,7 +67,7 @@ require __DIR__ . '/includes/header.php';
         <img class="culture-fill" src="/blacktop-takeover/assets/images/figma/login-mural.svg" alt="">
         <!-- Authentic Johannesburg skyline artwork replaces the temporary hand-drawn towers.
              Keep this decorative layer replaceable so a licensed final source can be swapped in. -->
-        <img class="skyline skyline--johannesburg" src="/blacktop-takeover/assets/images/figma/johannesburg-skyline-cutout.png" alt="">
+        <img class="skyline skyline--johannesburg" src="/blacktop-takeover/assets/images/figma/johannesburg-skyline-tar-v2.png" alt="">
         <div class="brand-lockup"><strong>BLACKTOP</strong><span>TAKEOVER</span><small>JOZI &times; PTA STREET-SPORT SYSTEM</small></div>
         <p class="paint-mark paint-mark--011">011</p>
         <p class="paint-mark paint-mark--pitori">PITORI</p>

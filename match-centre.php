@@ -161,7 +161,7 @@ require __DIR__ . '/includes/header.php';
                                     default => $nextMatch && (int) $fixture['id'] === (int) $nextMatch['id'] ? 'Up next' : 'Scheduled',
                                 };
                                 $scoreline = $fixture['status'] === 'final'
-                                    ? $fixture['home_team'] . '  ' . $fixture['home_score'] . ' — ' . $fixture['away_score'] . '  ' . $fixture['away_team']
+                                    ? $fixture['home_team'] . '  ' . $fixture['home_score'] . ' : ' . $fixture['away_score'] . '  ' . $fixture['away_team']
                                     : $fixture['home_team'] . '  vs  ' . $fixture['away_team'];
                                 ?>
                                 <tr>
@@ -201,7 +201,7 @@ require __DIR__ . '/includes/header.php';
                                     <td><?= e($result['round_name']) ?></td>
                                     <td class="match-results__score">
                                         <span><?= e($result['home_team']) ?></span>
-                                        <b><?= e((string) $result['home_score']) ?> — <?= e((string) $result['away_score']) ?></b>
+                                        <b><?= e((string) $result['home_score']) ?> : <?= e((string) $result['away_score']) ?></b>
                                         <span><?= e($result['away_team']) ?></span>
                                     </td>
                                     <td><?= e($result['court'] ?: 'Court TBA') ?></td>

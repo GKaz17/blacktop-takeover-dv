@@ -114,6 +114,11 @@ $rosterProgress = min($rosterCount, $rosterMaximum);
 $rosterStatus = $rosterCount >= $rosterMaximum
     ? 'complete'
     : ($rosterCount >= $rosterMinimum ? 'entry minimum met' : 'minimum ' . $rosterMinimum . ' required');
+$routeGateCopy = match ($event['slug']) {
+    'coj-summer-showdown' => 'KOS is the gate. D.O.G. is the throne.',
+    'cop-regional-qualifier' => 'KON is the gate. D.O.G. is the throne.',
+    default => 'KON + KOS are the gates. D.O.G. is the throne.',
+};
 
 $pageTitle = $event['name'];
 $pageDescription = 'Tournament information and team application for ' . $event['name'] . '.';
@@ -148,7 +153,7 @@ require __DIR__ . '/includes/header.php';
         <div class="event-hero__road">
             <img src="/blacktop-takeover/assets/images/figma/champion-feather-crown.svg" alt="" aria-hidden="true">
             <strong><?= e($event['route_label']) ?></strong>
-            <span>KON is the gate. D.O.G. is the throne.</span>
+            <span><?= e($routeGateCopy) ?></span>
             <small>Duke of Gauteng &middot; franchise final</small>
         </div>
     </section>

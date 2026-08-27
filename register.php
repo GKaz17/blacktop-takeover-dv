@@ -196,9 +196,9 @@ require __DIR__ . '/includes/header.php';
 <section class="landing-shell registration-shell">
     <div class="culture-panel" aria-hidden="true">
         <img class="culture-fill" src="/blacktop-takeover/assets/images/figma/login-mural.svg" alt="">
-        <!-- Authentic Johannesburg skyline artwork replaces the temporary hand-drawn towers.
-             Keep this decorative layer replaceable so a licensed final source can be swapped in. -->
-        <img class="skyline skyline--johannesburg" src="/blacktop-takeover/assets/images/figma/johannesburg-skyline-cutout.png" alt="">
+        <!-- Pretoria balances the Johannesburg skyline used on landing and login.
+             Keep the city artwork isolated so either Gauteng skyline can be swapped without rebuilding the layout. -->
+        <img class="skyline skyline--pretoria" src="/blacktop-takeover/assets/images/figma/pretoria-skyline-tar.png" alt="">
         <div class="brand-lockup registration-brand">
             <strong>JOIN THE</strong>
             <span>TAKEOVER</span>
@@ -251,7 +251,7 @@ require __DIR__ . '/includes/header.php';
                 <label>Password<input type="password" name="password" autocomplete="new-password" minlength="8" required></label>
 
                 <div class="registration-role-fields is-active" data-role-fields="player">
-                    <label>Team invitation code <small>Optional — you can join a team later</small>
+                    <label>Team invitation code <small>Optional: you can join a team later</small>
                         <input type="text" name="invite_code" value="<?= e($form['invite_code']) ?>" maxlength="40" autocomplete="off">
                     </label>
                 </div>

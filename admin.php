@@ -403,7 +403,7 @@ require __DIR__ . '/includes/header.php';
             <h2 id="approval-queue-title">Pending team approvals</h2>
             <div class="approval-queue__list">
                 <?php foreach ($pendingTeams as $team): ?>
-                    <button type="button" data-approval-review data-team-name="<?= e($team['name']) ?>" data-team-event="<?= e($team['event']) ?>" data-team-captain="<?= e($team['captain']) ?>" data-team-roster="<?= e($team['roster_count'] . ' active · minimum ' . competitionMinimumRoster($team['format']) . ' · max ' . $team['max_roster']) ?>" data-tournament-id="<?= e((string) $team['tournament_id']) ?>" data-team-id="<?= e((string) $team['team_id']) ?>"><span><strong><?= e($team['name']) ?></strong> — <?= e($team['event']) ?></span><b>Pending</b></button>
+                    <button type="button" data-approval-review data-team-name="<?= e($team['name']) ?>" data-team-event="<?= e($team['event']) ?>" data-team-captain="<?= e($team['captain']) ?>" data-team-roster="<?= e($team['roster_count'] . ' active · minimum ' . competitionMinimumRoster($team['format']) . ' · max ' . $team['max_roster']) ?>" data-tournament-id="<?= e((string) $team['tournament_id']) ?>" data-team-id="<?= e((string) $team['team_id']) ?>"><span><strong><?= e($team['name']) ?></strong>: <?= e($team['event']) ?></span><b>Pending</b></button>
                 <?php endforeach; ?>
                 <?php if ($pendingTeams === []): ?><p class="admin-empty-state">No team applications are waiting for review.</p><?php endif; ?>
             </div>

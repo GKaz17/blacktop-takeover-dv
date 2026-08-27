@@ -96,20 +96,20 @@ INSERT INTO tournaments (
     check_in_notes, structure_notes, prize_notes
 ) VALUES
 (
-    'COJ Summer Showdown', 'coj-summer-showdown', 'COJ / Regional qualifier', 'The road to KON',
+    'COJ Summer Showdown', 'coj-summer-showdown', 'COJ / Regional qualifier', 'The road to KOS',
     'Johannesburg', 'Ellis Park Courts', '2026-08-14 10:00:00', '2026-08-12 23:59:59',
     '5v5', 16, 8, 50000, 0, 'open',
-    'Sixteen squads. One regional crown. The champions advance to King of the North.',
-    '09:15 - captain and full squad', 'Group stage into knockout bracket',
-    'Regional title, champion kit + KON qualification'
-),
-(
-    'COP Regional Qualifier', 'cop-regional-qualifier', 'COP / Regional qualifier', 'The road to KOS',
-    'Pretoria', 'Pitori Central Courts', '2026-08-21 10:00:00', '2026-08-19 23:59:59',
-    '5v5', 16, 8, 50000, 0, 'open',
-    'Pitori squads meet for a direct route into the King of the South bracket.',
+    'Sixteen squads. One regional crown. The champions advance to King of the South.',
     '09:15 - captain and full squad', 'Group stage into knockout bracket',
     'Regional title, champion kit + KOS qualification'
+),
+(
+    'COP Regional Qualifier', 'cop-regional-qualifier', 'COP / Regional qualifier', 'The road to KON',
+    'Pretoria', 'Pitori Central Courts', '2026-08-21 10:00:00', '2026-08-19 23:59:59',
+    '5v5', 16, 8, 50000, 0, 'open',
+    'Pitori squads meet for a direct route into the King of the North bracket.',
+    '09:15 - captain and full squad', 'Group stage into knockout bracket',
+    'Regional title, champion kit + KON qualification'
 ),
 (
     'KON + KOS Invitational', 'kon-kos-invitational', 'Open / Invitational qualifier', 'The road to D.O.G.',
