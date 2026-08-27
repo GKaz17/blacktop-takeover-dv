@@ -27,13 +27,11 @@ $matches = [];
 if ($selectedEvent) {
     $eventId = (int) $selectedEvent['id'];
     $matchQuery = $conn->prepare(
-        "SELECT m.id, m.round_name, m.court, m.scheduled_at, m.home_score, m.away_score, m.status,
-                home.name AS home_team, away.name AS away_team
-         FROM matches m
-         JOIN teams home ON home.id = m.home_team_id
-         JOIN teams away ON away.id = m.away_team_id
-         WHERE m.tournament_id = ?
-         ORDER BY m.scheduled_at, m.id"
+        "SELECT id, round_name, court, scheduled_at, home_score, away_score, status,
+                home_team, away_team
+         FROM tournament_match_feed
+         WHERE tournament_id = ?
+         ORDER BY scheduled_at, id"
     );
     $matchQuery->bind_param('i', $eventId);
     $matchQuery->execute();
