@@ -172,7 +172,7 @@ The implemented reference is documented in [design and project proposal](docs/de
 
 Public Google Drive URL: [Watch the Blacktop Takeover demonstration](https://drive.google.com/file/d/1RMcyg6h8CEVPHkOWKdMEi2zp-Qt5baTy/view?usp=sharing)
 
-The project runs locally at [localhost/blacktop-takeover](http://localhost/blacktop-takeover/). No public deployment URL has been verified. The linked recording still needs its anonymous access and required **5–8 minute** duration confirmed.
+The project runs locally at [localhost/blacktop-takeover](http://localhost/blacktop-takeover/). No public deployment URL has been verified. The recording is shared publicly with link access, verified on 2 November 2026. Its runtime still needs to be checked against the required **5–8 minutes**.
 
 ## Security decisions
 
