@@ -191,7 +191,7 @@ Next steps include broader automated workflow tests, bracket generation, venue c
 
 ## Credits and use terms
 
-- **Author and contact:** [Gedeon Kazadi](https://github.com/GKaz17) · [21100471@virtualwindow.co.za](mailto:21100471@virtualwindow.co.za)
+- **Author and contact:** [Gedeon Kazadi](https://github.com/GKaz17) · [gedeonkazadi017@yahoo.com](mailto:gedeonkazadi017@yahoo.com)
 - **Course and design:** Open Window DV200. The existing course Figma direction and exported/adapted artwork are described in [design and project proposal](docs/design-and-project-proposal.md). Source-artwork creators and any externally supplied posters still need their original attribution confirmed; no exclusive ownership is claimed for those resources.
 - **Runtime and documentation:** [PHP](https://www.php.net/), [MySQL](https://www.mysql.com/), [MariaDB](https://mariadb.org/) and [XAMPP](https://www.apachefriends.org/).
 - **Fonts:** Inter, Bebas Neue, Barlow Condensed and Rubik Spray Paint, loaded through Google Fonts; their respective font licences apply.
