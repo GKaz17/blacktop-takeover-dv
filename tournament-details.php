@@ -33,6 +33,7 @@ if (!$event) {
 $userId = (int) ($_SESSION['user_id'] ?? 0);
 $userRole = $_SESSION['user_role'] ?? null;
 $eventId = (int) $event['id'];
+$registrationState = competitionRegistrationState($event);
 $applicationTeam = null;
 
 if ($userId > 0 && in_array($userRole, ['player', 'captain'], true)) {
@@ -71,8 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $feedback = ['type' => 'error', 'message' => 'You need captain or active vice-captain access to apply.'];
     } elseif (in_array($applicationTeam['entry_status'], ['pending', 'confirmed'], true)) {
         $feedback = ['type' => 'success', 'message' => 'Your team already has an application for this event.'];
-    } elseif ($event['status'] !== 'open') {
-        $feedback = ['type' => 'error', 'message' => 'Registration is not open for this event.'];
+    } elseif (!$registrationState['open']) {
+        $feedback = ['type' => 'error', 'message' => $registrationState['message']];
     } elseif ((int) $event['entry_count'] >= (int) $event['capacity']) {
         $feedback = ['type' => 'error', 'message' => 'This tournament has reached capacity.'];
     } else {
@@ -107,6 +108,8 @@ $startsAt = new DateTimeImmutable($event['starts_at']);
 $spotsLeft = max(0, (int) $event['capacity'] - (int) $event['entry_count']);
 $fee = 'R' . number_format(((int) $event['entry_fee_cents']) / 100, 0);
 $applicationSent = $applicationTeam && in_array($applicationTeam['entry_status'], ['pending', 'confirmed'], true);
+$capacityReached = (int) $event['entry_count'] >= (int) $event['capacity'];
+$applicationBlocked = !$registrationState['open'] || $capacityReached;
 $rosterCount = (int) ($applicationTeam['roster_count'] ?? 0);
 $rosterMaximum = max(1, (int) $event['max_roster']);
 $rosterMinimum = competitionMinimumRoster($event['format']);
@@ -173,6 +176,7 @@ require __DIR__ . '/includes/header.php';
                 <dl>
                     <div><dt>Venue</dt><dd><?= e($event['venue'] . ', ' . $event['city']) ?></dd></div>
                     <div><dt>Check-in</dt><dd><?= e($event['check_in_notes']) ?></dd></div>
+                    <div><dt>Registration</dt><dd><?= e($registrationState['message']) ?></dd></div>
                     <div><dt>Format</dt><dd><?= e($event['structure_notes']) ?></dd></div>
                     <div><dt>Prize</dt><dd><?= e($event['prize_notes']) ?></dd></div>
                 </dl>
@@ -207,9 +211,17 @@ require __DIR__ . '/includes/header.php';
                     ></progress>
                     <strong class="application-roster"><?= e((string) $rosterCount) ?> / <?= e((string) $rosterMaximum) ?> players &middot; <?= e($rosterStatus) ?></strong>
 
-                    <button type="submit"<?= $applicationSent ? ' disabled' : '' ?>>
+                    <?php if (!$applicationSent && $applicationBlocked): ?>
+                        <p class="application-access-copy"><?= e($capacityReached ? 'This tournament has reached capacity.' : $registrationState['message']) ?></p>
+                    <?php endif; ?>
+
+                    <button type="submit"<?= ($applicationSent || $applicationBlocked) ? ' disabled' : '' ?>>
                         <?php if ($applicationSent): ?>
                             <?= e(ucfirst($applicationTeam['entry_status']) . ' application') ?>
+                        <?php elseif ($capacityReached): ?>
+                            Tournament full
+                        <?php elseif (!$registrationState['open']): ?>
+                            Registration closed
                         <?php elseif ($applicationTeam['entry_status'] === 'withdrawn'): ?>
                             Resubmit team application
                         <?php else: ?>

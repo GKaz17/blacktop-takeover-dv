@@ -10,10 +10,10 @@ The project solves a practical coordination problem: community tournaments often
 - Login sessions and role-based navigation.
 - Captain squad creation, invitations, roster editing, activity status, jersey details, and vice-captain selection.
 - Tournament discovery and database-driven tournament detail pages.
-- Team entry applications with organiser approval or rejection.
+- Team entry applications with server-enforced registration deadlines and organiser approval or rejection.
 - Organiser CRUD for tournaments and fixtures.
 - Admin-only account role management.
-- Result entry, tournament-specific standings, and Match Centre feeds.
+- Result entry, tournament-specific basketball standings, and Match Centre feeds.
 - Responsive PHP templates using semantic HTML, custom CSS, and vanilla JavaScript.
 
 ## Technology
@@ -46,6 +46,12 @@ The SQL export includes fictional accounts and populated tournament data. Every 
 | Player | `kabelo.dlamini@blacktop.test` |
 
 The `.test` addresses are reserved fictional data and do not identify real users.
+
+## Competition rules
+
+Completed group games award 2 classification points for a win and 1 point for a played loss. Basketball finals cannot be saved with a tied score; the organiser must record the score after overtime. Teams level on classification points are ordered by point difference, then total points scored, with the team name used only as a stable final display order.
+
+Tournament applications close at the stored `registration_deadline` in the `Africa/Johannesburg` timezone. This rule is enforced by the PHP handler as well as reflected in the application controls, so a late request cannot bypass a disabled button.
 
 ## Database implementation
 

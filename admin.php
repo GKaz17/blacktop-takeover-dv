@@ -20,7 +20,7 @@ function adminPageSlug(string $name): string
 
 function adminPageDateTime(string $date, string $time): ?DateTimeImmutable
 {
-    $dateTime = DateTimeImmutable::createFromFormat('!Y-m-d H:i', trim($date) . ' ' . trim($time));
+    $dateTime = DateTimeImmutable::createFromFormat('!Y-m-d H:i', trim($date) . ' ' . trim($time), competitionTimezone());
     $errors = DateTimeImmutable::getLastErrors();
 
     if (!$dateTime || (is_array($errors) && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
@@ -236,6 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (!$matchId || !$scheduledAt || $roundName === '' || strlen($roundName) > 60 || strlen($court) > 40 || !in_array($matchStatus, ['scheduled', 'live', 'final', 'postponed'], true) || ($homeInput !== '' && $homeScore === false) || ($awayInput !== '' && $awayScore === false) || ($scoreRequired && ($homeScore === null || $awayScore === null))) {
                 $feedback['message'] = 'Check the fixture date, status and scores before saving.';
+            } elseif ($matchStatus === 'final' && $homeScore === $awayScore) {
+                $feedback['message'] = 'A basketball result cannot finish tied. Record the overtime score before marking it final.';
             } else {
                 $scheduledAtSql = $scheduledAt->format('Y-m-d H:i:s');
                 $fixtureUpdate = $conn->prepare('UPDATE matches SET round_name = ?, court = ?, scheduled_at = ?, home_score = ?, away_score = ?, status = ? WHERE id = ?');

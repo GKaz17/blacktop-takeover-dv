@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/config/connection.php';
+require_once __DIR__ . '/includes/competition.php';
 
 $requestedEvent = trim((string) ($_GET['event'] ?? ''));
 $eventOptions = $conn->query(
@@ -38,44 +39,22 @@ if ($selectedEvent) {
     $matches = $matchQuery->get_result()->fetch_all(MYSQLI_ASSOC);
 }
 
-$standingsByTeam = [];
 $results = [];
 $nextMatch = null;
 foreach ($matches as &$match) {
     $match['date'] = new DateTimeImmutable($match['scheduled_at']);
 
-    foreach (['home_team', 'away_team'] as $teamKey) {
-        $teamName = $match[$teamKey];
-        $standingsByTeam[$teamName] ??= ['team' => $teamName, 'played' => 0, 'points' => 0];
-    }
-
     if ($match['status'] === 'final') {
         $results[] = $match;
-        foreach (['home_team', 'away_team'] as $teamKey) {
-            $teamName = $match[$teamKey];
-            $standingsByTeam[$teamName]['played']++;
-        }
-
-        if ((int) $match['home_score'] === (int) $match['away_score']) {
-            $standingsByTeam[$match['home_team']]['points']++;
-            $standingsByTeam[$match['away_team']]['points']++;
-        } elseif ((int) $match['home_score'] > (int) $match['away_score']) {
-            $standingsByTeam[$match['home_team']]['points'] += 3;
-        } else {
-            $standingsByTeam[$match['away_team']]['points'] += 3;
-        }
     } elseif ($nextMatch === null && in_array($match['status'], ['live', 'scheduled'], true)) {
         $nextMatch = $match;
     }
 }
 unset($match);
 
-$standings = array_values($standingsByTeam);
-usort($standings, static fn (array $a, array $b): int => [$b['points'], $b['played'], $a['team']] <=> [$a['points'], $a['played'], $b['team']]);
-foreach ($standings as $index => &$standing) {
-    $standing['position'] = $index + 1;
-}
-unset($standing);
+$standingsState = competitionCalculateStandings($matches);
+$standings = $standingsState['standings'];
+$unresolvedTies = (int) $standingsState['unresolved_ties'];
 
 $pageTitle = 'Match Centre';
 $pageDescription = 'Live fixtures, results and group standings for Blacktop Takeover.';
@@ -157,22 +136,26 @@ require __DIR__ . '/includes/header.php';
                 <aside class="match-standings" aria-labelledby="group-standings-title">
                     <h2 id="group-standings-title">Group A standings</h2>
                     <table>
-                        <thead><tr><th>#</th><th>Team</th><th>PL</th><th>PTS</th></tr></thead>
+                        <thead><tr><th>#</th><th>Team</th><th>PL</th><th>+/-</th><th>PTS</th></tr></thead>
                         <tbody>
                             <?php foreach ($standings as $row): ?>
                                 <tr<?= $row['position'] === 1 ? ' class="is-leading"' : '' ?>>
                                     <td><?= e((string) $row['position']) ?></td>
                                     <td><?= e($row['team']) ?></td>
                                     <td><?= e((string) $row['played']) ?></td>
+                                    <td><?= e(($row['point_difference'] > 0 ? '+' : '') . (string) $row['point_difference']) ?></td>
                                     <td><?= e((string) $row['points']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                             <?php if ($matches === []): ?>
-                                <tr><td colspan="4">Standings begin when the draw is published.</td></tr>
+                                <tr><td colspan="5">Standings begin when the draw is published.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
-                    <p>D.O.G. seed watch&nbsp; · &nbsp;every result moves the road</p>
+                    <p>Win 2 pts&nbsp; · &nbsp;completed loss 1 pt&nbsp; · &nbsp;ties use point difference, then points scored</p>
+                    <?php if ($unresolvedTies > 0): ?>
+                        <p><?= e((string) $unresolvedTies) ?> tied final<?= $unresolvedTies === 1 ? '' : 's' ?> excluded until an overtime score is recorded.</p>
+                    <?php endif; ?>
                 </aside>
             </div>
 
@@ -259,22 +242,29 @@ require __DIR__ . '/includes/header.php';
 
                 <div class="match-table-view__wrap">
                     <table>
-                        <thead><tr><th>Seed</th><th>Team</th><th>Played</th><th>Points</th></tr></thead>
+                        <thead><tr><th>Seed</th><th>Team</th><th>Played</th><th>Won</th><th>Lost</th><th>+/-</th><th>Points</th></tr></thead>
                         <tbody>
                             <?php foreach ($standings as $row): ?>
                                 <tr<?= $row['position'] === 1 ? ' class="is-leading"' : '' ?>>
                                     <td><b><?= e(str_pad((string) $row['position'], 2, '0', STR_PAD_LEFT)) ?></b></td>
                                     <td><?= e($row['team']) ?></td>
                                     <td><?= e((string) $row['played']) ?></td>
+                                    <td><?= e((string) $row['wins']) ?></td>
+                                    <td><?= e((string) $row['losses']) ?></td>
+                                    <td><?= e(($row['point_difference'] > 0 ? '+' : '') . (string) $row['point_difference']) ?></td>
                                     <td><?= e((string) $row['points']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                             <?php if ($matches === []): ?>
-                                <tr><td colspan="4">The table starts when the organiser publishes the draw.</td></tr>
+                                <tr><td colspan="7">The table starts when the organiser publishes the draw.</td></tr>
                             <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
+                <p>Classification: 2 points for a win and 1 for a completed loss. Final games cannot end level. Equal table points are separated by point difference, then points scored.</p>
+                <?php if ($unresolvedTies > 0): ?>
+                    <p role="status"><?= e((string) $unresolvedTies) ?> tied final<?= $unresolvedTies === 1 ? '' : 's' ?> excluded from the table until the organiser records an overtime score.</p>
+                <?php endif; ?>
             </section>
         </div>
 
