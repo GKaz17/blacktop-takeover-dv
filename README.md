@@ -196,5 +196,4 @@ Next steps include broader automated workflow tests, bracket generation, venue c
 - **Runtime and documentation:** [PHP](https://www.php.net/), [MySQL](https://www.mysql.com/), [MariaDB](https://mariadb.org/) and [XAMPP](https://www.apachefriends.org/).
 - **Fonts:** Inter, Bebas Neue, Barlow Condensed and Rubik Spray Paint, loaded through Google Fonts; their respective font licences apply.
 - **Assets:** Existing skyline artwork, textures, posters and basketball navigation mark are retained under `assets/images`; their design context is documented in the proposal.
-- **AI assistance:** OpenAI ChatGPT/Codex assisted with implementation, debugging and portfolio documentation. The repository records the implemented work; missing demonstrations and unverified checks are identified explicitly.
 - **Use terms:** Academic and portfolio project. No repository-wide open-source licence has been granted. Third-party fonts, artwork and other resources retain their original rights.
