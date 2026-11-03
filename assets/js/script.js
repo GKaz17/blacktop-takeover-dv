@@ -88,7 +88,10 @@ if (courtMenuTrigger && courtMenu && courtMenuClose) {
         courtMenu.setAttribute('aria-hidden', 'false');
         courtMenuTrigger.setAttribute('aria-expanded', 'true');
         document.body.classList.add('has-open-court-menu');
-        courtMenuClose.focus();
+        // Wait for visibility to update before moving keyboard focus into the overlay.
+        requestAnimationFrame(() => {
+            if (courtMenu.classList.contains('is-open')) courtMenuClose.focus();
+        });
     };
 
     const closeCourtMenu = () => {
@@ -122,6 +125,20 @@ if (courtMenuTrigger && courtMenu && courtMenuClose) {
     });
 
     document.addEventListener('keydown', (event) => {
+        if (event.key === 'Tab' && courtMenu.classList.contains('is-open')) {
+            const controls = [...courtMenu.querySelectorAll('button, a[href]')];
+            const firstControl = controls[0];
+            const lastControl = controls[controls.length - 1];
+
+            if (!courtMenu.contains(document.activeElement) || (event.shiftKey && document.activeElement === firstControl)) {
+                event.preventDefault();
+                (event.shiftKey ? lastControl : firstControl).focus();
+            } else if (!event.shiftKey && document.activeElement === lastControl) {
+                event.preventDefault();
+                firstControl.focus();
+            }
+        }
+
         if (event.key === 'Escape' && courtMenu.classList.contains('is-open')) {
             closeCourtMenu();
         }

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" fill="none">
+  <title>Worn outdoor basketball</title>
+  <defs>
+    <radialGradient id="rubber" cx=".3" cy=".23" r=".86">
+      <stop stop-color="#e69a52"/>
+      <stop offset=".4" stop-color="#cc7332"/>
+      <stop offset=".8" stop-color="#a24c21"/>
+      <stop offset="1" stop-color="#572a19"/>
+    </radialGradient>
+    <pattern id="pebbles" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r=".8" fill="#311b12" fill-opacity=".48"/>
+      <circle cx="3" cy="3" r=".7" fill="#311b12" fill-opacity=".4"/>
+      <path d="M.4 1.8h1M2.5 3.7h.8" stroke="#f4bc7a" stroke-opacity=".3" stroke-width=".5"/>
+    </pattern>
+    <filter id="wear" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".16" numOctaves="3" seed="17"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="soft-light"/>
+    </filter>
+    <clipPath id="edge"><circle cx="48" cy="48" r="43"/></clipPath>
+  </defs>
+  <circle cx="48" cy="48" r="44" fill="#281a12" stroke="#e6a463" stroke-opacity=".55" stroke-width="1.5"/>
+  <g clip-path="url(#edge)">
+    <circle cx="48" cy="48" r="43" fill="url(#rubber)" filter="url(#wear)"/>
+    <circle cx="48" cy="48" r="43" fill="url(#pebbles)"/>
+    <g transform="rotate(-24 48 48)" stroke-linecap="round">
+      <path d="M4 48h88M48 4v88M19 12c39 15 39 57 0 72M77 12c-39 15-39 57 0 72" stroke="#edb77e" stroke-opacity=".32" stroke-width="4.8"/>
+      <path d="M4 48h88M48 4v88M19 12c39 15 39 57 0 72M77 12c-39 15-39 57 0 72" stroke="#261b16" stroke-width="3.1"/>
+    </g>
+    <g stroke="#f1c294" stroke-linecap="round" opacity=".38">
+      <path d="m22 30 8-3m-9 7 5-2m32 39 11-4m-9 7 5-1m-20-54 7 2m-36 30 3 5m45-37 4 5" stroke-width="1.1"/>
+      <path d="m26 64 6-2m35-21 7-3m-38 43 6 1m-12-64 4-1" stroke-width=".6"/>
+    </g>
+    <path d="M10 60c6 18 22 29 42 29M68 14c10 5 17 13 21 23" stroke="#241810" stroke-opacity=".38" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</svg>

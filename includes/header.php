@@ -13,6 +13,8 @@ $documentTitle = $pageTitle === 'Blacktop Takeover'
     ? $pageTitle
     : $pageTitle . ' | Blacktop Takeover';
 $stylesheetVersion = (string) filemtime(__DIR__ . '/../assets/css/styles.css');
+$foregroundVersion = (string) filemtime(__DIR__ . '/../assets/css/foreground.css');
+$responsiveVersion = (string) filemtime(__DIR__ . '/../assets/css/responsive.css');
 ?>
 <!doctype html>
 <html lang="en">
@@ -25,6 +27,8 @@ $stylesheetVersion = (string) filemtime(__DIR__ . '/../assets/css/styles.css');
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Bebas+Neue&family=Inter:wght@400;500;600&family=Rubik+Spray+Paint&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/blacktop-takeover/assets/css/styles.css?v=<?= e($stylesheetVersion) ?>">
+    <link rel="stylesheet" href="/blacktop-takeover/assets/css/foreground.css?v=<?= e($foregroundVersion) ?>">
+    <link rel="stylesheet" href="/blacktop-takeover/assets/css/responsive.css?v=<?= e($responsiveVersion) ?>">
 </head>
 <body class="<?= e($bodyClass) ?>">
 <a class="skip-link" href="#main-content">Skip to content</a>

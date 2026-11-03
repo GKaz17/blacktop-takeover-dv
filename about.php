@@ -15,9 +15,9 @@ require __DIR__ . '/includes/header.php';
     <img class="about-texture about-texture--collage" src="/blacktop-takeover/assets/images/textures/grit-collage-strip.png" alt="" aria-hidden="true">
 
     <header class="screen-header">
-        <a class="screen-wordmark" href="/blacktop-takeover/home.php">Blacktop Takeover</a>
+        <a class="screen-wordmark street-wordmark" href="/blacktop-takeover/home.php"><?php require __DIR__ . '/includes/wordmark.php'; ?></a>
         <button class="court-menu-trigger" type="button" aria-label="Open Blacktop menu" aria-controls="court-menu" aria-expanded="false" data-court-menu-trigger>
-            <img src="/blacktop-takeover/assets/images/figma/navigation-basketball-trigger.svg" alt="">
+            <img src="/blacktop-takeover/assets/images/ui/street-basketball.svg" alt="">
         </button>
     </header>
 

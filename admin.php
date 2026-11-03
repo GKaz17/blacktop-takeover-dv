@@ -377,14 +377,14 @@ require __DIR__ . '/includes/header.php';
     <img class="admin-deck__mural" src="/blacktop-takeover/assets/images/figma/admin-control-deck-mural.svg" alt="" aria-hidden="true">
     <aside class="admin-rail">
         <img src="/blacktop-takeover/assets/images/figma/admin-organiser-rail.svg" alt="" aria-hidden="true">
-        <a href="/blacktop-takeover/home.php">Blacktop<br>Takeover</a><span>011 × 012</span><strong>Run the<br>court</strong><p>Run the court<br>Own the night</p>
+        <a class="street-wordmark" href="/blacktop-takeover/home.php"><?php require __DIR__ . '/includes/wordmark.php'; ?></a><span>011 × 012</span><strong>Run the<br>court</strong><p>Run the court<br>Own the night</p>
     </aside>
 
     <section class="admin-deck__content">
         <header class="admin-deck__header">
             <div><h1>Tournament dashboard</h1><p>Control deck / <?= e($currentUserRole) ?> mode</p></div>
             <span>D.O.G. finals seed tracker&nbsp; / &nbsp;<?= e(str_pad((string) min(4, (int) $metrics['dog_seeds']), 2, '0', STR_PAD_LEFT)) ?> of 04 locked</span>
-            <button class="court-menu-trigger" type="button" aria-label="Open Blacktop menu" aria-controls="court-menu" aria-expanded="false" data-court-menu-trigger><img src="/blacktop-takeover/assets/images/figma/navigation-basketball-trigger.svg" alt=""></button>
+            <button class="court-menu-trigger" type="button" aria-label="Open Blacktop menu" aria-controls="court-menu" aria-expanded="false" data-court-menu-trigger><img src="/blacktop-takeover/assets/images/ui/street-basketball.svg" alt=""></button>
         </header>
 
         <?php if ($feedback): ?><p class="admin-feedback admin-feedback--<?= e($feedback['type']) ?>" role="status"><?= e($feedback['message']) ?></p><?php endif; ?>

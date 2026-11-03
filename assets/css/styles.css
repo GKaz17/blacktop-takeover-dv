@@ -1754,7 +1754,7 @@ body.has-open-court-menu {
     display: grid;
     isolation: isolate;
     padding: 38px 16px 80px 54px;
-    grid-template-columns: 904px 450px;
+    grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
     gap: 16px;
 }
 

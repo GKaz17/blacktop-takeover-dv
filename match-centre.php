@@ -76,9 +76,9 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <header class="screen-header">
-        <a class="screen-wordmark" href="/blacktop-takeover/home.php">Blacktop Takeover</a>
+        <a class="screen-wordmark street-wordmark" href="/blacktop-takeover/home.php"><?php require __DIR__ . '/includes/wordmark.php'; ?></a>
         <button class="court-menu-trigger" type="button" aria-label="Open Blacktop menu" aria-controls="court-menu" aria-expanded="false" data-court-menu-trigger>
-            <img src="/blacktop-takeover/assets/images/figma/navigation-basketball-trigger.svg" alt="">
+            <img src="/blacktop-takeover/assets/images/ui/street-basketball.svg" alt="">
         </button>
     </header>
 
@@ -161,7 +161,7 @@ require __DIR__ . '/includes/header.php';
 
             <section class="match-schedule" aria-labelledby="today-schedule-title">
                 <h2 id="today-schedule-title">Today’s schedule</h2>
-                <div class="match-schedule__table-wrap">
+                <div class="match-schedule__table-wrap table-scroll" tabindex="0" role="region" aria-label="Fixture schedule, scroll across for all columns">
                     <table>
                         <thead><tr><th>Time</th><th>Round</th><th>Fixture</th><th>Court</th><th>Status</th></tr></thead>
                         <tbody>
@@ -191,6 +191,7 @@ require __DIR__ . '/includes/header.php';
                         </tbody>
                     </table>
                 </div>
+                <p class="table-scroll-hint">Scroll across the table to see every fixture detail.</p>
             </section>
         </div>
 
@@ -204,7 +205,7 @@ require __DIR__ . '/includes/header.php';
                     <span><?= e((string) count($results)) ?> final<?= count($results) === 1 ? '' : 's' ?></span>
                 </div>
 
-                <div class="match-schedule__table-wrap">
+                <div class="match-schedule__table-wrap table-scroll" tabindex="0" role="region" aria-label="Confirmed results, scroll across for all columns">
                     <table class="match-results__table">
                         <thead><tr><th>Time</th><th>Round</th><th>Final score</th><th>Court</th><th>Status</th></tr></thead>
                         <tbody>
@@ -227,6 +228,7 @@ require __DIR__ . '/includes/header.php';
                         </tbody>
                     </table>
                 </div>
+                <p class="table-scroll-hint">Scroll across the table to see the full results.</p>
             </section>
         </div>
 
@@ -240,7 +242,7 @@ require __DIR__ . '/includes/header.php';
                     <span><?= e((string) count($standings)) ?> teams</span>
                 </div>
 
-                <div class="match-table-view__wrap">
+                <div class="match-table-view__wrap table-scroll" tabindex="0" role="region" aria-label="Tournament standings, scroll across for all columns">
                     <table>
                         <thead><tr><th>Seed</th><th>Team</th><th>Played</th><th>Won</th><th>Lost</th><th>+/-</th><th>Points</th></tr></thead>
                         <tbody>
@@ -261,6 +263,7 @@ require __DIR__ . '/includes/header.php';
                         </tbody>
                     </table>
                 </div>
+                <p class="table-scroll-hint">Scroll across the table to see every standings column.</p>
                 <p>Classification: 2 points for a win and 1 for a completed loss. Final games cannot end level. Equal table points are separated by point difference, then points scored.</p>
                 <?php if ($unresolvedTies > 0): ?>
                     <p role="status"><?= e((string) $unresolvedTies) ?> tied final<?= $unresolvedTies === 1 ? '' : 's' ?> excluded from the table until the organiser records an overtime score.</p>

@@ -1,0 +1,438 @@
+/* Shared foreground hierarchy. Black surfaces frame the brighter court colours. */
+:root {
+    --ui-surface: #090b0c;
+    --ui-surface-raised: #151819;
+    --ui-field: #191c1e;
+    --ui-border: #77766f;
+    --ui-text: #fff9ed;
+    --ui-muted: #d5d0c5;
+    --ui-orange: #ff792f;
+    --ui-blue: #61b8ed;
+    --ui-yellow: #f5ca39;
+    --ui-green: #73d7a0;
+    --ui-red: #ff514b;
+    --ui-shadow: 0 12px 28px rgb(0 0 0 / 32%), inset 0 1px rgb(255 249 237 / 8%);
+    --orange: var(--ui-orange);
+    --concrete: var(--ui-muted);
+}
+
+/* Branding sits directly on the mural instead of inside a solid navigation bar. */
+.screen-header,
+.discovery-header {
+    height: 116px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+.about-movement .screen-header { border-bottom: 0; }
+.discovery-header { padding-top: 18px; }
+
+.screen-wordmark.street-wordmark,
+.discovery-wordmark.street-wordmark,
+.squad-rail__brand.street-wordmark,
+.admin-rail > .street-wordmark {
+    display: inline-flex;
+    width: max-content;
+    max-width: calc(100% - 100px);
+    flex-direction: column;
+    gap: 4px;
+    color: var(--ui-text);
+    font-family: "Rubik Spray Paint", "Barlow Condensed", sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+    letter-spacing: .015em;
+    line-height: .94;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-shadow: 2px 3px 0 #090b0c, 0 4px 12px rgb(0 0 0 / 65%);
+    transform: rotate(-2deg);
+    transform-origin: left center;
+}
+.screen-wordmark.street-wordmark { top: 18px; }
+.street-wordmark__line { display: block; white-space: nowrap; }
+.street-wordmark__line:last-child { color: var(--ui-orange); }
+
+.squad-rail__brand.street-wordmark,
+.admin-rail > .street-wordmark {
+    /* The protected pages keep their narrower, mural-backed side rails. */
+    max-width: calc(100% - 38px);
+    font-size: clamp(26px, 2.35vw, 34px);
+}
+.squad-rail__brand.street-wordmark { left: 24px; }
+.admin-rail > .street-wordmark { left: 15px; font-size: 28px; }
+
+@media (max-width: 840px) {
+    .screen-header,
+    .discovery-header { height: 104px; }
+    .screen-wordmark.street-wordmark,
+    .discovery-wordmark.street-wordmark,
+    .squad-rail__brand.street-wordmark,
+    .admin-rail > .street-wordmark {
+        font-size: clamp(25px, 5.8vw, 34px);
+    }
+    .screen-wordmark.street-wordmark { top: 19px; }
+    .discovery-header { padding-top: 19px; }
+    .squad-rail__tag { right: 24px; left: auto; }
+    .admin-rail > span { top: 48px; right: 18px; left: auto; font-size: clamp(28px, 5vw, 44px); }
+}
+
+/* Real rubber texture replaces the flat ball; movement is firmer, not rubbery. */
+.court-menu-trigger img,
+.court-menu__close img {
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 65%));
+}
+
+.court-menu-trigger::after,
+.court-menu__close::after {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--ui-text);
+    content: "Menu";
+    font: 700 10px/1 "Barlow Condensed", sans-serif;
+    letter-spacing: .16em;
+    text-shadow: 0 2px 3px #000;
+    text-transform: uppercase;
+}
+
+.court-menu__close::after { content: "Close"; }
+.court-menu-trigger:hover img,
+.court-menu__close:hover img { filter: brightness(1.12) drop-shadow(0 4px 3px rgb(0 0 0 / 65%)); }
+
+@keyframes court-ball-bounce {
+    0%, 100% { transform: translateY(0); }
+    46% { transform: translateY(10px) rotate(5deg); }
+    72% { transform: translateY(-3px) rotate(-2deg); }
+}
+
+/* Steady route-colour light, held for the full hover or keyboard-focus state. */
+.tournament-card { --card-accent: var(--ui-orange); }
+.tournament-card--blue { --card-accent: var(--ui-blue); }
+.tournament-card--gold { --card-accent: var(--ui-yellow); }
+.tournament-card--red { --card-accent: var(--ui-red); }
+.tournament-card__stripe {
+    position: relative;
+    z-index: 2;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.tournament-card:is(:hover, :focus-within) { border-color: var(--card-accent); }
+.tournament-card:is(:hover, :focus-within) .tournament-card__stripe {
+    background: var(--card-accent);
+    box-shadow: 0 0 7px var(--card-accent), 0 0 18px var(--card-accent), 0 0 30px color-mix(in srgb, var(--card-accent) 65%, transparent);
+}
+.tournament-card--red .tournament-card__stripe { background: var(--card-accent); }
+.tournament-card--red .tournament-card__action { border-color: #ffc0b7; background: #ff6e63; color: #180d0e; box-shadow: 0 3px 0 #7f1f21; }
+
+/* Official D.O.G. artwork, with the red route styling kept around the poster. */
+.dog-poster {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #100b0e;
+}
+.dog-poster .dog-poster__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 45%;
+}
+
+.dog-final { --final-red: var(--ui-red); }
+.dog-final .event-detail__mural { opacity: .48; }
+.dog-final__hero {
+    border-left-color: var(--final-red);
+    background: linear-gradient(110deg, #170c10, #4b111e 55%, #210a11);
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 350px);
+    align-items: center;
+}
+.dog-final__hero::before { background: linear-gradient(105deg, #f02f45, #f5a159); opacity: .16; }
+.dog-final .event-eyebrow { color: #ffb5b3; }
+.dog-final .event-hero h1 { white-space: normal; }
+.dog-final__emblem { position: relative; z-index: 1; min-width: 0; aspect-ratio: 1054 / 1492; border: 1px solid #b4505c; transform: rotate(2deg); }
+.dog-final__emblem .dog-poster__image { object-fit: contain; }
+.dog-final .event-facts > div:nth-child(n) { background: #39151e; border-top-color: var(--final-red); }
+.dog-final .event-facts > div:nth-child(even) { background: #27141a; }
+.dog-final .event-facts strong { color: #ffcbc6; font-size: clamp(24px, 2.5vw, 34px); overflow-wrap: anywhere; }
+.dog-final .event-information dt { color: #ffa9a9; }
+.dog-final__qualification { margin-top: 40px; }
+.dog-final__qualification h2 { margin: 0 0 18px; font: 700 28px/1.1 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+.dog-final__paths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.dog-final__paths article { min-width: 0; border: 1px solid #7e464d; border-top: 4px solid var(--final-red); padding: 22px; background: #100b0e; }
+.dog-final__paths span { color: #ffaaa7; font: 700 12px/1.4 'Barlow Condensed', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+.dog-final__paths h3 { margin: 9px 0; font: 700 26px/1.1 'Barlow Condensed', sans-serif; text-transform: uppercase; }
+.dog-final__paths p { margin: 0; color: var(--ui-muted); font-size: 14px; line-height: 1.6; }
+.dog-final .dog-final__access { border-color: #b4505c; border-top: 5px solid var(--final-red); background: linear-gradient(145deg, #2c1019, #0d0b0e 80%); }
+.dog-final__lock-state { display: inline-flex; margin-bottom: 20px; align-items: center; gap: 9px; color: #ffb5b3; font: 700 14px/1.4 'Barlow Condensed', sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+.dog-final__access h2 { line-height: 1.1; }
+.dog-final__access p { line-height: 1.6; }
+.dog-final__follow,
+.dog-final__events { display: flex; min-height: 48px; margin-top: 20px; padding: 12px 16px; align-items: center; justify-content: center; font: 700 15px/1.3 'Barlow Condensed', sans-serif; text-align: center; text-decoration: none; text-transform: uppercase; }
+.dog-final__follow { border: 1px solid #ffc0b7; background: #ff6e63; color: #180d0e; }
+.dog-final__events { margin-top: 12px; border: 1px solid #8b676d; background: #110d10; color: var(--ui-text); }
+
+/* Opaque black panels keep the artwork out of the readable foreground. */
+.tournament-card,
+.event-application,
+.fixture-card,
+.next-match,
+.match-standings,
+.match-results,
+.match-table-view,
+.admin-operation-card,
+.approval-queue,
+.team-dialog,
+.approval-dialog,
+.squad-join-form,
+.squad-empty-copy,
+.about-pillars__grid article,
+.about-ladder__step {
+    border: 1px solid var(--ui-border);
+    background-color: var(--ui-surface);
+    box-shadow: var(--ui-shadow);
+}
+
+.tournament-card__copy { background: var(--ui-surface); }
+.event-application,
+.team-dialog,
+.approval-dialog,
+.squad-join-form,
+.squad-empty-copy { background: var(--ui-surface); }
+
+.tournament-row {
+    --row-accent: var(--ui-orange);
+    border-color: var(--ui-border);
+    border-left-color: var(--row-accent);
+    background: linear-gradient(100deg, #090b0c, #101415);
+    box-shadow: var(--ui-shadow);
+}
+.tournament-row--blue { --row-accent: var(--ui-blue); }
+.tournament-row--yellow { --row-accent: var(--ui-yellow); }
+
+.team-banner,
+.next-match {
+    border: 1px solid #a47650;
+    border-left: 6px solid var(--ui-orange);
+    background: linear-gradient(110deg, #583024, #453b21 52%, #244638);
+    box-shadow: var(--ui-shadow);
+}
+.fixture-card,
+.match-standings,
+.match-table-view,
+.about-statement { background: linear-gradient(115deg, #493451, #24475a); }
+.match-results { background: linear-gradient(115deg, #543225, #284b3c); }
+.admin-operation-card { border-top: 5px solid var(--ui-blue); background: #292f3c; }
+.approval-queue { background: linear-gradient(110deg, #4a302f, #293e4a); }
+.about-pillars__grid article { border-top: 6px solid var(--ui-orange); background: var(--ui-surface); }
+.about-ladder__step { background: var(--ui-surface); }
+.about-statement { border-color: var(--ui-border); border-left-color: var(--ui-orange); }
+
+.event-facts div,
+.admin-metric,
+.tournament-board__summary div {
+    border: 1px solid var(--ui-border);
+    border-top: 4px solid var(--ui-orange);
+    background: #4e3824;
+    box-shadow: var(--ui-shadow);
+}
+.event-facts div:nth-child(2),
+.admin-metric--pink { background: #522f3c; border-top-color: #ef81aa; }
+.event-facts div:nth-child(3) { background: #254c3a; border-top-color: var(--ui-green); }
+.event-facts div:nth-child(4) { background: #493454; border-top-color: #c6a0e3; }
+.event-facts strong { color: var(--ui-text); }
+.admin-metric--yellow { background: #4d4225; border-top-color: var(--ui-yellow); }
+.admin-metric--blue { background: #293e58; border-top-color: var(--ui-blue); }
+.tournament-board__summary div { background: var(--ui-surface); }
+.event-information dt,
+.team-banner__status strong,
+.fixture-card h2,
+.fixture-card b,
+.next-match > p,
+.next-match__teams time { color: #ffb480; }
+.next-match__footer b { background: var(--ui-orange); color: #15120e; }
+.about-pillars__grid article:nth-child(2) span,
+.about-ladder__step--kingdom > strong { color: var(--ui-blue); }
+.about-pillars__grid article:nth-child(3) span,
+.about-ladder__step--dog > strong { color: var(--ui-yellow); }
+.registration-chart { border: 1px solid var(--ui-border); background: var(--ui-surface); box-shadow: var(--ui-shadow); }
+.registration-chart h2,
+.registration-chart__empty { color: var(--ui-muted); }
+
+/* Input edges and labels remain legible even when the murals are busy. */
+.auth-panel input,
+.registration-panel input:not([type="radio"]):not([type="hidden"]),
+.event-application select,
+.team-dialog input,
+.member-dialog select,
+.squad-create-form input,
+.squad-join-form input,
+.squad-vice-form select,
+.admin-operation-card input,
+.admin-operation-card select,
+.admin-operation-card textarea,
+.tournament-search {
+    border-color: var(--ui-border);
+    background: var(--ui-field);
+    color: var(--ui-text);
+    box-shadow: inset 0 2px 3px rgb(0 0 0 / 20%);
+}
+input::placeholder,
+textarea::placeholder,
+.tournament-search::placeholder { color: #bebbb4; opacity: 1; }
+.role-option > span { border-color: var(--ui-border); background: var(--ui-surface); }
+.role-option input:checked + span {
+    border-color: var(--ui-orange);
+    background: #583626;
+    box-shadow: inset 0 0 0 1px var(--ui-orange);
+}
+.squad-create-form { border-color: var(--ui-border); border-left-color: var(--ui-orange); background: #3d3430; }
+
+.auth-panel label,
+.registration-panel label,
+.role-selector legend,
+.admin-operation-card label,
+.team-dialog label,
+.squad-create-form label,
+.event-application label,
+.application-label { color: var(--ui-text); }
+
+.tournament-card__copy small,
+.registration-panel label > small,
+.admin-operation-card > p,
+.admin-metric span,
+.admin-empty-state,
+.admin-season-list summary small,
+.admin-fixture-list summary small,
+.approval-dialog dt,
+.fixture-card__empty,
+.team-banner p,
+.team-banner__status span,
+.fixture-card p,
+.fixture-card time,
+.next-match__footer span,
+.match-event-switcher span:not(.match-event-switcher__label),
+.about-pillars__grid p,
+.about-ladder__step p { color: var(--ui-muted); }
+
+/* Primary actions use solid street-orange with dark ink, not pale text on orange. */
+.takeover-button,
+.event-application button,
+.team-dialog__save,
+.squad-edit-button,
+.squad-create-form > button,
+.squad-join-form button,
+.admin-operation-card button:not(.admin-delete-form button),
+.approval-dialog__actions button:first-child,
+.tournament-card__action,
+.about-close a:first-child {
+    border: 1px solid #ffaf79;
+    background: var(--ui-orange);
+    color: #15120e;
+    box-shadow: 0 3px 0 #903c16, inset 0 1px rgb(255 255 255 / 22%);
+    font-weight: 700;
+}
+.takeover-button { box-shadow: 6px 6px 0 var(--ui-yellow); }
+.tournament-card--blue .tournament-card__action { background: var(--ui-blue); border-color: #a0d7f8; box-shadow: 0 3px 0 #245578; }
+.tournament-card--gold .tournament-card__action { background: var(--ui-yellow); border-color: #ffe592; box-shadow: 0 3px 0 #8c6c13; }
+.tournament-card--blue .tournament-card__stripe { background: var(--ui-blue); }
+.tournament-card--gold .tournament-card__stripe { background: var(--ui-yellow); }
+.tournament-row__action a { border: 1px solid rgb(255 249 237 / 45%); box-shadow: 0 3px 0 rgb(0 0 0 / 42%); }
+.application-access-link { --row-accent: var(--ui-yellow); }
+
+.tournament-filter,
+.match-tabs button,
+.admin-jump-nav a,
+.match-event-switcher a,
+.team-code-controls button,
+.roster-manage-button,
+.squad-leave-form button,
+.about-close a:last-child {
+    border: 1px solid var(--ui-border);
+    background: var(--ui-surface-raised);
+    color: var(--ui-text);
+}
+.tournament-filter.is-active,
+.match-tabs button[aria-selected="true"] { border-color: #ffaf79; background: var(--ui-orange); color: #15120e; }
+.match-event-switcher a.is-active { border-color: var(--ui-orange); background: #593725; box-shadow: inset 4px 0 var(--ui-orange); }
+.entry-ready-card { border-color: #ffe592; background: #f5ca39; box-shadow: var(--ui-shadow); }
+.entry-ready-card a { border: 1px solid #706349; background: #25241f; }
+.squad-vice-form button { background: var(--ui-yellow); color: #15120e; }
+.admin-operation-card .admin-delete-form button,
+.member-dialog__remove { border-color: #ff926c; background: #482a24; color: #ffc2a7; }
+
+/* Tables are foreground surfaces too; do not let body artwork bleed into rows. */
+.roster-table th,
+.match-schedule th,
+.match-results__table th,
+.match-table-view th { background: #303234; color: var(--ui-text); }
+.roster-table tbody tr,
+.match-schedule tbody tr,
+.match-results__table tbody tr,
+.match-table-view tbody tr,
+.match-standings tbody tr { background: #090b0c; }
+.roster-table tbody tr:nth-child(even),
+.match-schedule tbody tr:nth-child(even),
+.match-results__table tbody tr:nth-child(even),
+.match-table-view tbody tr:nth-child(even) { background: #171a1c; }
+.roster-table td,
+.match-schedule td,
+.match-results__table td,
+.match-table-view td { border-bottom: 1px solid #62615d; }
+.match-standings th { color: var(--ui-text); }
+.match-standings tbody tr.is-leading,
+.match-table-view tr.is-leading { background: #ad4a1b; color: var(--ui-text); }
+.match-standings tbody tr:not(.is-leading) td:last-child,
+.match-results__score b { color: #ffad74; }
+.match-table-view td:first-child b { color: var(--ui-blue); }
+.match-table-view tr.is-leading td:first-child b { color: #fff0b5; }
+.match-standings > p { position: static; width: auto; margin: 14px 0 0; color: var(--ui-muted); line-height: 1.5; }
+.match-table-view > p { color: var(--ui-muted); line-height: 1.6; }
+.roster-row--inactive { opacity: 1; }
+.roster-row--inactive td { color: #c0bcb3; }
+.roster-status--inactive { color: #c0bcb3; }
+.roster-status--active,
+.match-status--live { color: var(--ui-green); }
+
+.admin-season-list details,
+.admin-fixture-list details { border-color: var(--ui-border); background: #0b0e12; }
+.admin-season-list details[open] summary,
+.admin-fixture-list details[open] summary { background: #262c34; }
+.approval-queue__list button,
+.approval-queue__list button:nth-child(even) { border: 1px solid #706e68; background: #0d1116; }
+.approval-queue__list button:hover { background: #292f36; }
+.court-menu__links a { border-bottom-color: #7a756a; text-shadow: 0 2px 6px #000; }
+.court-menu__links a:hover,
+.court-menu__links a:focus-visible,
+.court-menu__links a[aria-current="page"] { color: var(--ui-orange); }
+.court-menu__links a span,
+.court-menu__route { color: var(--ui-yellow); }
+
+/* Keep hover, focus and disabled states distinct, across all page families. */
+button:not(:disabled), a, input, select, textarea { -webkit-tap-highlight-color: rgb(245 202 57 / 24%); }
+:is(a, button, input, select, textarea, summary):focus-visible {
+    outline: 3px solid var(--ui-yellow);
+    outline-offset: 4px;
+}
+:is(.takeover-button, .event-application button, .team-dialog__save, .squad-edit-button,
+    .squad-create-form > button, .squad-join-form button, .admin-operation-card button,
+    .tournament-row__action a, .about-close a):not(:disabled):hover { filter: brightness(1.12); }
+button:disabled,
+.event-application button:disabled { border-color: #74716a; background: #454541; box-shadow: none; color: #d2cfc5; cursor: not-allowed; opacity: 1; }
+
+@media (max-width: 560px) {
+    /* Leave both city and movement tags readable on the same narrow baseline. */
+    .paint-mark--pitori { font-size: clamp(1.15rem, 5.5vw, 1.5rem); }
+    .landing-page .paint-mark--streets,
+    .auth-page .paint-mark--streets,
+    .registration-page .paint-mark--streets {
+        bottom: 3%;
+        font-size: clamp(1.2rem, 5.6vw, 1.75rem);
+        letter-spacing: .07em;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .court-menu-trigger.is-bouncing { animation: none; }
+}

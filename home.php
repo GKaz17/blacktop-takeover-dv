@@ -47,8 +47,8 @@ $tournamentResult = $conn->query(
     "SELECT name, slug, city, venue, starts_at, status
      FROM tournaments
      WHERE status <> 'cancelled'
-     ORDER BY starts_at
-     LIMIT 3"
+       AND slug IN ('coj-summer-showdown', 'cop-regional-qualifier', 'kon-kos-invitational')
+     ORDER BY starts_at"
 );
 foreach ($tournamentResult->fetch_all(MYSQLI_ASSOC) as $event) {
     if (!isset($tournamentArt[$event['slug']])) {
@@ -66,6 +66,21 @@ foreach ($tournamentResult->fetch_all(MYSQLI_ASSOC) as $event) {
     $tournaments[] = $art;
 }
 
+// The provincial final is qualification-only, not an open database application.
+$tournaments[] = [
+    'slug' => 'dog-finals',
+    'href' => '/blacktop-takeover/dog-finals.php',
+    'region' => 'final',
+    'registration' => 'locked',
+    'title' => 'D.O.G. / Duke of Gauteng',
+    'meta' => 'KON + KOS finalists only',
+    'keywords' => 'dog d.o.g duke of gauteng provincial final finalists qualification Johannesburg Pretoria Jozi Pitori',
+    'action' => 'Registration locked',
+    'art_class' => 'dog-finals',
+    'accent' => 'red',
+    'tilt' => 'none',
+];
+
 require __DIR__ . '/includes/header.php';
 ?>
 <section class="discovery-page" data-discovery data-figma-node="48:124">
@@ -77,8 +92,8 @@ require __DIR__ . '/includes/header.php';
     >
 
     <header class="discovery-header">
-        <a class="discovery-wordmark" href="/blacktop-takeover/" aria-label="Blacktop Takeover landing page">
-            Blacktop Takeover
+        <a class="discovery-wordmark street-wordmark" href="/blacktop-takeover/" aria-label="Blacktop Takeover landing page">
+            <?php require __DIR__ . '/includes/wordmark.php'; ?>
         </a>
         <button
             class="court-menu-trigger"
@@ -88,7 +103,7 @@ require __DIR__ . '/includes/header.php';
             aria-expanded="false"
             data-court-menu-trigger
         >
-            <img src="/blacktop-takeover/assets/images/figma/navigation-basketball-trigger.svg" alt="">
+            <img src="/blacktop-takeover/assets/images/ui/street-basketball.svg" alt="">
         </button>
     </header>
 
@@ -122,9 +137,11 @@ require __DIR__ . '/includes/header.php';
                 data-registration="<?= e($tournament['registration']) ?>"
                 data-search="<?= e(strtolower($tournament['title'] . ' ' . $tournament['meta'] . ' ' . $tournament['keywords'])) ?>"
             >
-                <a class="tournament-card__link" href="/blacktop-takeover/tournament-details.php?event=<?= e($tournament['slug']) ?>">
+                <a class="tournament-card__link" href="<?= e($tournament['href'] ?? '/blacktop-takeover/tournament-details.php?event=' . rawurlencode($tournament['slug'])) ?>">
                     <span class="tournament-card__art<?= isset($tournament['art_class']) ? ' tournament-card__art--' . e($tournament['art_class']) : '' ?>">
-                        <?php if (isset($tournament['images'])): ?>
+                        <?php if ($tournament['slug'] === 'dog-finals'): ?>
+                            <?php require __DIR__ . '/includes/dog-poster.php'; ?>
+                        <?php elseif (isset($tournament['images'])): ?>
                             <?php foreach ($tournament['images'] as $image): ?>
                                 <span class="tournament-card__art-panel">
                                     <img src="<?= e($image) ?>" alt="" aria-hidden="true">

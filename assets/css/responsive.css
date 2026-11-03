@@ -1,0 +1,269 @@
+/* Responsive layout corrections, kept after the visual theme. */
+.landing-shell > *,
+.registration-fields--split > *,
+.tournament-board__hero > *,
+.tournament-row > *,
+.about-hero > *,
+.squad-heading > *,
+.admin-deck__header > *,
+.admin-operation-card label,
+.admin-operation-card__split > *,
+.admin-operation-card__quad > * { min-width: 0; }
+
+/* Four discovery routes stay balanced as four, two or one columns. */
+.tournament-grid { max-width: none; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tournament-card { height: auto; min-height: 350px; }
+.tournament-card__link { grid-template-rows: 200px 6px minmax(144px, auto); }
+.tournament-card__copy { gap: 8px; }
+.tournament-card__copy strong { overflow: visible; white-space: normal; line-height: 1.15; }
+.tournament-card__copy small { margin-top: 0; line-height: 1.4; }
+.dog-progression { position: relative; inset: auto; width: min(100%, 700px); margin: 40px 0 12px auto; }
+
+@media (min-width: 1200px) {
+    .tournament-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+}
+
+.tournament-board__heading h1 { font-size: clamp(52px, 7.2vw, 104px); line-height: .94; }
+.about-hero h1 { font-size: clamp(64px, 8.6vw, 132px); line-height: .9; }
+.event-hero h1,
+.tournament-row__main :is(h2, h3),
+.about-hero h1,
+.about-close h2 { overflow-wrap: anywhere; }
+
+/* A small viewport or on-screen keyboard must not hide a dialog's actions. */
+.team-dialog,
+.approval-dialog {
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.team-dialog__heading { gap: 16px; }
+.team-dialog__heading > button,
+.approval-dialog__heading > button { flex-shrink: 0; }
+
+/* Wide data stays in its own keyboard-accessible scroll region, not off-page. */
+.table-scroll {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-color: #8b877c #171a1c;
+}
+.table-scroll:focus-visible { outline: 3px solid var(--ui-yellow); outline-offset: 4px; }
+.table-scroll-hint { display: none; }
+
+/* Keep every navigation destination reachable, including in landscape. */
+.court-menu {
+    display: flex;
+    overflow-y: auto;
+    padding: clamp(96px, 12vh, 120px) clamp(24px, 6vw, 84px) 32px;
+    flex-direction: column;
+    gap: 28px;
+    overscroll-behavior: contain;
+}
+.court-menu__links { flex-shrink: 0; margin: auto 0; }
+.court-menu__links a { max-width: 100%; min-height: 44px; }
+.court-menu__links a span { flex-shrink: 0; }
+.court-menu__close { position: fixed; }
+.court-menu__route {
+    position: relative;
+    inset: auto;
+    align-self: flex-end;
+    flex-shrink: 0;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* The registration chart adapts to the actual event count, not ten fixed slots. */
+.registration-chart__plot {
+    height: 215px;
+    padding-bottom: 28px;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(64px, 1fr);
+    gap: 14px;
+    overflow-x: auto;
+}
+.registration-bar small {
+    bottom: -27px;
+    width: 100%;
+    color: var(--ui-muted);
+    font-size: 10px;
+    line-height: 1.2;
+    text-align: center;
+    transform: none;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 1200px) {
+    .tournament-board__hero { grid-template-columns: 1fr; gap: 28px; }
+    .tournament-board__summary { width: min(100%, 620px); }
+    .squad-layout { grid-template-columns: minmax(0, 1fr); }
+    .squad-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .squad-heading { display: grid; padding-right: 76px; gap: 16px; }
+    .squad-edit-button { position: static; width: fit-content; padding-inline: 20px; }
+    .team-banner { margin-top: 24px; }
+}
+
+@media (max-width: 1100px) {
+    .discovery-page { min-height: 100svh; }
+    .discovery-toolbar { width: 100%; grid-template-columns: minmax(0, 1fr) auto; }
+    .tournament-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .tournament-card,
+    .tournament-card:last-child { width: 100%; height: auto; min-height: 320px; grid-column: auto; }
+    .tournament-card__link { grid-template-rows: 190px 6px minmax(124px, auto); }
+    .tournament-card__copy { gap: 8px; }
+    .tournament-card__copy strong { overflow: visible; white-space: normal; line-height: 1.15; }
+    .tournament-card__copy small { margin-top: 0; line-height: 1.4; }
+    .dog-progression { position: relative; inset: auto; width: 100%; margin-top: 40px; }
+
+    .tournament-row { grid-template-columns: 70px minmax(0, 1fr) 130px; }
+    .tournament-row__date { grid-row: 1 / 3; }
+    .tournament-row__main { grid-column: 2; }
+    .tournament-row__facts { display: grid; grid-column: 2 / -1; grid-row: 2; }
+    .tournament-row__action { grid-column: 3; grid-row: 1; }
+
+    .about-hero { grid-template-columns: 1fr; gap: 42px; }
+    .about-statement { width: min(100%, 560px); }
+    .admin-deck { display: block; }
+    .admin-rail { min-height: 135px; height: 135px; }
+    .admin-rail > img { object-position: top; }
+    .admin-rail > .street-wordmark { top: 22px; font-size: 30px; }
+    .admin-rail > span { top: 48px; right: 24px; left: auto; font-size: 40px; }
+    .admin-rail > strong,
+    .admin-rail > p,
+    .admin-deck__header > span { display: none; }
+    .admin-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .admin-operations,
+    .admin-management-grid { grid-template-columns: minmax(0, 1fr); }
+    .admin-operation-card__quad { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 980px) {
+    .landing-shell { grid-template-columns: minmax(0, 1fr); }
+    .landing-page .culture-panel,
+    .auth-page .culture-panel,
+    .registration-page .culture-panel { min-height: clamp(360px, 55vw, 480px); border-right: 0; border-bottom: 6px solid var(--orange); }
+    .landing-entry,
+    .auth-page .landing-entry { min-height: auto; padding: 42px 24px 52px; }
+    .brand-lockup strong,
+    .brand-lockup span { font-size: clamp(4rem, 13vw, 6.5rem); }
+    .auth-actions { align-items: flex-start; flex-wrap: wrap; }
+    .paint-mark--pitori { left: 20px; font-size: clamp(1.15rem, 4vw, 2.5rem); }
+    .landing-page .paint-mark--streets,
+    .auth-page .paint-mark--streets,
+    .registration-page .paint-mark--streets {
+        right: 20px;
+        bottom: 3%;
+        font-size: clamp(1.2rem, 3.8vw, 1.9rem);
+        letter-spacing: .07em;
+    }
+    .auth-panel input,
+    .registration-panel input:not([type="radio"]):not([type="hidden"]),
+    .event-application select,
+    .team-dialog input,
+    .team-dialog select,
+    .squad-create-form input,
+    .squad-join-form input,
+    .squad-vice-form select,
+    .admin-operation-card input,
+    .admin-operation-card select,
+    .admin-operation-card textarea,
+    .tournament-search { min-height: 46px; font-size: 16px; }
+    .admin-operation-card label,
+    .squad-create-form label { font-size: 12px; }
+}
+
+@media (max-width: 840px) {
+    .dog-final__hero { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .dog-final__emblem { width: min(100% - 8px, 340px); height: auto; margin-inline: auto; }
+    .table-scroll-hint { display: block; margin: 8px 0 0; color: var(--ui-muted); font-size: 12px; line-height: 1.5; }
+    .squad-create-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .squad-create-form > div,
+    .squad-create-form > button { grid-column: 1 / -1; }
+    .squad-vice-form { flex-wrap: wrap; justify-content: flex-start; }
+    .team-code-controls button,
+    .roster-manage-button,
+    .squad-leave-form button,
+    .squad-vice-form button,
+    .tournament-filter,
+    .admin-jump-nav a,
+    .admin-operation-card button { min-height: 44px; }
+    .admin-jump-nav a { display: inline-flex; align-items: center; font-size: 12px; }
+}
+
+@media (min-width: 561px) and (max-width: 980px) {
+    /* Give the stacked tablet hero two distinct artwork zones. */
+    .brand-lockup { top: 42px; right: auto; left: 32px; width: 40%; }
+    .brand-lockup strong,
+    .brand-lockup span { font-size: clamp(52px, 9vw, 88px); }
+    .brand-lockup small { font-size: 12px; line-height: 1.5; }
+    .landing-page .skyline--johannesburg,
+    .auth-page .skyline--johannesburg,
+    .registration-page .skyline--pretoria {
+        right: 2%;
+        bottom: 50px;
+        width: 56%;
+        transform: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .discovery-toolbar { grid-template-columns: minmax(0, 1fr); }
+    .tournament-grid { grid-template-columns: minmax(0, 1fr); }
+    .court-menu__route { align-self: flex-start; }
+}
+
+@media (max-width: 640px) {
+    .tournament-row { grid-template-columns: 48px minmax(0, 1fr); gap: 16px; }
+    .tournament-row__date { grid-row: 1 / 3; }
+    .tournament-row__facts { grid-column: 2; grid-row: 2; gap: 10px; }
+    .tournament-row__facts dt { font-size: 10px; letter-spacing: .5px; }
+    .tournament-row__facts dd { font-size: 16px; }
+    .tournament-row__action { grid-column: 1 / -1; grid-row: 3; flex-direction: column; align-items: stretch; }
+    .tournament-row__action a { min-height: 44px; }
+    .registration-chart__plot { height: 195px; grid-template-columns: none; overflow-x: auto; }
+    .squad-rail__account { display: none; }
+}
+
+@media (max-width: 560px) {
+    .dog-final__paths { grid-template-columns: minmax(0, 1fr); }
+    .dog-final .event-facts strong { font-size: 24px; }
+    .landing-page .culture-panel,
+    .auth-page .culture-panel,
+    .registration-page .culture-panel { min-height: 360px; }
+    .landing-entry,
+    .auth-page .landing-entry,
+    .registration-entry { padding-inline: 20px; }
+    .paint-mark--pitori { font-size: clamp(1.15rem, 5.5vw, 1.5rem); }
+    .landing-page .paint-mark--streets,
+    .auth-page .paint-mark--streets,
+    .registration-page .paint-mark--streets { font-size: clamp(1.2rem, 5.6vw, 1.75rem); }
+    .event-information dl div { grid-template-columns: minmax(0, 1fr); gap: 6px; padding-block: 12px; }
+    .event-application { width: 100%; }
+    .squad-cards,
+    .squad-create-form { grid-template-columns: minmax(0, 1fr); }
+    .squad-create-form > div,
+    .squad-create-form > button { grid-column: auto; }
+    .match-standings table { table-layout: fixed; }
+    .match-standings th,
+    .match-standings td { height: 44px; padding: 6px; font-size: 12px; overflow-wrap: anywhere; }
+    .match-standings :is(th, td):first-child { width: 26px; }
+    .match-standings :is(th, td):nth-child(n+3) { width: 33px; }
+    .team-dialog__save,
+    .member-dialog__remove,
+    .approval-dialog__actions button { min-height: 48px; }
+    .approval-dialog__actions { flex-wrap: wrap; }
+    .approval-dialog__actions button { flex: 1 1 140px; }
+}
+
+@media (max-width: 440px) {
+    .admin-operation-card__quad { grid-template-columns: minmax(0, 1fr); }
+    .admin-rail > span { font-size: 28px; }
+}
+
+@media (max-height: 620px) {
+    .court-menu__links a { font-size: clamp(32px, 7vh, 54px); }
+    .court-menu__links a span { width: 38px; }
+}

@@ -303,7 +303,7 @@ require __DIR__ . '/includes/header.php';
     <img class="squad-screen__mural" src="/blacktop-takeover/assets/images/figma/team-roster-mural.svg" alt="" aria-hidden="true">
     <aside class="squad-rail">
         <img src="/blacktop-takeover/assets/images/figma/captain-rail-mural.svg" alt="" aria-hidden="true">
-        <a class="squad-rail__brand" href="/blacktop-takeover/home.php">Blacktop<br>Takeover</a>
+        <a class="squad-rail__brand street-wordmark" href="/blacktop-takeover/home.php"><?php require __DIR__ . '/includes/wordmark.php'; ?></a>
         <span class="squad-rail__tag" aria-hidden="true">011</span>
         <span class="squad-rail__captain" aria-hidden="true">Captain</span>
         <div class="squad-rail__account"><strong><?= e($isViceCaptain ? 'Vice captain' : ucfirst($userRole)) ?> account</strong><span><?= e($userName) ?></span></div>
@@ -313,7 +313,7 @@ require __DIR__ . '/includes/header.php';
         <header class="squad-heading">
             <div><h1>My squad</h1><p>Manage eligibility, positions and tournament applications.</p></div>
             <?php if ($isTeamCaptain): ?><button class="squad-edit-button" type="button" data-team-dialog-open>Edit team details</button><?php endif; ?>
-            <button class="court-menu-trigger" type="button" aria-label="Open Blacktop menu" aria-controls="court-menu" aria-expanded="false" data-court-menu-trigger><img src="/blacktop-takeover/assets/images/figma/navigation-basketball-trigger.svg" alt=""></button>
+            <button class="court-menu-trigger" type="button" aria-label="Open Blacktop menu" aria-controls="court-menu" aria-expanded="false" data-court-menu-trigger><img src="/blacktop-takeover/assets/images/ui/street-basketball.svg" alt=""></button>
         </header>
 
         <?php if ($feedback): ?><p class="team-update-notice team-update-notice--<?= e($feedback['type']) ?>" role="status"><?= e($feedback['message']) ?></p><?php endif; ?>
@@ -340,7 +340,7 @@ require __DIR__ . '/includes/header.php';
             <section class="roster-panel" id="roster">
                 <h2>Squad roster</h2><p>Only active players count toward tournament eligibility.</p>
                 <?php if ($team): ?>
-                    <div class="roster-table-wrap">
+                    <div class="roster-table-wrap table-scroll" tabindex="0" role="region" aria-label="Squad roster, scroll across for all columns">
                         <table class="roster-table<?= $canManageRoster ? ' roster-table--managed' : '' ?>">
                             <thead><tr><th>No.</th><th>Player</th><th>Role</th><th>Status</th><?php if ($canManageRoster): ?><th>Manage</th><?php endif; ?></tr></thead>
                             <tbody>
@@ -364,6 +364,7 @@ require __DIR__ . '/includes/header.php';
                             </tbody>
                         </table>
                     </div>
+                    <p class="table-scroll-hint">Scroll across the roster to see player details and controls.</p>
                     <?php if ($isTeamCaptain): ?>
                         <form class="squad-vice-form" method="post" action="/blacktop-takeover/team.php">
                             <input type="hidden" name="csrf_token" value="<?= e($_SESSION['team_csrf']) ?>"><input type="hidden" name="action" value="set_vice_captain">

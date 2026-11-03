@@ -14,7 +14,7 @@ if (!empty($matchCentreEvent)) {
     <img class="court-menu__texture court-menu__texture--crack" src="/blacktop-takeover/assets/images/textures/grit-offcentre-crack.png" alt="" aria-hidden="true">
     <img class="court-menu__texture court-menu__texture--impact" src="/blacktop-takeover/assets/images/textures/grit-impact-ring.png" alt="" aria-hidden="true">
     <button class="court-menu__close" type="button" aria-label="Close Blacktop menu" data-court-menu-close>
-        <img src="/blacktop-takeover/assets/images/figma/navigation-basketball-trigger.svg" alt="">
+        <img src="/blacktop-takeover/assets/images/ui/street-basketball.svg" alt="">
     </button>
     <nav class="court-menu__links" aria-label="Blacktop pages">
         <a href="/blacktop-takeover/home.php"<?= $courtMenuActive === 'discover' ? ' aria-current="page"' : '' ?>><span>01</span> Discover</a>
